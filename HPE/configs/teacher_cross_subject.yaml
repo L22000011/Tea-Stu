@@ -1,0 +1,61 @@
+method: VK-RCD-Teacher
+modality: [vk, depth, lidar, mmwave, wifi-csi]
+protocol: protocol3
+split_to_use: cross_subject_split
+init_rand_seed: 0
+
+random_split:
+  ratio: 0.8
+  random_seed: 0
+
+cross_scene_split:
+  train_dataset:
+    scenes: [E01, E02, E03]
+  val_dataset:
+    scenes: [E04]
+
+cross_subject_split:
+  train_dataset:
+    subjects: [S01, S02, S03, S04, S06, S07, S08, S09, S11, S12, S13, S14, S16, S17, S18, S19, S21, S22, S23, S24, S26, S27, S28, S29, S31, S32, S33, S34, S36, S37, S38, S39]
+  val_dataset:
+    subjects: [S05, S10, S15, S20, S25, S30, S35, S40]
+
+manual_split:
+  train_dataset:
+    subjects: [S01, S02, S03, S04, S05, S06, S07, S08, S09, S10, S11, S12, S13, S14, S15, S16, S17, S18, S19, S20, S21, S22, S23, S24, S25, S26, S27, S28, S29, S30, S31, S32, S33, S34, S35, S36, S37, S38, S39, S40]
+    actions: [A01, A02, A03, A04, A05, A06, A07, A08, A09, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21]
+  val_dataset:
+    subjects: [S01, S02, S03, S04, S05, S06, S07, S08, S09, S10, S11, S12, S13, S14, S15, S16, S17, S18, S19, S20, S21, S22, S23, S24, S25, S26, S27, S28, S29, S30, S31, S32, S33, S34, S35, S36, S37, S38, S39, S40]
+    actions: [A22, A23, A24, A25, A26, A27]
+
+loader:
+  batch_size: 16
+  num_workers: 4
+
+model:
+  modalities: [vk, depth, lidar, mmwave, wifi-csi]
+  dim: 512
+  tokens_per_modality: 32
+  graph_layers: 2
+  fusion_layers: 2
+  fusion_heads: 8
+  fusion_mode: uncertainty
+  freeze_pretrained_backbones: true
+  backbone_root: backbones
+  pretrained_paths:
+    depth: backbones/depth_benchmark/depth_Resnet18.pt
+    lidar: backbones/lidar_benchmark/lidar_all_random.pt
+    mmwave: backbones/mmwave_benchmark/mmwave_all_random_TD.pt
+    wifi-csi: backbones/CSI_benchmark/protocol3_random_1.pkl
+
+loss:
+  lambda_bone: 0.1
+  tau: 1.0
+
+training_epochs: 100
+learning_rate: 0.0001
+eval_every: 5
+save_every: 5
+grad_clip: 1.0
+output_dir: outputs/teacher_full_cross_subject_split
+
