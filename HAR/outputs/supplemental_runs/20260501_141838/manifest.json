@@ -1,0 +1,226 @@
+{
+  "dataset": "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+  "gpu": "0",
+  "device": "cuda:0",
+  "max_train_batches": 1000,
+  "max_eval_batches": null,
+  "task_count": 10,
+  "tasks": [
+    {
+      "name": "cross_scene_baseline_train",
+      "title": "Cross-scene | Full-modality baseline training",
+      "kind": "train",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\HAR\\scripts\\train_baseline_full.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\HAR\\configs\\baseline_cross_scene.yaml",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000"
+      ],
+      "required": [
+        "E:\\Deskbook\\Tea\\HAR\\configs\\baseline_cross_scene.yaml"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\baseline_cross_scene\\best.pth"
+      ]
+    },
+    {
+      "name": "cross_scene_baseline_eval15",
+      "title": "Cross-scene | Baseline 15-combination evaluation",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\HAR\\scripts\\eval_all_combinations.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\HAR\\configs\\baseline_cross_scene.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\baseline_cross_scene\\best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\baseline_cross_scene_all_combinations.csv",
+        "--output-md",
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\baseline_cross_scene_all_combinations.md"
+      ],
+      "required": [
+        "E:\\Deskbook\\Tea\\HAR\\configs\\baseline_cross_scene.yaml",
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\baseline_cross_scene\\best.pth"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\baseline_cross_scene_all_combinations.csv",
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\baseline_cross_scene_all_combinations.md"
+      ]
+    },
+    {
+      "name": "cross_subject_baseline_train",
+      "title": "Cross-subject | Full-modality baseline training",
+      "kind": "train",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\HAR\\scripts\\train_baseline_full.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\HAR\\configs\\baseline_cross_subject.yaml",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000"
+      ],
+      "required": [
+        "E:\\Deskbook\\Tea\\HAR\\configs\\baseline_cross_subject.yaml"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\baseline_cross_subject\\best.pth"
+      ]
+    },
+    {
+      "name": "cross_subject_baseline_eval15",
+      "title": "Cross-subject | Baseline 15-combination evaluation",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\HAR\\scripts\\eval_all_combinations.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\HAR\\configs\\baseline_cross_subject.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\baseline_cross_subject\\best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\baseline_cross_subject_all_combinations.csv",
+        "--output-md",
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\baseline_cross_subject_all_combinations.md"
+      ],
+      "required": [
+        "E:\\Deskbook\\Tea\\HAR\\configs\\baseline_cross_subject.yaml",
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\baseline_cross_subject\\best.pth"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\baseline_cross_subject_all_combinations.csv",
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\baseline_cross_subject_all_combinations.md"
+      ]
+    },
+    {
+      "name": "random_teacher_xfi_report",
+      "title": "Random split | Teacher vs official X-Fi HAR report",
+      "kind": "report",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\HAR\\scripts\\generate_xfi_report.py",
+        "--csv",
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\all_combinations.csv"
+      ],
+      "required": [
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\all_combinations.csv"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\all_combinations.xfi_compare_summary.csv"
+      ]
+    },
+    {
+      "name": "random_student_vk_xfi_report",
+      "title": "Random split | Student-VK vs official X-Fi HAR report",
+      "kind": "report",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\HAR\\scripts\\generate_xfi_report.py",
+        "--csv",
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\student_vk_all_combinations.csv"
+      ],
+      "required": [
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\student_vk_all_combinations.csv"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\student_vk_all_combinations.xfi_compare_summary.csv"
+      ]
+    },
+    {
+      "name": "random_student_nv_xfi_report",
+      "title": "Random split | Student-NV vs official X-Fi HAR report",
+      "kind": "report",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\HAR\\scripts\\generate_xfi_report.py",
+        "--csv",
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\student_nv_nonvisual_combinations.csv"
+      ],
+      "required": [
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\student_nv_nonvisual_combinations.csv"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\student_nv_nonvisual_combinations.xfi_compare_summary.csv"
+      ]
+    },
+    {
+      "name": "random_baseline_xfi_report",
+      "title": "Random split | Baseline vs official X-Fi HAR report",
+      "kind": "report",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\HAR\\scripts\\generate_xfi_report.py",
+        "--csv",
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\baseline_full_all_combinations.csv"
+      ],
+      "required": [
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\baseline_full_all_combinations.csv"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\baseline_full_all_combinations.xfi_compare_summary.csv"
+      ]
+    },
+    {
+      "name": "ablation_no_distill_xfi_report",
+      "title": "Random split | No-distillation ablation report",
+      "kind": "report",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\HAR\\scripts\\generate_xfi_report.py",
+        "--csv",
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\ablation_no_distill_all_combinations.csv"
+      ],
+      "required": [
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\ablation_no_distill_all_combinations.csv"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\ablation_no_distill_all_combinations.xfi_compare_summary.csv"
+      ]
+    },
+    {
+      "name": "ablation_uniform_fusion_xfi_report",
+      "title": "Random split | Uniform-fusion ablation report",
+      "kind": "report",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\HAR\\scripts\\generate_xfi_report.py",
+        "--csv",
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\ablation_uniform_fusion_all_combinations.csv"
+      ],
+      "required": [
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\ablation_uniform_fusion_all_combinations.csv"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\HAR\\outputs\\eval\\ablation_uniform_fusion_all_combinations.xfi_compare_summary.csv"
+      ]
+    }
+  ]
+}

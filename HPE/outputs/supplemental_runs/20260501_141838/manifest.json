@@ -1,0 +1,333 @@
+{
+  "dataset": "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+  "gpu": "0",
+  "device": "cuda:0",
+  "max_eval_batches": null,
+  "task_count": 13,
+  "tasks": [
+    {
+      "name": "random_teacher_missing_summary",
+      "title": "Random split | Teacher grouped by missing-modality count",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\HPE\\scripts\\eval_missing_modality.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\HPE\\configs\\teacher_full.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\teacher_full\\best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\teacher_missing_modality_summary.csv"
+      ],
+      "required": [
+        "E:\\Deskbook\\Tea\\HPE\\configs\\teacher_full.yaml",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\teacher_full\\best.pth"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\teacher_missing_modality_summary.csv"
+      ]
+    },
+    {
+      "name": "random_student_vk_missing_summary",
+      "title": "Random split | Student-VK grouped by missing-modality count",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\HPE\\scripts\\eval_missing_modality.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\HPE\\configs\\student_vk_missing.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\student_vk_missing\\best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\student_vk_missing_modality_summary.csv"
+      ],
+      "required": [
+        "E:\\Deskbook\\Tea\\HPE\\configs\\student_vk_missing.yaml",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\student_vk_missing\\best.pth"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\student_vk_missing_modality_summary.csv"
+      ]
+    },
+    {
+      "name": "random_baseline_missing_summary",
+      "title": "Random split | Baseline grouped by missing-modality count",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\HPE\\scripts\\eval_missing_modality.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\HPE\\configs\\baseline_full.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\baseline_full\\best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\baseline_missing_modality_summary.csv"
+      ],
+      "required": [
+        "E:\\Deskbook\\Tea\\HPE\\configs\\baseline_full.yaml",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\baseline_full\\best.pth"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\baseline_missing_modality_summary.csv"
+      ]
+    },
+    {
+      "name": "random_student_nv_missing_summary",
+      "title": "Random split | Student-NV grouped by missing non-visual modalities",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\HPE\\scripts\\eval_missing_modality.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\HPE\\configs\\student_nv_missing.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\student_nv_missing\\best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\student_nv_missing_modality_summary.csv",
+        "--nonvisual"
+      ],
+      "required": [
+        "E:\\Deskbook\\Tea\\HPE\\configs\\student_nv_missing.yaml",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\student_nv_missing\\best.pth"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\student_nv_missing_modality_summary.csv"
+      ]
+    },
+    {
+      "name": "random_student_vk_vk_noise",
+      "title": "Random split | Student-VK VK noise and dropped-joint robustness",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\HPE\\scripts\\eval_robustness_vk_noise.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\HPE\\configs\\student_vk_missing.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\student_vk_missing\\best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\student_vk_noise_robustness.csv"
+      ],
+      "required": [
+        "E:\\Deskbook\\Tea\\HPE\\configs\\student_vk_missing.yaml",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\student_vk_missing\\best.pth"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\student_vk_noise_robustness.csv"
+      ]
+    },
+    {
+      "name": "random_teacher_complexity",
+      "title": "Random split | Teacher complexity export",
+      "kind": "export",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\HPE\\scripts\\export_metrics.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\HPE\\configs\\teacher_full.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\teacher_full\\best.pth",
+        "--device",
+        "cuda:0",
+        "--modality-set",
+        "vk,depth,lidar,mmwave,wifi-csi",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\teacher_full_model_complexity.csv"
+      ],
+      "required": [
+        "E:\\Deskbook\\Tea\\HPE\\configs\\teacher_full.yaml",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\teacher_full\\best.pth"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\teacher_full_model_complexity.csv"
+      ]
+    },
+    {
+      "name": "random_student_vk_complexity",
+      "title": "Random split | Student-VK complexity export",
+      "kind": "export",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\HPE\\scripts\\export_metrics.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\HPE\\configs\\student_vk_missing.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\student_vk_missing\\best.pth",
+        "--device",
+        "cuda:0",
+        "--modality-set",
+        "vk,depth,lidar,mmwave,wifi-csi",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\student_vk_model_complexity.csv"
+      ],
+      "required": [
+        "E:\\Deskbook\\Tea\\HPE\\configs\\student_vk_missing.yaml",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\student_vk_missing\\best.pth"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\student_vk_model_complexity.csv"
+      ]
+    },
+    {
+      "name": "random_student_nv_complexity",
+      "title": "Random split | Student-NV complexity export",
+      "kind": "export",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\HPE\\scripts\\export_metrics.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\HPE\\configs\\student_nv_missing.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\student_nv_missing\\best.pth",
+        "--device",
+        "cuda:0",
+        "--modality-set",
+        "depth,lidar,mmwave,wifi-csi",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\student_nv_model_complexity.csv"
+      ],
+      "required": [
+        "E:\\Deskbook\\Tea\\HPE\\configs\\student_nv_missing.yaml",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\student_nv_missing\\best.pth"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\student_nv_model_complexity.csv"
+      ]
+    },
+    {
+      "name": "random_baseline_complexity",
+      "title": "Random split | Baseline complexity export",
+      "kind": "export",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\HPE\\scripts\\export_metrics.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\HPE\\configs\\baseline_full.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\baseline_full\\best.pth",
+        "--device",
+        "cuda:0",
+        "--modality-set",
+        "vk,depth,lidar,mmwave,wifi-csi",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\baseline_full_model_complexity.csv"
+      ],
+      "required": [
+        "E:\\Deskbook\\Tea\\HPE\\configs\\baseline_full.yaml",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\baseline_full\\best.pth"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\baseline_full_model_complexity.csv"
+      ]
+    },
+    {
+      "name": "random_teacher_xfi_report",
+      "title": "Random split | Teacher vs official X-Fi report",
+      "kind": "report",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\HPE\\scripts\\generate_xfi_report.py",
+        "--csv",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\teacher_all_combinations.csv"
+      ],
+      "required": [
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\teacher_all_combinations.csv"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\teacher_all_combinations.xfi_compare_summary.csv"
+      ]
+    },
+    {
+      "name": "random_student_vk_xfi_report",
+      "title": "Random split | Student-VK vs official X-Fi report",
+      "kind": "report",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\HPE\\scripts\\generate_xfi_report.py",
+        "--csv",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\all_combinations.csv"
+      ],
+      "required": [
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\all_combinations.csv"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\all_combinations.xfi_compare_summary.csv"
+      ]
+    },
+    {
+      "name": "random_student_nv_xfi_report",
+      "title": "Random split | Student-NV vs official X-Fi report",
+      "kind": "report",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\HPE\\scripts\\generate_xfi_report.py",
+        "--csv",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\student_nv_nonvisual_combinations.csv"
+      ],
+      "required": [
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\student_nv_nonvisual_combinations.csv"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\student_nv_nonvisual_combinations.xfi_compare_summary.csv"
+      ]
+    },
+    {
+      "name": "random_baseline_xfi_report",
+      "title": "Random split | Baseline vs official X-Fi report",
+      "kind": "report",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\HPE\\scripts\\generate_xfi_report.py",
+        "--csv",
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\baseline_full_all_combinations.csv"
+      ],
+      "required": [
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\baseline_full_all_combinations.csv"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\HPE\\outputs\\eval\\baseline_full_all_combinations.xfi_compare_summary.csv"
+      ]
+    }
+  ]
+}
