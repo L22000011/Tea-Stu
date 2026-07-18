@@ -68,18 +68,8 @@ pretrained/
 *.avi
 *.mov
 
-# Local archived upstream copies
-origin-XFI/
-origin-XRF55/
-legacy_code_archive/
-old_code_archive/
-
-# Project-local raw or reproducible source data
 .workbuddy/
 Raw-RGB/
-Ori-RGB-HPE/
-Ori-RGB-HAR/
-XRF55/
 作业/
 
 # Per-sample/generated data and oversized publication intermediates
@@ -110,3 +100,34 @@ XRF55/
 !tables/**/*.pdf
 !supplement/**/*.pdf
 !paper_vkrcd_cn/**/*.pdf
+
+# Keep additional project manuscripts and compiled submission drafts
+!AAA-Self/**/*.pdf
+!paper_revision/**/*.pdf
+!main.pdf
+!作业/
+!作业/**
+
+# Keep lightweight run manifests while checkpoints and logs stay ignored
+!dual_readout_ablation/runs/
+!dual_readout_ablation/runs/**/
+!dual_readout_ablation/runs/**/*.json
+!dual_readout_ablation/runs/**/*.csv
+!origin-XFI/Ori-HAR/outputs_cross_baseline/runs/
+!origin-XFI/Ori-HAR/outputs_cross_baseline/runs/**/
+!origin-XFI/Ori-HAR/outputs_cross_baseline/runs/**/*.json
+!origin-XFI/Ori-HAR/outputs_cross_baseline/runs/**/*.csv
+!origin-XFI/Ori-HPE/outputs_cross_baseline/runs/
+!origin-XFI/Ori-HPE/outputs_cross_baseline/runs/**/
+!origin-XFI/Ori-HPE/outputs_cross_baseline/runs/**/*.json
+!origin-XFI/Ori-HPE/outputs_cross_baseline/runs/**/*.csv
+
+# Unmodified upstream XRF55 checkout is downloadable separately
+origin-XRF55/
+
+# Keep dataset acquisition scripts without publishing downloaded RGB frames
+!Raw-RGB/
+Raw-RGB/*
+!Raw-RGB/download_mmfi_rgb_subset.py
+!Raw-RGB/continue_to_20pct.ps1
+

@@ -1,0 +1,12 @@
+task,mode,stage,status,seconds,returncode
+HPE,chunk_only,train,done,15848.91,0
+HPE,chunk_only,eval,done,3853.82,0
+HPE,global_only,train,done,10954.17,0
+HPE,global_only,eval,done,3302.64,0
+HPE,dual,train,done,17452.09,0
+HPE,dual,eval,done,7068.78,0
+HAR,chunk_only,train,done,23551.12,0
+HAR,chunk_only,eval,done,4639.88,0
+HAR,global_only,train,done,27058.01,0
+HAR,global_only,eval,done,4516.7,0
+HAR,dual,train,failed,12162.29,1

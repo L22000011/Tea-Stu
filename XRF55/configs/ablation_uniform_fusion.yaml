@@ -1,0 +1,48 @@
+method: XRF-RCD-Ablation-UniformFusion
+scene: dml
+modality: [wifi, rfid, mmwave]
+init_rand_seed: 0
+
+loader:
+  batch_size: 64
+  num_workers: 4
+
+model:
+  modalities: [wifi, rfid, mmwave]
+  num_classes: 55
+  feature_dim: 1024
+  semantic_dim: 1024
+  dim: 512
+  tokens_per_modality: 16
+  fusion_layers: 2
+  fusion_heads: 8
+  fusion_mode: uniform
+  freeze_pretrained_backbones: false
+  pretrained_paths:
+    wifi: ../origin-XRF55/result/params/model0_params.pth
+    rfid: ../origin-XRF55/result/params/model1_params.pth
+    mmwave: ../origin-XRF55/result/params/model2_params.pth
+
+semantic_vector_path: ../origin-XRF55/word2vec/bert_new_sentence_large_uncased.npy
+
+loss:
+  lambda_kd: 0.70
+  lambda_token: 0.10
+  lambda_rel: 0.05
+  lambda_unc: 0.05
+  lambda_semantic: 0.20
+  lambda_semantic_mod: 0.10
+  lambda_semantic_kd: 0.05
+  temperature: 4.0
+  tau: 1.0
+
+student_modalities: [wifi, rfid, mmwave]
+teacher_modalities: [wifi, rfid, mmwave]
+drop_counts: [1, 2]
+eval_modalities: [wifi, rfid, mmwave]
+training_epochs: 100
+learning_rate: 0.0001
+eval_every: 5
+save_every: 5
+grad_clip: 1.0
+output_dir: outputs/ablation_uniform_fusion

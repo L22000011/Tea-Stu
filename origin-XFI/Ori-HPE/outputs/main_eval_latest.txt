@@ -1,0 +1,44 @@
+modality: VK, mse: 0.02756532, mpjpe: 0.24681568, pampjpe: 0.10394252
+modality: Depth, mse: 0.02746121, mpjpe: 0.24648527, pampjpe: 0.10339700
+modality: Lidar, mse: 0.02720944, mpjpe: 0.24493983, pampjpe: 0.10340293
+modality: mmWave, mse: 0.02710118, mpjpe: 0.24424475, pampjpe: 0.10341051
+modality: WiFi-CSI, mse: 0.02711223, mpjpe: 0.24462578, pampjpe: 0.10402724
+modality: VK+Depth, mse: 0.02758799, mpjpe: 0.24662388, pampjpe: 0.10356604
+modality: VK+Lidar, mse: 0.02729864, mpjpe: 0.24541376, pampjpe: 0.10341077
+modality: VK+mmWave, mse: 0.02723330, mpjpe: 0.24509328, pampjpe: 0.10349846
+modality: VK+WiFi-CSI, mse: 0.02717965, mpjpe: 0.24551795, pampjpe: 0.10357307
+
+modality: Depth+Lidar, mse: 0.02722585, mpjpe: 0.24501917, pampjpe: 0.10346173
+modality: Depth+mmWave, mse: 0.02714854, mpjpe: 0.24412348, pampjpe: 0.10355240
+modality: Depth+WiFi-CSI, mse: 0.02706304, mpjpe: 0.24457346, pampjpe: 0.10341373
+modality: Lidar+mmWave, mse: 0.02719568, mpjpe: 0.24481908, pampjpe: 0.10340794
+modality: Lidar+WiFi-CSI, mse: 0.02708347, mpjpe: 0.24433630, pampjpe: 0.10354616
+modality: mmWave+WiFi-CSI, mse: 0.02708246, mpjpe: 0.24431508, pampjpe: 0.10360836
+
+modality: VK+Depth+Lidar, mse: 0.02727488, mpjpe: 0.24532085, pampjpe: 0.10339014
+
+modality: VK+Depth+mmWave, mse: 0.02722244, mpjpe: 0.24514569, pampjpe: 0.10331277
+
+modality: VK+Depth+WiFi-CSI, mse: 0.02718159, mpjpe: 0.24532228, pampjpe: 0.10344924
+
+modality: VK+Lidar+mmWave, mse: 0.02745127, mpjpe: 0.24515148, pampjpe: 0.10352194
+
+modality: VK+Lidar+WiFi-CSI, mse: 0.02712200, mpjpe: 0.24450156, pampjpe: 0.10369152
+
+modality: VK+mmWave+WiFi-CSI, mse: 0.02705999, mpjpe: 0.24419916, pampjpe: 0.10355366
+
+modality: Depth+Lidar+mmWave, mse: 0.02712522, mpjpe: 0.24436513, pampjpe: 0.10346258
+modality: Depth+Lidar+WiFi-CSI, mse: 0.02708517, mpjpe: 0.24435138, pampjpe: 0.10344991
+modality: Depth+mmWave+WiFi-CSI, mse: 0.02712201, mpjpe: 0.24471851, pampjpe: 0.10344137
+
+modality: Lidar+mmWave+WiFi-CSI, mse: 0.02710329, mpjpe: 0.24434868, pampjpe: 0.10368528
+
+modality: VK+Depth+Lidar+mmWave, mse: 0.02719736, mpjpe: 0.24502745, pampjpe: 0.10332140
+
+modality: VK+Depth+Lidar+WiFi-CSI, mse: 0.02713390, mpjpe: 0.24464148, pampjpe: 0.10352050
+
+modality: VK+Depth+mmWave+WiFi-CSI, mse: 0.02712586, mpjpe: 0.24494696, pampjpe: 0.10342818
+modality: VK+Lidar+mmWave+WiFi-CSI, mse: 0.02704445, mpjpe: 0.24412314, pampjpe: 0.10362592
+modality: Depth+Lidar+mmWave+WiFi-CSI, mse: 0.02707599, mpjpe: 0.24438867, pampjpe: 0.10346378
+
+modality: VK+Depth+Lidar+mmWave+WiFi-CSI, mse: 0.02711255, mpjpe: 0.24470266, pampjpe: 0.10352792

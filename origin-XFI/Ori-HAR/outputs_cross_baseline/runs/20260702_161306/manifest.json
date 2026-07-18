@@ -1,0 +1,12 @@
+{
+  "project": "Ori-HAR adapted X-Fi/VK baseline",
+  "dataset": "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+  "gpu": "0",
+  "epochs": 50,
+  "max_train_batches": 1000,
+  "splits": [
+    "cross_scene_split",
+    "cross_subject_split"
+  ],
+  "run_dir": "/apps/users/icps_intelligence/data/lyg/X-Fi/Ori-HAR/outputs_cross_baseline/runs/20260702_161306"
+}

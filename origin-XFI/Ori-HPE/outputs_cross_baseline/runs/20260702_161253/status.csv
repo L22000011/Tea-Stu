@@ -1,0 +1,5 @@
+index,name,status,reason,returncode,seconds,outputs
+1,hpe_cross_scene_split_train,failed,,1,1676.183,/apps/users/icps_intelligence/data/lyg/X-Fi/Ori-HPE/outputs_cross_baseline/cross_scene_split/checkpoints/best.pth
+2,hpe_cross_scene_split_eval31,skipped,missing_required=/apps/users/icps_intelligence/data/lyg/X-Fi/Ori-HPE/outputs_cross_baseline/cross_scene_split/checkpoints/best.pth,,0,/apps/users/icps_intelligence/data/lyg/X-Fi/Ori-HPE/outputs_cross_baseline/cross_scene_split/eval/main_eval_latest.csv
+3,hpe_cross_subject_split_train,failed,,1,1798.573,/apps/users/icps_intelligence/data/lyg/X-Fi/Ori-HPE/outputs_cross_baseline/cross_subject_split/checkpoints/best.pth
+4,hpe_cross_subject_split_eval31,skipped,missing_required=/apps/users/icps_intelligence/data/lyg/X-Fi/Ori-HPE/outputs_cross_baseline/cross_subject_split/checkpoints/best.pth,,0,/apps/users/icps_intelligence/data/lyg/X-Fi/Ori-HPE/outputs_cross_baseline/cross_subject_split/eval/main_eval_latest.csv

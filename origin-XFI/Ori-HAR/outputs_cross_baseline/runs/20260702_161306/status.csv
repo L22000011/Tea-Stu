@@ -1,0 +1,3 @@
+index,name,status,reason,returncode,seconds,outputs
+1,har_cross_scene_split_train,failed,,1,3455.021,/apps/users/icps_intelligence/data/lyg/X-Fi/Ori-HAR/outputs_cross_baseline/cross_scene_split/checkpoints/best.pth
+2,har_cross_scene_split_eval15,skipped,missing_required=/apps/users/icps_intelligence/data/lyg/X-Fi/Ori-HAR/outputs_cross_baseline/cross_scene_split/checkpoints/best.pth,,0,/apps/users/icps_intelligence/data/lyg/X-Fi/Ori-HAR/outputs_cross_baseline/cross_scene_split/eval/main_eval_latest.csv

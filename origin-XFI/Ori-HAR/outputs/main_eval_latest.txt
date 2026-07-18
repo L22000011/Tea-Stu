@@ -1,0 +1,15 @@
+modality: VK, Cross Entropy Loss: 0.69687503, Accuracy: 0.75925926
+modality: Depth, Cross Entropy Loss: 4.39082746, Accuracy: 0.45613543
+modality: Lidar, Cross Entropy Loss: 1.96926866, Accuracy: 0.39833520
+modality: mmWave, Cross Entropy Loss: 0.67197127, Accuracy: 0.80783140
+modality: VK+Depth, Cross Entropy Loss: 2.38559923, Accuracy: 0.56316249
+modality: VK+Lidar, Cross Entropy Loss: 0.66256445, Accuracy: 0.77291433
+modality: VK+mmWave, Cross Entropy Loss: 0.25401080, Accuracy: 0.91658873
+modality: Depth+Lidar, Cross Entropy Loss: 3.73766989, Accuracy: 0.47708567
+modality: Depth+mmWave, Cross Entropy Loss: 1.32653840, Accuracy: 0.69039157
+modality: Lidar+mmWave, Cross Entropy Loss: 0.51692409, Accuracy: 0.84542960
+modality: VK+Depth+Lidar, Cross Entropy Loss: 2.11475177, Accuracy: 0.58576506
+modality: VK+Depth+mmWave, Cross Entropy Loss: 0.82782506, Accuracy: 0.77088789
+modality: VK+Lidar+mmWave, Cross Entropy Loss: 0.25654854, Accuracy: 0.91468699
+modality: Depth+Lidar+mmWave, Cross Entropy Loss: 1.23178996, Accuracy: 0.70872303
+modality: VK+Depth+Lidar+mmWave, Cross Entropy Loss: 0.79600116, Accuracy: 0.77702955
