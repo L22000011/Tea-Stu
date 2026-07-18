@@ -1,0 +1,1 @@
+method,task,protocol,stage,epochs_observed,first_loss,last_loss,loss_delta,normalized_drop,last3_rel_drift,convergence_status,metric_hint,source,evidence_path,note

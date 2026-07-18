@@ -1,0 +1,495 @@
+﻿\documentclass[UTF8,twocolumn]{ctexart}
+
+\usepackage[a4paper,margin=1.45cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{graphicx}
+\usepackage{adjustbox}
+\usepackage[table]{xcolor}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{caption}
+\usepackage{balance}
+\usepackage{float}
+
+\setlength{\textfloatsep}{7pt plus 1pt minus 2pt}
+\setlength{\floatsep}{6pt plus 1pt minus 2pt}
+\setlength{\intextsep}{6pt plus 1pt minus 2pt}
+\setlength{\abovecaptionskip}{3pt}
+\setlength{\belowcaptionskip}{0pt}
+\setlength{\columnsep}{0.45cm}
+\renewcommand{\arraystretch}{0.94}
+\linespread{0.97}
+\captionsetup{font=footnotesize}
+
+\newcommand{\method}{VK-RMD}
+\newcommand{\mpjpe}{MPJPE}
+\newcommand{\pampjpe}{PA-MPJPE}
+\newcommand{\gain}[1]{\textcolor{green!45!black}{#1}}
+\newcommand{\loss}[1]{\textcolor{red!70!black}{#1}}
+\newcommand{\neutral}[1]{\textcolor{gray!70!black}{#1}}
+\newcommand{\cnModalitySetShort}{模态}
+\newcommand{\cnHpeDirectCaption}{与 X-Fi 原论文表项的 HPE 逐组合对比。MPJPE 和 PA-MPJPE 单位均为 mm，数值越低越好。绿色向下箭头表示相对 X-Fi 提升，红色向上箭头表示退化。VK-RMD 结果列用浅灰色标注。}
+\newcommand{\cnHarDirectCaption}{与 X-Fi 原论文表项的 HAR 逐组合对比。Accuracy 单位为百分比，数值越高越好。绿色向上箭头表示相对 X-Fi 提升，红色向下箭头表示退化。VK-RMD 结果列用浅灰色标注。}
+\newcommand{\modLegend}{V=VK，D=Depth，L=LiDAR，R=mmWave，W=WiFi-CSI。}
+
+\title{\method：基于视觉关键点替代 RGB 与 Full-to-Subset Guidance 的缺失模态多模态人体感知}
+\author{作者姓名\\大连理工大学计算机科学与技术学院}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+多模态人体感知通常依赖原始 RGB 或固定传感器组合，但真实部署同时面临两个问题：其一，原始 RGB 很容易保留可识别人的外观、衣着和背景信息；其二，D、L、R 和 W 等传感器在实际系统中可能缺失或失效，导致固定模态模型性能明显下降。本文提出 \method{}，围绕这两个问题构建一个面向 HPE 姿态估计和 HAR 动作识别的缺失模态多模态感知框架。第一，本文用视觉关键点（V）替代下游模型中的原始 RGB。V 不提供形式化隐私保证，但它将原始视觉流压缩为关节级结构表示，显著降低身份可恢复风险；本文的身份识别泄露探针显示，V 相比脱敏 RGB 将主体识别准确率从 67.53\% 降至 15.43\%。第二，本文提出 Full-to-Subset Guidance（FSG）训练约束：教师模型在完整模态集合上学习完整感知行为，学生模型在随机可用模态子集上训练，并学习在缺失条件下逼近教师的输出、结构 token 和融合行为。FSG 不同于传统“大教师压缩小学生”的蒸馏，其核心是完整模态到缺失模态子集的可用性约束。与 X-Fi 原论文表项的逐组合对比表明，本文方法在主要 HPE 和 HAR 设置下取得稳定提升：HPE 全模态 \mpjpe{} 从 83.7 mm 降至 50.2 mm，HAR 全模态准确率从 72.2\% 提升至 96.6\%。完整表格逐项呈现不同模态组合的提升和退化，而不是仅依赖平均值结论。
+\end{abstract}
+
+\textbf{关键词：} 多模态感知，人体姿态估计，人体活动识别，缺失模态，视觉关键点，Full-to-Subset Guidance，低视觉暴露。
+
+\section{引言}
+多模态人体感知正在成为传感器丰富环境中的重要能力，例如智能建筑、辅助生活、无接触交互和以人为中心的监测。人体姿态估计（HPE）提供细粒度身体几何信息，人体活动识别（HAR）提供动作语义信息。一个有用的系统应同时支持结构级和语义级理解。然而，真实部署并不满足“原始 RGB 始终可用、所有传感器始终在线”的理想假设。摄像头可能受到隐私政策限制，D 可能被遮挡，L 和 R 点云可能稀疏，W 也会受到环境变化影响。因此，本文关注两个更贴近部署的问题：如何在不使用原始 RGB 的情况下维持人体感知能力，以及如何在传感器模态缺失时保持模型可用。本文后续表格均采用 X-Fi 风格缩写：\modLegend
+
+第一个问题来自 RGB 的身份暴露风险。原始 RGB 不仅包含人体姿态，也包含脸部、衣着、体型、背景和场景纹理，这些信息可以较大概率帮助恢复人的身份标识。本文并不声称 VK 是严格匿名或形式化隐私安全的表示，但 VK 将 RGB 中的密集外观信息压缩为关节级身体结构，显著减少可见外观和背景线索。换言之，本文使用 VK 替代下游模型中的 RGB，不是因为 VK 完全无泄露风险，而是因为它在保留姿态和动作结构的同时明显降低身份可恢复性。本文的主体身份泄露实验也支持这一点：脱敏 RGB 的主体识别准确率为 67.53\%，而 VK 降至 15.43\%。
+
+第二个问题来自真实传感器部署中的模态缺失。一个在完整模态集合上训练和测试的模型，并不自然适用于任意子集输入。直接让模型在缺失模态下训练虽然可行，但容易缺少完整模态感知行为的约束。因此，本文提出 Full-to-Subset Guidance（FSG）：教师模型固定使用完整模态集合学习完整感知行为，学生模型在随机采样的可用模态子集上训练，并在缺失条件下学习逼近教师的输出、结构 token 与融合行为。FSG 与传统知识蒸馏不同：传统蒸馏通常强调大模型到小模型的能力压缩，而本文强调完整模态到缺失模态子集的条件迁移，即 teacher 和 student 的主要差异不是参数规模，而是输入可用性。
+
+本文提出 \method{}，围绕 “V 替代 RGB” 和 “FSG 约束缺失模态学生” 两条主线构建多模态人体感知框架。V 分支为下游模型提供低外观的人体结构输入，D、L、R 和 W 通过各自编码器进入任务监督的 body-latent token 空间；FSG 通过完整模态教师约束随机缺失学生，使学生在不同传感器可用条件下仍能完成 HPE/HAR。Student-VK 与 Student-NV 的缺失模态结果、可靠性代理响应、body-latent 对应检查和 SuperTeacher 探索共同构成正文证据链：前两者证明主性能与缺失模态可用性，后两者说明机制行为和边界。
+
+本文主要贡献如下：
+\begin{itemize}
+    \item 从身份暴露角度重新定位 VK：VK 不提供形式化隐私保证，但相比 RGB 显著降低外观和背景信息暴露，使下游 HPE/HAR 可以在 RGB-free 条件下工作。
+    \item 提出 Full-to-Subset Guidance 训练范式：完整模态教师学习完整感知行为，随机缺失模态学生学习在任意可用子集下逼近教师，从而区别于传统模型压缩式蒸馏。
+    \item 在 HPE 和 HAR 上进行 X-Fi 风格逐组合对比、全组合缺失测试、非视觉学生测试、跨协议评估和身份泄露诊断，验证 VK 替代 RGB 与 FSG 缺失模态约束的有效性和边界。
+\end{itemize}
+
+\input{generated/modality_notation_table_cn.tex}
+
+\section{相关工作}
+\subsection{RGB 暴露风险与 VK 替代}
+基于视觉的人体感知方法信息丰富，但原始 RGB 会同时暴露人体姿态、脸部、衣着、背景和场景上下文。即使经过脱敏处理，RGB 仍可能保留大量可用于主体识别的外观线索。D、RF、雷达和点云等非视觉感知可降低直接视觉暴露，但通常牺牲信号丰富性，或对环境布局敏感 \cite{iot_survey,devicefree_review_iotj,occupant_wifi_iotj}。骨架和视觉关键点已广泛用于姿态估计和动作识别 \cite{openpose,stgcn,yan_skeleton_survey}。本文不将 VK 视为安全表示，而是将其作为替代下游 RGB 的结构输入：它保留人体关节拓扑和动作几何，同时显著减少外观、纹理和背景线索。
+
+\subsection{多模态 HPE 与 HAR}
+HPE 估计关节级身体结构，HAR 预测动作类别。MMFi 等多模态数据集 \cite{mmfi,mmfi_arxiv} 使 V、D、L、R 和 W 在相同动作和姿态标签下进行评估成为可能。WiFi、R 和多传感器人体感知在 IoT 场景中已有大量研究，包括 CSI-HAR、对比融合 HAR、WiFi HPE、R 点云 HPE 和跨站点 HPE \cite{lightweight_csi_iotj,multimodal_cf_iotj,metafi_iotj,robust_wifi_pose_iotj,virteach_iotj,adapose_iotj}。X-Fi \cite{xfi} 是最相关的基线之一，因为它研究灵活多模态人体感知。本文使用 X-Fi/VK 作为官方或复现基线，并关注任意模态子集均需支持时仍然困难的缺失模态鲁棒性。
+
+\subsection{缺失模态学习}
+缺失模态学习已通过模态 dropout、重建、幻觉生成、专家混合和知识迁移等方式研究 \cite{missing,ma_missing_survey,neverova_moddrop,tsai_multimodal_transformer}. 许多方法将随机模态移除视为正则化。不同的是，本文将每个采样子集都视为合法部署条件，并评估所有合法组合。这个区别很重要：模型不能仅因为能容忍某个手动选择的缺失情形就被认为具备鲁棒性。
+
+\subsection{Full-to-Subset Guidance 与传统蒸馏}
+传统知识蒸馏通常将大教师模型的输出或中间特征转移给小学生模型 \cite{hinton2015,fitnets,gou_kd_survey}，特权信息学习则强调训练期额外信息对测试期模型的帮助 \cite{vapnik2009}. 多任务蒸馏和跨模态蒸馏也被用于压缩或迁移模型行为 \cite{multitask_kd,gupta_cross_modal}. 本文借鉴这些思想，但任务设定不同：教师和学生之间的核心差异不是参数规模，而是输入可用性。教师使用完整模态集合，学生使用随机缺失模态子集。因此，本文将该训练约束称为 Full-to-Subset Guidance，即完整模态感知行为到缺失模态子集感知行为的约束。可靠性融合和 token-level 对齐用于辅助 FSG 生效，但不是本文唯一主线。
+
+\subsection{与最接近范式的区别}
+最接近的已有方向各自解释了本文设计的一部分，但没有直接覆盖本文问题。X-Fi 研究灵活多模态人体感知并提供重要基线，但其核心问题是模态不变感知，而不是用 VK 替代下游 RGB 并量化身份泄露风险。通用缺失模态方法多将模态移除视为鲁棒性或重建问题，而 \method{} 将每个采样子集视为可部署感知配置，并通过 FSG 引入完整模态教师的行为约束。知识蒸馏通常传递输出或中间 hint，而本文的 FSG 是 full-modality-to-subset transfer：学生不仅是更小模型，更是输入受限模型。ST-GCN 等骨架方法使用关键点做识别，而 \method{} 将 VK 用作替代 RGB 的下游结构输入，并与非视觉传感器共同支持 HPE/HAR。
+
+\section{\method{} 框架}
+\subsection{问题定义}
+令 $\mathcal{M}_{p}=\{\mathrm{VK},D,L,R,W\}$ 表示 HPE 模态集合，其中 $D$、$L$、$R$ 和 $W$ 分别表示 Depth、LiDAR、mmWave 和 WiFi-CSI。令 $\mathcal{M}_{a}=\{\mathrm{VK},D,L,R\}$ 表示 HAR 模态集合。对每个样本，只有非空子集 $\mathcal{S}\subseteq \mathcal{M}$ 可能可用。学生模型接收 $\mathbf{x}_{\mathcal{S}}=\{\mathbf{x}_{m}:m\in\mathcal{S}\}$，并预测 3D 姿态 $\hat{\mathbf{Y}}$ 或动作概率向量 $\hat{\mathbf{p}}$。
+
+对于 HPE，目标是 17 关节 3D 姿态，主要指标是毫米单位的 \mpjpe{}，越低越好。对于 HAR，目标是 27 类动作，使用 accuracy 和 macro-F1，越高越好。训练目标是使 $f_{\theta}(\mathbf{x}_{\mathcal{S}},\mathcal{S})$ 对所有可能模态子集可靠，而不仅是完整模态集合。
+
+\subsection{VK 介导的 Body-Latent Tokenization}
+VK 被表示为 17 关节人体图，而不是普通坐标数组。令 $\mathbf{x}_{v}\in\mathbb{R}^{17\times 2}$ 表示 VK 输入。本文将其看作 $G_v=(V,E,X)$，其中 $V$ 包含语义关节身份，$E$ 是骨架拓扑，$X$ 是坐标观测。VK 编码器归一化坐标，加入坐标、位置和关节身份嵌入，并在骨架图上传播信息：
+\begin{equation}
+    \mathbf{J}_{v}=\phi_c(\tilde{\mathbf{x}}_v)+\phi_p(2\tilde{\mathbf{x}}_v-1)+\mathbf{e}_{joint},
+\end{equation}
+\begin{equation}
+    \mathbf{J}_{v}^{(k+1)}=\mathrm{BoneGraphMixer}(\mathbf{J}_{v}^{(k)}, A_{bone}),
+\end{equation}
+\begin{equation}
+    \mathbf{Z}_{v}=P_v(\mathbf{J}_v)\in\mathbb{R}^{K\times D}.
+\end{equation}
+对每个非 VK 模态 $m$，模态专属 backbone 和可训练 projector 产生 body-latent token：
+\begin{equation}
+    \mathbf{Z}_{m}=P_m(E_m(\mathbf{x}_m))\in\mathbb{R}^{K\times D}.
+\end{equation}
+因此，原始空间不被直接对齐。WiFi-CSI 张量、LiDAR 点云、雷达点集和 VK 坐标首先被映射到共享 body-latent token 维度。本文使用 body-latent tokenization，而不是严格语义对齐：这种对应关系由样本级同步、共同 HPE/HAR 监督、模态嵌入和 VK 骨架拓扑诱导，但不是被保证的几何配准。
+
+对于可用子集 $\mathcal{S}$，加入模态嵌入并拼接：
+\begin{equation}
+    \mathbf{U}_{\mathcal{S}}=\mathrm{Concat}_{m\in\mathcal{S}}(\mathbf{Z}_{m}+\mathbf{e}_{m}),
+\end{equation}
+\begin{equation}
+    \mathbf{T}_{\mathcal{S}}=\mathrm{TransformerEncoder}(\mathbf{U}_{\mathcal{S}}).
+\end{equation}
+编码后的 token 被切分为模态块 $\{\mathbf{T}_m\}_{m\in\mathcal{S}}$。每个块产生模态级姿态或动作专家以及 log-variance 分数 $s_m$。默认可靠性融合为
+\begin{equation}
+    \alpha_m=\frac{\exp(-s_m/\tau)}{\sum_{j\in\mathcal{S}}\exp(-s_j/\tau)}.
+\end{equation}
+对于 HPE，模态级姿态专家和残差融合 token 头组合为
+\begin{equation}
+    \hat{\mathbf{Y}}=0.5\sum_{m\in\mathcal{S}}\alpha_m\hat{\mathbf{Y}}_m+
+    0.5H_{res}\left(\sum_{m\in\mathcal{S}}\alpha_m\mathrm{Pool}(\mathbf{T}_m)\right).
+\end{equation}
+对于 HAR，相同机制应用于 logits：
+\begin{equation}
+    \hat{\mathbf{c}}=0.5\sum_{m\in\mathcal{S}}\alpha_m\hat{\mathbf{c}}_m+
+    0.5H_{res}\left(\sum_{m\in\mathcal{S}}\alpha_m\mathrm{Pool}(\mathbf{T}_m)\right).
+\end{equation}
+权重 $\alpha_m$ 是学习得到的贡献代理，不应解释为校准后的物理传感器可靠性。
+
+\subsection{两条主线：VK 替代 RGB 与 FSG 约束缺失模态}
+本文框架围绕两条主线组织。第一，VK 替代 RGB：原始 RGB 提供强身体和上下文信息，但会保留大量可恢复身份的外观线索；VK 将视觉输入压缩为关节级身体结构，使下游模型在不消费原始 RGB 的条件下完成 HPE/HAR。第二，FSG 约束缺失模态：完整模态教师学习所有传感器可用时的感知行为，随机缺失学生学习在任意可用子集下逼近这种完整行为。可靠性融合和 body-token 表示是服务这两条主线的实现机制。
+
+\subsection{VK 锚定 Body-Tokenization}
+图~\ref{fig:framework} 展示总体框架。原始视觉数据如果被使用，也被隔离在上游 VK 提取阶段；下游模型接收 VK 而不是原始 RGB。VK 被编码为关节级身体几何。其他模态使用各自编码器，因为它们的原始形态异构：Depth 图像、点云、雷达点和 WiFi-CSI 序列无法在原始空间直接对齐。对模态 $m$，特征被编码为
+\begin{equation}
+    \mathbf{z}_{m}=P_m(E_m(\mathbf{x}_{m}))+\mathbf{e}_{m},
+\end{equation}
+其中 $E_m$ 是模态专属编码器，$P_m$ 是投影到共享 body-token 维度的层，$\mathbf{e}_{m}$ 是模态嵌入。对齐因此发生在 body-token 空间，并由共同 HPE/HAR 监督驱动。
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{../tables/1/fig1_rgb_vk_body_latent_alignment_current.png}
+    \caption{\method{} 总体框架。本文主线由两部分组成：VK 替代原始 RGB 进入下游感知流程，以降低身份外观暴露；FSG 使用完整模态教师约束随机缺失模态学生，使学生在任意传感器子集下学习完整感知行为。非 RGB 传感器被映射到同一任务监督 body-token 空间，可靠性融合用于辅助当前可用子集的动态决策。}
+    \label{fig:framework}
+\end{figure}
+
+\subsection{子集条件缺失模态学习}
+训练时，从子集分布中采样模态子集 $\mathcal{S}$，只有 $\mathcal{S}$ 中的 token 被送入融合模块。这使每个子集成为一个有监督感知配置，而不是简单的输入扰动。图~\ref{fig:protocol} 展示协议：训练阶段模拟模态缺失，评估阶段穷尽测试所有模态组合。在该形式化中，模态移除不仅是正则化，而是模型必须解决的部署条件。
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{../tables/1/fig2_missing_modality_protocol.png}
+    \caption{缺失模态协议。训练阶段采样可用模态子集；评估阶段覆盖所有非空组合：HPE 为 31 种，HAR 为 15 种。}
+    \label{fig:protocol}
+\end{figure}
+
+\subsection{子集动态与可靠性融合}
+对可用 token $\{\mathbf{z}_{m}:m\in\mathcal{S}\}$，\method{} 预测归一化权重
+\begin{equation}
+    \alpha_m = \frac{\exp(g(\mathbf{z}_{m},\mathbf{e}_{m}))}{\sum_{k\in\mathcal{S}}\exp(g(\mathbf{z}_{k},\mathbf{e}_{k}))},
+\end{equation}
+其中 $g(\cdot)$ 是学习得到的评分函数。融合表示为
+\begin{equation}
+    \mathbf{z}_{\mathcal{S}}=\sum_{m\in\mathcal{S}}\alpha_m\mathbf{z}_{m}.
+\end{equation}
+输出头随后预测姿态或动作。$\alpha_m$ 被解释为学习得到的模态贡献代理，表示模型在给定子集下如何分配决策权重，但不是校准的传感器健康度量。
+
+\subsection{Full-to-Subset Guidance 训练目标}
+FSG 是本文应对真实部署模态缺失的核心训练约束。教师使用完整模态集合 $\mathcal{M}$，训练时不做随机模态丢弃，因此它学习的是所有传感器可用时的完整感知行为：
+\begin{equation}
+    \min_{\theta_T}\mathbb{E}_{(\mathbf{x},y)}
+    \left[
+    \mathcal{L}^{T}(F_T(\{\mathbf{x}_m\}_{m\in\mathcal{M}}),y)
+    \right].
+\end{equation}
+HPE 教师目标为
+\begin{equation}
+    \mathcal{L}^{T}_{hpe}
+    =
+    \mathcal{L}_{pose}(\hat{\mathbf{Y}}_T,\mathbf{Y})
+    +
+    \lambda_{bone}\mathcal{L}_{bone}(\hat{\mathbf{Y}}_T,\mathbf{Y}),
+\end{equation}
+其中 bone 项保持骨架一致性。HAR 教师目标是交叉熵和可选不确定性项：
+\begin{equation}
+    \mathcal{L}^{T}_{har}
+    =
+    CE(\hat{\mathbf{c}}_T,y)+\lambda_{unc}\mathcal{L}_{unc}.
+\end{equation}
+
+教师训练后，学生在随机采样子集上优化。此时 student 与 teacher 的差异不是模型大小，而是输入条件：teacher 接收完整模态，student 只接收当前采样子集。因此，FSG 的目标是将完整模态行为约束到缺失模态学生，而不是传统意义上的模型压缩：
+\begin{equation}
+    \min_{\theta_S}
+    \mathbb{E}_{(\mathbf{x},y)}
+    \mathbb{E}_{\mathcal{S}\sim q(\mathcal{S})}
+    \left[
+    \mathcal{L}^{S}
+    (F_S(\{\mathbf{x}_m\}_{m\in\mathcal{S}}),y,F_T(\{\mathbf{x}_m\}_{m\in\mathcal{M}}))
+    \right].
+\end{equation}
+HPE 学生损失为
+\begin{equation}
+\begin{aligned}
+    \mathcal{L}^{S}_{hpe}=&
+    \mathcal{L}_{gt}
+    +\lambda_{out}\mathcal{L}_{out}
+    +\lambda_{tok}\mathcal{L}_{tok}
+    +\lambda_{bone}\mathcal{L}^{KD}_{bone} \\
+    &+\lambda_{rel}\mathcal{L}_{rel}
+    +\lambda_{unc}\mathcal{L}_{unc}.
+\end{aligned}
+\end{equation}
+其中 $\mathcal{L}_{gt}=\mathrm{SmoothL1}(\hat{\mathbf{Y}}_S,\mathbf{Y})$，$\mathcal{L}_{out}=\mathrm{SmoothL1}(\hat{\mathbf{Y}}_S,\hat{\mathbf{Y}}_T)$，$\mathcal{L}_{tok}=||\mathbf{z}_S-\mathbf{z}_T||_2^2$，$\mathcal{L}^{KD}_{bone}$ 匹配教师与学生骨长，$\mathcal{L}_{rel}$ 将学生权重与限制并重归一化到可用子集上的教师权重对齐。HAR 学生损失为
+\begin{equation}
+\begin{aligned}
+    \mathcal{L}^{S}_{har}=&
+    CE(\hat{\mathbf{c}}_S,y)
+    +\lambda_{kd}T^2 KL(\sigma(\hat{\mathbf{c}}_T/T)||\sigma(\hat{\mathbf{c}}_S/T))\\
+    &+\lambda_{tok}\mathcal{L}_{tok}
+    +\lambda_{rel}\mathcal{L}_{rel}
+    +\lambda_{unc}\mathcal{L}_{unc}.
+\end{aligned}
+\end{equation}
+因此，FSG 可以看作一种 full-modality-to-subset 约束。$\mathcal{L}_{out}$ 约束输出行为，$\mathcal{L}_{tok}$ 约束中间结构表征，$\mathcal{L}_{rel}$ 约束模态贡献分配。它的作用不是证明 teacher 参数更强，而是在训练期为缺失模态 student 提供完整模态行为参照。
+
+\section{实验设置}
+\subsection{数据集与任务}
+实验采用 MMFi 风格多模态设置。HPE 使用 V、D、L、R 和 W；HAR 使用 V、D、L 和 R。随机划分是主要设置。跨场景和跨主体划分用于测试泛化。Student-VK 使用 V 和非 RGB 传感器，Student-NV 移除 V，仅使用非视觉模态。所有正式学生推理均不输入原始 RGB，因此实验首先检验“V 替代 RGB 后是否仍能完成 HPE/HAR”，其次检验“FSG 是否能在传感器子集缺失时维持可用性”。
+
+\subsection{基线}
+本文使用与 X-Fi 原论文相同的模态子集逐行比较，而不是仅比较平均摘要。该直接表格对表格的比较作为主要基线证据，用于判断 VK 替代 RGB 后的模型是否仍具备竞争力。完整模态基线、均匀融合消融、Student-VK 和 Student-NV 等内部检查用于辅助解释 FSG 的缺失模态机制。
+
+\subsection{指标}
+HPE 使用毫米单位的 \mpjpe{} 和 \pampjpe{}，越低越好。HAR 使用百分比单位的 accuracy，越高越好。在 X-Fi 风格对比表中，每一行均对应原 X-Fi 论文与本文评估中的相同模态子集。
+
+\subsection{实现细节}
+主要报告实验中，每个 epoch 最大使用 1000 个训练 batch；除非特别说明，评估使用完整验证集。教师模型在完整模态集合上训练，不进行随机模态缺失；学生模型在随机采样的模态子集上训练，并接受 FSG 输出、token 和融合行为约束。X-Fi 逐组合对比、缺失数量分组、leave-one-out、身份泄露探针、可靠性代理响应、body-latent 对应检查和 SuperTeacher 探索均进入正文；区别在于前四类支撑主张，后三类用于说明机制行为和边界。部署学生模型不使用原始 RGB 流。
+
+\section{结果与分析}
+\clearpage
+\onecolumn
+\subsection{与 X-Fi 原表项的直接对比}
+主要定量比较遵循 X-Fi 原论文表格格式。表~\ref{tab:xfi_hpe_direct} 和表~\ref{tab:xfi_har_direct} 是第五部分正文主结果表，不属于附录或补充材料。二者不仅报告所有子集的平均值，而是将每个模态子集与对应 X-Fi 表项逐行比较。这一部分主要回答第一条主线：当下游模型不再使用原始 RGB，而改用 VK 和非 RGB 传感器时，HPE/HAR 是否仍然有效。逐行比较使每个感知条件下的变化方向显式可见，也避免弱项被单一平均值掩盖。
+
+\input{generated/xfi_hpe_direct_table_cn.tex}
+
+对于 HPE，\method{} 将全模态设置的 \mpjpe{} 从 83.7 mm 降至 50.2 mm，将 \pampjpe{} 从 47.6 mm 降至 33.5 mm。最大的 MPJPE 降幅出现在包含 D 的子集中，例如 D+L、D+R 和 D+L+W。W-only 仍然困难：MPJPE 略有改善，但 PA-MPJPE 弱于 X-Fi，并在表~\ref{tab:xfi_hpe_direct} 中用红色标记。保留该行是为了避免夸大低信噪比无线单模态姿态估计的鲁棒性。
+
+\input{generated/xfi_har_direct_table_cn.tex}
+
+对于 HAR，\method{} 在大多数 X-Fi 原表项上取得提升，包括全模态设置从 72.2\% 提升至 96.6\%。唯一明显退化是 L-only，准确率从 52.7\% 降至 40.8\%。该失败案例说明当前 HAR 学生模型相比孤立 L 特征，更依赖 D 和 R 线索。因此，逐行对比比单个平均 headline 更有信息量。
+
+\clearpage
+\twocolumn
+\subsection{FSG 的缺失模态核心结果}
+直接 X-Fi 风格比较回答“V 替代 RGB 后是否仍然有效”，而本节回答第二条主线：在真实部署中传感器缺失时，FSG 训练出的学生是否比简单完整模态模型或均匀融合更稳。因此，表~\ref{tab:severity_cn} 和表~\ref{tab:loo_cn} 构成本文证明 FSG 的正文核心结果。在 HPE 中，均匀融合为 82.77 mm，而 \method{} Student-VK 在 all-subset stress test 中为 75.18 mm，说明学习得到的子集加权优于等权重。在 HAR 中，Student-VK 为 85.15\%，高于均匀融合的 67.46\% 以及缺失模态测试下完整模态教师的 66.25\%。这些结果显示 FSG 改善的是模态可用性空间，而不仅是完整模态端点。
+
+表~\ref{tab:severity_cn} 按缺失数量汇总 all-subset stress test，直接展示 FSG 学生在不同模态可用性条件下的退化曲线。HPE 中，Student-VK 从完整模态的 50.2/33.5 mm 逐步退化到缺失 4 个模态时的 124.8/68.0 mm；Student-NV 在 severe missing 下退化更明显。HAR 中，Student-VK 在缺失 1 个和 2 个模态时仍保持 93.8\% 和 87.5\% accuracy，缺失 3 个模态时下降到 70.0\%。这说明 FSG 的价值主要体现在多种可用子集均需支持的部署压力测试中。
+
+\input{generated/fsg_severity_table_cn.tex}
+
+Leave-one-out 分析进一步识别关键传感器。表~\ref{tab:loo_cn} 显示，对 HPE Student-VK，移除 D 导致最大完整模态退化，使 \mpjpe{} 增加 14.1 mm、\pampjpe{} 增加 5.3 mm；对 HAR Student-VK，移除 R 使 accuracy 和 F1 分别下降 6.9 和 7.1 个百分点。这些观察对部署有价值，因为它们指出硬件资源有限时应优先保留哪些传感器。
+
+\input{generated/leave_one_out_table_cn.tex}
+
+跨协议结果进一步检验 FSG 是否只在随机划分下有效。表~\ref{tab:protocol_cn} 显示，cross-subject 下 HPE 与 HAR 仍接近随机划分；cross-scene 下 HPE 明显退化，Student-VK 平均 \mpjpe{} 从 75.18 mm 上升到 142.02 mm，说明缺失模态鲁棒性并不等同于场景泛化鲁棒性。HAR 在 cross-scene 下保持 80.61\% 平均准确率，说明动作识别对场景变化相对更稳。
+
+\input{generated/protocol_generalization_table_cn.tex}
+
+\subsection{FSG 的融合机制与代理响应}
+可靠性融合不是本文的单独主线，而是 FSG 学生在不同可用子集下进行决策的机制组成。它通过三种方式评估。第一，内部均匀融合消融在两个任务上都弱于学习融合模型：all-subset stress test 中，HPE 为 82.77 mm 对 75.18 mm，HAR 为 67.46\% 对 85.15\%。第二，图~\ref{fig:reliability} 可视化不同模态子集上的可靠性权重。第三，可靠性—性能相关性导出结果显示，HPE 的 Pearson/Spearman 为 0.9396/0.9000，HAR 为 0.8833/0.8000，说明较高学习权重通常与较好的子集级任务得分相关。
+
+表~\ref{tab:ablation_cn} 给出核心消融。Uniform fusion 在 HPE 和 HAR 上均弱于 VK-RMD，说明当前可用子集下的学习融合是必要的。w/o distillation 在 HPE 上竞争力很强，因此本文不声称 FSG 中的 teacher 约束是唯一收益来源；在 HAR 上，w/o distillation 低于完整 VK-RMD，说明完整模态行为约束对动作识别仍有辅助收益。
+
+\input{generated/ablation_core_table_cn.tex}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{../tables/1/fig6_reliability_proxy_weights.png}
+    \caption{模态子集上的学习可靠性代理权重。该权重是任务级贡献指标，不是校准的传感器健康度量。}
+    \label{fig:reliability}
+\end{figure}
+
+表~\ref{tab:reliability_corruption_cn} 进一步报告合成模态腐蚀下的性能和权重变化。该实验是正文中约束 reliability claim 的关键证据：在 HAR 中腐蚀 R 使准确率下降 9.56 个百分点，并伴随 R 权重下降；在 HPE 中腐蚀 D 使 MPJPE 增加 287.62 mm，但 D 权重反而上升。这说明该权重是任务目标下的 learned contribution proxy，而不是校准传感器健康度量。换言之，该模块确实参与了子集决策，但不能被解释成物理可靠性估计器。
+
+\input{generated/reliability_corruption_table_cn.tex}
+
+图~\ref{fig:corruption} 将上述趋势可视化，作为表~\ref{tab:reliability_corruption_cn} 的图形摘要。
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{../tables/1/fig8_reliability_corruption_diagnostic.png}
+    \caption{合成模态腐蚀下的可靠性代理。实验在 100 个验证 batch 上加入噪声和随机置零。该代理会响应模态扰动，但不应被理解为校准的物理传感器可靠性。}
+    \label{fig:corruption}
+\end{figure}
+
+\subsection{Body-Latent 对应性与跨任务 Teacher 探索}
+表~\ref{tab:body_latent_cn} 给出 VK token 与非 RGB token 在 body-latent 空间中的对应性检查。该结果进入正文，是因为它直接回答“不同原始空间的传感器是否被映射到可比较的任务 token 空间”这一机制问题。结果显示 Top-1 检索略高于随机水平，但 same 与 shuffled 的相似度差距较小。因此，本文不把 body-latent tokenization 写成严格几何配准，而写成由样本同步、任务监督和 VK 结构输入共同诱导的任务表示空间。
+
+\input{generated/body_latent_alignment_table_cn.tex}
+
+表~\ref{tab:superteacher_cn} 汇总 SuperTeacher 探索性结果。它同样放入正文，因为它说明本文曾测试更激进的统一 teacher 方向。SuperTeacher 的 full-modality 端点具有可用性能，但缺失组合行为不稳定，因此本文最终将主线收缩到更清晰的 VK-RMD Student-VK/Student-NV 和 FSG 缺失模态学习。这一结果帮助界定本文贡献边界，并说明最终主线为何收缩到 VK-RMD Student-VK/Student-NV。
+
+\input{generated/superteacher_exploration_table_cn.tex}
+
+\subsection{低视觉暴露与身份泄露探针}
+下表定性总结视觉暴露和残余风险。该表不作为定量隐私指标，只用于澄清不同表示可能暴露哪些信息。为提供可复现实证诊断，本文进一步在 action-holdout 划分下训练轻量 subject-identification probe。探针从每种表示预测 40 个主体之一。随机水平为 2.50\%。该实验评估身份泄露，而不是形式化隐私。
+
+\begin{table}[t]
+\centering
+\caption{视觉暴露与残余隐私风险。}
+\label{tab:privacy}
+\begin{adjustbox}{width=\linewidth}
+\begin{tabular}{lcccc}
+\toprule
+表示 & 脸/外观 & 背景 & 身体几何 & 动作线索 \\
+\midrule
+RGB & 高 & 高 & 高 & 高 \\
+V & 低 & 低 & 中/高 & 中/高 \\
+D & 低/中 & 中 & 高 & 中 \\
+L/R & 低 & 低/中 & 中 & 中 \\
+W & 很低 & 很低 & 间接 & 可能 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\input{generated/privacy_probe_table_cn.tex}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{../privacy_leakage_probe/fig_privacy_leakage_subject_id.png}
+    \caption{主体身份泄露诊断。VK 相比脱敏 RGB 显著降低身份可预测性，但仍高于随机水平。因此，本文只主张降低视觉暴露和下游 RGB-free 推理，不主张匿名性或形式化隐私保护。}
+    \label{fig:privacy_leakage}
+\end{figure}
+
+结果显示，脱敏 RGB 仍具有最高泄露风险，主体识别准确率为 67.53\%，说明去除脸部信息并不会去除衣着、身体、背景和外观线索。V 将主体识别准确率降低至 15.43\%，相对脱敏 RGB 降低 77.15\%。然而，V 仍明显高于随机水平，因此它不是匿名或 identity-free 的。D 和 L 也泄露主体信息，准确率分别为 43.80\% 和 36.57\%。这些结果支持本文有边界的主张：\method{} 从下游推理中移除原始 RGB 并降低视觉暴露，但不提供形式化隐私保护。
+
+\section{讨论}
+\subsection{两条主线如何贯通}
+本文的结果应围绕两条主线理解。第一，VK 替代 RGB 并不意味着形式化匿名，而是把下游感知从高外观暴露的 RGB 流转移到关节级结构表示。身份泄露探针显示 VK 仍有残余身份信息，但相对脱敏 RGB 明显降低主体可预测性。第二，FSG 不是传统大模型压缩式蒸馏，而是完整模态教师到随机子集学生的可用性约束。逐组合 HPE/HAR 对比说明 VK 替代 RGB 后仍可保持有效性能；缺失数量分组、leave-one-out、Student-NV 和均匀融合消融则说明 FSG 对缺失模态部署具有实际意义。
+
+\subsection{与 X-Fi/VK 的关系}
+X-Fi/VK 是重要先验基线，不是本文贡献。本文逐行使用 X-Fi 原 HPE 和 HAR 表项来定位结果。与 X-Fi 的区别不应表述为简单“更换一个输入模态”，而是两个问题设定的变化：本文显式把 RGB 身份暴露风险作为动机，并用 VK 替代下游 RGB；同时用 FSG 将完整模态行为约束到随机缺失模态学生。针对均匀融合和完整模态教师的支持性内部检查用于避免误导性结论，即本文方法并非仅因为旧基线没有针对缺失模态训练而获胜。
+
+\subsection{FSG 与传统蒸馏的边界}
+FSG 使用 teacher/student 语言，但它和传统知识蒸馏的关注点不同。传统蒸馏通常强调大模型到小模型、soft label 或 feature hint 的能力转移；FSG 强调的是输入条件不对称：teacher 看到完整模态集合，student 只看到随机可用子集。因此，FSG 的价值不是证明 teacher 参数更大或一定更强，而是为缺失模态学生提供完整模态行为参照。本文也不声称教师监督是唯一收益来源；可靠性融合、随机子集训练和任务标签共同决定最终性能。
+
+\subsection{跨场景边界}
+跨场景 HPE 仍然困难。在 all-subset stress test 中，Student-VK 的 \mpjpe{} 从随机划分的 75.18 mm 增加到跨场景划分的 142.02 mm。这说明缺失模态鲁棒性并不自动意味着场景泛化。当前框架更适用于已校准或相对稳定的传感布局。未来工作应引入域适应、传感器布局归一化或场景不变 RF 和点云编码器。
+
+\section{结论}
+本文提出 \method{}，一个围绕 VK 替代 RGB 与 Full-to-Subset Guidance 构建的缺失模态多模态人体感知框架。第一，VK 将下游模型从原始 RGB 流中解耦，显著降低身份外观暴露风险，但不提供匿名性或形式化隐私保证。第二，FSG 让完整模态教师学习完整感知行为，并约束随机缺失模态学生在任意可用子集下工作，从而区别于传统模型压缩式蒸馏。HPE 和 HAR 实验证明，Student-VK 与 Student-NV 在 X-Fi 风格逐组合对比、all-subset stress test 和内部融合消融中具有稳定的缺失模态可用性。本文也报告了重要边界：VK 仍含残余身份信息，可靠性权重是学习贡献代理而非校准传感器健康度量，FSG 不是性能唯一来源，跨场景 HPE 仍然困难。这些发现将 \method{} 定位为一种适用于原始 RGB 推理受限且传感器可用性不稳定环境的实用人体感知框架。
+
+\section*{致谢}
+本节将在资助信息和贡献者信息确定后补充。
+
+\section*{数据与代码可用性}
+实验基于 MMFi 风格多模态数据和本地 HPE/HAR 实现。代码、训练 checkpoint 和处理后的结果表公开发布应遵守数据集许可和机构要求。原始 RGB 仅用于离线身份泄露诊断和 VK 来源说明；正式下游学生推理不输入原始 RGB 流。
+
+\balance
+
+{\footnotesize
+\setlength{\itemsep}{0pt}
+\setlength{\parsep}{0pt}
+\begin{thebibliography}{99}
+
+\bibitem{hinton2015}
+G. Hinton, O. Vinyals, and J. Dean, ``Distilling the knowledge in a neural network,'' in \emph{NIPS Deep Learning and Representation Learning Workshop}, 2015.
+
+\bibitem{vapnik2009}
+V. Vapnik and A. Vashist, ``A new learning paradigm: Learning using privileged information,'' \emph{Neural Networks}, vol. 22, no. 5--6, pp. 544--557, 2009.
+
+\bibitem{fitnets}
+A. Romero, N. Ballas, S. E. Kahou, A. Chassang, C. Gatta, and Y. Bengio, ``FitNets: Hints for thin deep nets,'' in \emph{Proc. Int. Conf. Learn. Represent.}, 2015.
+
+\bibitem{gou_kd_survey}
+J. Gou, B. Yu, S. J. Maybank, and D. Tao, ``Knowledge distillation: A survey,'' \emph{Int. J. Comput. Vis.}, vol. 129, pp. 1789--1819, 2021.
+
+\bibitem{multitask_kd}
+I. Misra, A. Shrivastava, A. Gupta, and M. Hebert, ``Cross-stitch networks for multi-task learning,'' in \emph{Proc. IEEE Conf. Comput. Vis. Pattern Recognit.}, 2016, pp. 3994--4003.
+
+\bibitem{gupta_cross_modal}
+S. Gupta, J. Hoffman, and J. Malik, ``Cross modal distillation for supervision transfer,'' in \emph{Proc. IEEE Conf. Comput. Vis. Pattern Recognit.}, 2016, pp. 2827--2836.
+
+\bibitem{openpose}
+Z. Cao, T. Simon, S.-E. Wei, and Y. Sheikh, ``Realtime multi-person 2D pose estimation using part affinity fields,'' in \emph{Proc. IEEE Conf. Comput. Vis. Pattern Recognit.}, 2017, pp. 7291--7299.
+
+\bibitem{stgcn}
+S. Yan, Y. Xiong, and D. Lin, ``Spatial temporal graph convolutional networks for skeleton-based action recognition,'' in \emph{Proc. AAAI Conf. Artif. Intell.}, 2018, pp. 7444--7452.
+
+\bibitem{yan_skeleton_survey}
+M. Liu, H. Liu, and C. Chen, ``Enhanced skeleton visualization for view invariant human action recognition,'' \emph{Pattern Recognit.}, vol. 68, pp. 346--362, 2017.
+
+\bibitem{mmfi}
+J. Yang, H. Huang, Y. Zhou, X. Chen, Y. Xu, S. Yuan, H. Zou, C. X. Lu, and L. Xie, ``MMFi: Multi-modal non-intrusive 4D human dataset for versatile wireless sensing,'' in \emph{Proc. Adv. Neural Inf. Process. Syst. Datasets and Benchmarks Track}, 2023.
+
+\bibitem{mmfi_arxiv}
+J. Yang \emph{et al.}, ``MM-Fi: Multi-modal non-intrusive 4D human dataset for versatile wireless sensing,'' arXiv:2305.10345, 2023.
+
+\bibitem{xfi}
+Z. Chen and S. Yang, ``X-Fi: A modality-invariant foundation model for multimodal human sensing,'' arXiv:2410.10167, 2024.
+
+\bibitem{missing}
+M. Ma, J. Ren, L. Zhao, S. Tulyakov, C. Wu, and X. Peng, ``Deep multimodal learning with missing modality: A survey,'' arXiv:2409.07825, 2024.
+
+\bibitem{ma_missing_survey}
+M. Ma, J. Ren, L. Zhao, S. Tulyakov, C. Wu, and X. Peng, ``Smil: Multimodal learning with severely missing modality,'' in \emph{Proc. AAAI Conf. Artif. Intell.}, 2021.
+
+\bibitem{neverova_moddrop}
+N. Neverova, C. Wolf, G. Taylor, and F. Nebout, ``ModDrop: Adaptive multi-modal gesture recognition,'' \emph{IEEE Trans. Pattern Anal. Mach. Intell.}, vol. 38, no. 8, pp. 1692--1706, 2016.
+
+\bibitem{tsai_multimodal_transformer}
+Y.-H. H. Tsai, S. Bai, P. P. Liang, J. Z. Kolter, L.-P. Morency, and R. Salakhutdinov, ``Multimodal transformer for unaligned multimodal language sequences,'' in \emph{Proc. ACL}, 2019, pp. 6558--6569.
+
+\bibitem{kendall2017}
+A. Kendall and Y. Gal, ``What uncertainties do we need in Bayesian deep learning for computer vision?'' in \emph{Proc. Adv. Neural Inf. Process. Syst.}, 2017, pp. 5574--5584.
+
+\bibitem{transformer}
+A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A. N. Gomez, L. Kaiser, and I. Polosukhin, ``Attention is all you need,'' in \emph{Proc. Adv. Neural Inf. Process. Syst.}, 2017, pp. 5998--6008.
+
+\bibitem{iot_survey}
+L. Atzori, A. Iera, and G. Morabito, ``The Internet of Things: A survey,'' \emph{Computer Networks}, vol. 54, no. 15, pp. 2787--2805, 2010.
+
+\bibitem{devicefree_review_iotj}
+M. A. Al-Qaness, A. A. Abd El-Latif, S. Kim, and X. Liu, ``Device-free human activity recognition: A systematic literature review,'' \emph{IEEE Internet Things J.}, 2024.
+
+\bibitem{occupant_wifi_iotj}
+S. Shi, S. Sigg, L. Chen, and Y. Ji, ``Device-free occupant activity sensing using WiFi-enabled IoT devices for smart homes,'' \emph{IEEE Internet Things J.}, vol. 5, no. 5, pp. 3991--4002, 2018.
+
+\bibitem{lightweight_csi_iotj}
+Q. Wang \emph{et al.}, ``Lightweight CSI-based human activity recognition for multitask IoT applications,'' \emph{IEEE Internet Things J.}, 2025.
+
+\bibitem{multimodal_cf_iotj}
+Q. Hong \emph{et al.}, ``Multimodal human activity recognition using contrastive fusion,'' \emph{IEEE Internet Things J.}, 2025.
+
+\bibitem{metafi_iotj}
+Y. Xie, Z. Li, and M. Li, ``MetaFi++: WiFi-enabled transformer-based human pose estimation for metaverse avatar simulation,'' \emph{IEEE Internet Things J.}, vol. 10, no. 16, pp. 14128--14136, 2023.
+
+\bibitem{robust_wifi_pose_iotj}
+Z. Liu \emph{et al.}, ``Robust WiFi sensing-based human pose estimation,'' \emph{IEEE Internet Things J.}, 2025.
+
+\bibitem{virteach_iotj}
+J. Zhang \emph{et al.}, ``VirTeach: mmWave radar point-cloud-based pose estimation with virtual data as a teacher,'' \emph{IEEE Internet Things J.}, 2024.
+
+\bibitem{adapose_iotj}
+Y. Wang \emph{et al.}, ``AdaPose: Toward cross-site device-free human pose estimation with commodity WiFi,'' \emph{IEEE Internet Things J.}, 2024.
+
+\bibitem{wifall_iotj}
+Y. Wang, K. Wu, and L. M. Ni, ``WiFall: Device-free fall detection by wireless networks,'' \emph{IEEE Trans. Mobile Comput.}, vol. 16, no. 2, pp. 581--594, 2017.
+
+\bibitem{widar}
+Y. Zhang, Y. Zheng, K. Qian, G. Zhang, Y. Liu, C. Wu, and Z. Yang, ``Widar3.0: Zero-effort cross-domain gesture recognition with Wi-Fi,'' \emph{IEEE Trans. Pattern Anal. Mach. Intell.}, vol. 44, no. 11, pp. 8671--8688, 2022.
+
+\bibitem{rfpose}
+M. Zhao, T. Li, M. A. Alsheikh, Y. Tian, H. Zhao, A. Torralba, and D. Katabi, ``Through-wall human pose estimation using radio signals,'' in \emph{Proc. IEEE Conf. Comput. Vis. Pattern Recognit.}, 2018, pp. 7356--7365.
+
+\bibitem{pointnet}
+C. R. Qi, H. Su, K. Mo, and L. J. Guibas, ``PointNet: Deep learning on point sets for 3D classification and segmentation,'' in \emph{Proc. IEEE Conf. Comput. Vis. Pattern Recognit.}, 2017, pp. 652--660.
+
+\bibitem{pointnetpp}
+C. R. Qi, L. Yi, H. Su, and L. J. Guibas, ``PointNet++: Deep hierarchical feature learning on point sets in a metric space,'' in \emph{Proc. Adv. Neural Inf. Process. Syst.}, 2017, pp. 5099--5108.
+
+\bibitem{hrnet}
+K. Sun, B. Xiao, D. Liu, and J. Wang, ``Deep high-resolution representation learning for human pose estimation,'' in \emph{Proc. IEEE Conf. Comput. Vis. Pattern Recognit.}, 2019, pp. 5693--5703.
+
+\bibitem{videopose3d}
+D. Pavllo, C. Feichtenhofer, D. Grangier, and M. Auli, ``3D human pose estimation in video with temporal convolutions and semi-supervised training,'' in \emph{Proc. IEEE Conf. Comput. Vis. Pattern Recognit.}, 2019, pp. 7753--7762.
+
+\bibitem{action_survey}
+J. K. Aggarwal and M. S. Ryoo, ``Human activity analysis: A review,'' \emph{ACM Comput. Surv.}, vol. 43, no. 3, pp. 1--43, 2011.
+
+\bibitem{gait_privacy}
+M. S. Nixon, T. Tan, and R. Chellappa, \emph{Human Identification Based on Gait}. Springer, 2006.
+
+\bibitem{reid_survey}
+L. Zheng, Y. Yang, and A. G. Hauptmann, ``Person re-identification: Past, present and future,'' \emph{arXiv:1610.02984}, 2016.
+
+\bibitem{privacy_survey}
+R. Shokri and V. Shmatikov, ``Privacy-preserving deep learning,'' in \emph{Proc. ACM CCS}, 2015, pp. 1310--1321.
+
+\bibitem{dp_sgd}
+M. Abadi \emph{et al.}, ``Deep learning with differential privacy,'' in \emph{Proc. ACM CCS}, 2016, pp. 308--318.
+
+\bibitem{uncertainty_multitask}
+A. Kendall, Y. Gal, and R. Cipolla, ``Multi-task learning using uncertainty to weigh losses for scene geometry and semantics,'' in \emph{Proc. IEEE Conf. Comput. Vis. Pattern Recognit.}, 2018, pp. 7482--7491.
+
+\end{thebibliography}
+}
+
+\end{document}
+
+

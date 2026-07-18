@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="380" viewBox="0 0 980 380">
+<rect width="100%" height="100%" fill="white"/>
+<text x="24" y="34" font-size="22" font-weight="700">Visual exposure and residual privacy risk diagnostic</text>
+<text x="24" y="58" font-size="14" fill="#555">Heuristic writing aid only; use subject-leakage probe for systematic privacy evaluation.</text>
+<text x="230" y="92" font-size="15" font-weight="700">Visual exposure</text>
+<text x="570" y="92" font-size="15" font-weight="700">Residual identity/behavior risk</text>
+<text x="24" y="131" font-size="15" font-weight="600">RGB</text>
+<rect x="230" y="115" width="260" height="18" fill="#eeeeee"/><rect x="230" y="115" width="260" height="18" fill="#c95c5c"/><text x="498" y="129" font-size="13">5.0</text>
+<rect x="570" y="115" width="260" height="18" fill="#eeeeee"/><rect x="570" y="115" width="260" height="18" fill="#c95c5c"/><text x="838" y="129" font-size="13">5.0</text>
+<text x="24" y="183" font-size="15" font-weight="600">VK</text>
+<rect x="230" y="167" width="260" height="18" fill="#eeeeee"/><rect x="230" y="167" width="52" height="18" fill="#e8f3f2"/><text x="498" y="181" font-size="13">1.0</text>
+<rect x="570" y="167" width="260" height="18" fill="#eeeeee"/><rect x="570" y="167" width="208" height="18" fill="#e79a71"/><text x="838" y="181" font-size="13">4.0</text>
+<text x="24" y="235" font-size="15" font-weight="600">Depth</text>
+<rect x="230" y="219" width="260" height="18" fill="#eeeeee"/><rect x="230" y="219" width="130" height="18" fill="#b8ded8"/><text x="498" y="233" font-size="13">2.5</text>
+<rect x="570" y="219" width="260" height="18" fill="#eeeeee"/><rect x="570" y="219" width="208" height="18" fill="#e79a71"/><text x="838" y="233" font-size="13">4.0</text>
+<text x="24" y="287" font-size="15" font-weight="600">LiDAR/mmWave</text>
+<rect x="230" y="271" width="260" height="18" fill="#eeeeee"/><rect x="230" y="271" width="78" height="18" fill="#b8ded8"/><text x="498" y="285" font-size="13">1.5</text>
+<rect x="570" y="271" width="260" height="18" fill="#eeeeee"/><rect x="570" y="271" width="156" height="18" fill="#f0d98c"/><text x="838" y="285" font-size="13">3.0</text>
+<text x="24" y="339" font-size="15" font-weight="600">WiFi-CSI</text>
+<rect x="230" y="323" width="260" height="18" fill="#eeeeee"/><rect x="230" y="323" width="52" height="18" fill="#e8f3f2"/><text x="498" y="337" font-size="13">1.0</text>
+<rect x="570" y="323" width="260" height="18" fill="#eeeeee"/><rect x="570" y="323" width="130" height="18" fill="#b8ded8"/><text x="838" y="337" font-size="13">2.5</text>
+</svg>

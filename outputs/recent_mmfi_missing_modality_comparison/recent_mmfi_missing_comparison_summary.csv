@@ -1,0 +1,4 @@
+﻿task,baseline,metric,shared_subsets,vkrmd_wins,baseline_wins
+HPE,PTA,MPJPE,7,4,3
+HPE,PTA,PA-MPJPE,7,5,2
+HAR,COMPASS,Accuracy,7,5,2

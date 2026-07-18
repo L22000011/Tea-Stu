@@ -1,0 +1,627 @@
+                          This CVPR paper is the Open Access version, provided by the Computer Vision Foundation.
+                                       Except for this watermark, it is identical to the accepted version;
+                                 the final published version of the proceedings is available on IEEE Xplore.
+
+
+
+
+   MMANet: Margin-aware Distillation and Modality-aware Regularization for
+                    Incomplete Multimodal Learning
+
+                                Shicai Wei         Chunbo Luo          Yang Luo
+                             School of Information and Communication Engineering
+                            University of Electronic Science and Technology of China
+                        shicaiwei@std.uestc.edu.cn {c.luo, luoyang}@uestc.edu.cn
+
+
+
+                         Abstract                                           Modality          Customized        Unified      Drop
+                                                                              RGB                 10.01          11.75      -1.65
+    Multimodal learning has shown great potentials in nu-                    Depth                4.45           5.87       -1.42
+merous scenes and attracts increasing interest recently.                       IR                 11.65          16.62      -4.97
+However, it often encounters the problem of missing modal-                 RGB+Depth               3.41           4.61       -1.2
+ity data and thus suffers severe performance degradation                    RGB+IR                 6.32           6.68      -0.36
+in practice. To this end, we propose a general framework                    Depth+IR              3.54           4.95       -1.41
+called MMANet to assist incomplete multimodal learn-                      RGB+Depth+IR            1.23           2.21       -0.98
+ing. It consists of three components: the deployment net-
+work used for inference, the teacher network transferring
+                                                                     Table 1. The performance of customized models and the uni-
+comprehensive multimodal information to the deployment               fied model for different modality combinations on the CASIA-
+network, and the regularization network guiding the de-              SURF dataset using the average classification error rate. The
+ployment network to balance weak modality combinations.              ‘customized‘ means to train a model for each combination inde-
+Specifically, we propose a novel margin-aware distilla-              pendently while the ‘unified’ means to train only one model for
+tion (MAD) to assist the information transfer by weigh-              all the combinations. The architectures of all the models are the
+ing the sample contribution with the classification uncer-           same and the feature map of missing modality (such as the IR for
+tainty. This encourages the deployment network to focus              RGB+Depth) is set as zero.
+on the samples near decision boundaries and acquire the
+refined inter-class margin. Besides, we design a modality-
+aware regularization (MAR) algorithm to mine the weak                collect complete modality data during the inference stage.
+modality combinations and guide the regularization net-              There is thus substantial interest in assisting the incomplete
+work to calculate prediction loss for them. This forces              or even single modality inference via the complete modality
+the deployment network to improve its representation abil-           data during training.
+ity for the weak modality combinations adaptively. Fi-                  A typical solution is to reconstruct the sample or feature
+nally, extensive experiments on multimodal classification            of the missing modalities from the available ones [10, 14,
+and segmentation tasks demonstrate that our MMANet out-              15, 20, 29, 32]. Nevertheless, this needs to build a specific
+performs the state-of-the-art significantly. Code is available       model for each modality from all possible modality combi-
+at: https://github.com/shicaiwei123/MMANet                           nations and thus has high complexity. Recent studies focus
+                                                                     on learning a unified model, instead of a bunch of networks,
+                                                                     for different modality combinations. Generally, many such
+1. Introduction                                                      approaches [6, 11, 12, 17, 51, 52] attempt to leverage feature
+                                                                     fusion strategies to capture modality-invariant representa-
+    Multimodal learning has achieved great success on many           tion so that the model can adapt to all possible modality
+vision tasks such as classification [21, 33, 46], object detec-      combinations. For example, RFNet [11] designs the region-
+tion [26, 45, 53], and segmentation [5, 23, 41]. However,            aware fusion module to fuse the features of available image
+most successful methods assume that the models are trained           modalities.
+and tested with the same modality data. In fact, limited                Although the existing unified models are indeed able to
+by device [32, 39], user privacy [13, 25], and working con-          increase the efficiency of training and deployment of the
+dition [3, 29], it is often very costly or even infeasible to        multimodal models, their performance is likely to be sub-
+
+
+
+                                                                  20039
+optimal. As shown in Table 1, the customized models con-             prediction loss for the sample from the weak combinations.
+sistently outperform the unified model for different modal-          This forces the unified model to improve its representation
+ity combinations. This is because existing unified mod-              ability for the weak combination. In detail, MAR mines the
+els usually focus on the modality-invariant features while           weak combination via the memorization effect [1, 16, 49]
+ignoring the modality-specific information. Note that the            that DNNs tend to first memorize simple examples before
+complementary modality-specific information of multiple              overfitting hard examples. As shown in Fig. 5(a), the uni-
+modalities can help refine the inter-class discrimination and        fied model tends to fit the samples containing Depth modal-
+improve inference performance [2, 18, 36]. This motivates            ity firstly at the early stage. Therefore, MAR first mines the
+us to propose the first research question of this paper: Can a       strong modality via the memorization effect. Then it deter-
+unified model consider the modality invariant and spe-               mines the combinations of rest modalities as the weak ones.
+cific information simultaneously while maintaining ro-                   Finally, we develop a model and task agnostic frame-
+bustness for incomplete modality input?                              work called MMANet to assist incomplete multimodal
+    To this end, we propose to guide the unified model to            learning by combining the proposed MAD and MAR strate-
+learn the comprehensive multimodal information from the              gies. MMANet can guide the unified model to acquire com-
+teacher model trained with complete modality. This regular-          prehensive multimodal information and balance the perfor-
+izes the target task loss to encourage the unified model to ac-      mance of the strong and weak modality combination si-
+quire complementary information among different modal-               multaneously. Extensive comparison and ablation experi-
+ity combinations multimodal information while preserv-               ments on multimodal classification and segmentation tasks
+ing the generalization to them. Specifically, we propose a           demonstrate the effectiveness of the MMANet.
+novel margin-aware distillation (MAD) that trains the uni-
+fied model by guiding it to mimic the inter-sample relation          2. Related work
+of the teacher model. MAD introduces the classification
+uncertainty of samples to re-weigh their contribution to the         2.1. Multimodal Learning for Missing Modalities
+final loss. Since the samples near the class boundary are                Most existing multimodal learning methods assume that
+more likely to be misclassified and have higher classifica-          all instances consist of full modalities. However, this as-
+tion uncertainty [8], this encourages the unified model to           sumption does not always hold in real-world applications
+preserve the inter-class margin refined by the complemen-            due to the device [32, 39], user privacy [13, 25], and work-
+tary cues and learn the modality-specific information.               ing condition [3, 29]. Recently, many incomplete multi-
+    Another limitation of existing unified approaches is that        modal learning methods have been proposed and can be
+they struggle to obtain optimal performance for the unbal-           roughly categorized into two types: customized methods
+anced training problem. To be specific, conventional multi-          and unified methods. Customized methods aim to train a
+modal learning models tend to fit the discriminative modal-          specific model to recover the missing modality in each in-
+ity combination and their performance will degrade signif-           complete modality combination. According to the recover-
+icantly when facing weak modality combinations. To solve             ing target, the customized methods can be further divided
+this issue, existing unified approaches introduce the auxil-         into sample-based methods and representation-based meth-
+iary discriminator to enhance the discrimination ability of          ods. Sample-based methods focus on imputing the missing
+the unimodal combinations [6, 11, 51]. This utilizes a hy-           modality at the input space with generative adversarial net-
+pothesis that a single modality is weaker than multiple ones.        works [4,27,32,37]. Due to the complexity of sample recon-
+However, as shown in Table 1, no matter for the customized           struction, it is usually unstable and may introduce noise to
+model or the unified model, the single Depth modality out-           harm the primary task at hand [34]. Thus the representation-
+performs the RGB, IR, and their combinations. This indi-             based methods are proposed to reconstruct the sample rep-
+cates the combination with multiple weak modalities may              resentation via the knowledge distillation [3, 14, 20, 29] or
+be harder to be optimized than a single strong modality.             matrix completion [30, 35]. Although promising results are
+Moreover, as shown in Table 3, RGB becomes the strong                obtained, these methods have to train and deploy a specific
+modality while Depth and IR become the weak modalities.              model for each subset of missing modalities, which has high
+This indicates that the modality importance is not fixed but         complexity in practical applications.
+varies with scenarios. These findings motivate us to propose             The unified methods aim to train one model to deal with
+the second research question: How to effectively optimize            different incomplete modality combinations by extracting
+the weak modality combination in varying scenarios?                  the modality-invariant features. For example, HeMIS [17]
+    To this end, we design a regularization network and              learns an embedding of multimodal information by com-
+MAR algorithm to assist the training of the unified network.         puting statistics (i.e., mean and variance) from any num-
+Specifically, the regularization network generates additional        ber of available modalities. Furthermore, Chen et al. intro-
+predictions for all inputs. Then MAR mines and calculates            duce the feature disentanglement to cancel out the modality-
+
+
+
+                                                                  20040
+specific information. Besides, more recent methods, such as          ployment network acquire the modality-invariant and spe-
+LCR [52] and RFNet [11] focus on extracting the modality-            cific features simultaneously. Finally, MMANet guides the
+invariant representation via different attention mechanisms.         deployment network to train together with the regulariza-
+Moreover, mmFormer [51] introduces the transformer block             tion network that produces additional predictions for the
+to model the global semantic information for the modality-           weak modality combination via the MAR. This alleviates
+invariant embedding. While these methods achieve promis-             the overfitting for strong modality combinations. The to-
+ing results, they only consider the modality-invariant in-           tal loss to guide the training of the deployment network is
+formation while ignoring the modality-specific information.          defined as follows,
+As a result, they usually perform much worse than the cus-
+tomized methods, especially when more than one modality                           L_{total}=L_{TL}+ \alpha L_{MAD}+\beta L_{MAR}    (1)
+is missing [48].
+                                                                     where α and β are the hyper-parameters. LLT is task learn-
+2.2. Knowledge Distillation                                          ing loss, which is determined by the primary task at hand.
+    Knowledge distillation aims to transfer knowledge from           For example, LLT may be the cross entropy loss when the
+a strong teacher to a weaker student network to facilitate           primary task is classification. LM AD and LM AR are the
+supervised learning. Generally, the distillation method can          loss of MAD and MAR respectively.
+be divided into three types: response-based distillation that            Besides, the other nations used in MMANet are de-
+matches the softened logits of teachers and students [19],           fined as follows. Given a mini-batch multimodal input
+the representation-based distillation that matches the fea-          x = {x1 , ..., xm }, xm ∈ Rb denotes the data of mth modal-
+                                                                                                 t        d
+ture maps [24,28,40], and the relation-based distillation that       ity. b is the batch size. Em   and Em   denote the encoders
+matches the sample relations. [38, 47].                              for the mth modality in the teacher and deployment net-
+    While originating from the resource-efficient deep learn-        works, respectively. F t and F d denote the fusion mod-
+ing, knowledge distillation has found wider applications in          ule used in the teacher and deployment networks, respec-
+                                                                                                                      t   t  t   t
+
+such areas as incomplete multimodal learning. Here, it is            tively. ∆d ∈ Rb×m is the vector of ∆. z t ∈ Rb ×c ×h ×w
+                                                                                      d   d  d   d
+used to transfer the privileged modality information that can        and z d ∈ Rb ×c ×h ×w denote the fused features of
+only be accessed during the training stage from the teacher          the teacher and deployment networks, respectively. Here,
+to the student [3, 29]. Since the input of the teacher and stu-      where b is the batch size, c is the number of output chan-
+dent network is different in incomplete multimodal learn-            nels, and h and w are spatial dimensions. P t , P r , and P d
+ing, transferring knowledge by representation-based meth-            denote the task predictor of the teacher, regularization, and
+ods may lead to overfitting [15]. Recent methods focus               deployment networks, respectively. y t ,y r , and y d denote
+on transferring the privileged modality information by the           the Rb×k prediction matrix of the teacher, regularization,
+relation-based methods [7,22,48]. However, these prior arts          and deployment networks, respectively. Here, k is the class
+usually consider different instances equally and ignore their        number.
+specificity, which would lead to sub-optimal performance.
+                                                                     3.2. MAD
+3. Method                                                                 This section introduces the proposed MAD strategy
+                                                                     for transferring the comprehensive multimodal information
+3.1. MMANet
+                                                                     from the teacher network to the deployment network. As
+   In this section, we introduce a general framework called          shown in Fig. 1, MAD is conducted between the z t and
+MMANet to address the challenge of incomplete multi-                 z d . z d of a simple is varying due to the random modal-
+modal learning. As shown in Fig. 1, it consists of three             ity dropout. In contrast, the sample semantic is invariant.
+parts: deployment network, teacher network, and regular-             Thus, MAD proposes to transfer the teacher’s knowledge
+ization network. Specifically, the deployment network is             via relation consistency instead of feature consistency. This
+the inference network. To make it robust to the modality             helps avoid overfitting and harming the representation abil-
+incompleteness, MMANet introduces the Bernoulli indica-              ity of deployment networks. Moreover, MAD proposes to
+tor ∆ = {δ1 ...δm } after modality encoders and conducts             measure the class boundaries and guide the unified model
+modality dropout during the training stage by randomly set-          to pay more attention to the samples near them. This can
+ting some components of ∆ as 0. For missing modalities,              encourage the development network to inherit the refined
+the corresponding encoded feature maps will be replaced              inter-class margin from the teacher network. Nevertheless,
+by a zero matrix. Besides, MMANet introduces the teacher             boundaries are usually difficult to detect due to their irregu-
+network that is pre-trained with complete multimodal data            larity. To solve this issue, MAD introduces the classification
+to transfer the comprehensive multimodal knowledge to                uncertainty of each sample to re-weight its contribution for
+the deployment network via the MAD. This helps the de-               the total loss. Since the samples near the class boundaries
+
+
+
+                                                                  20041
+Figure 1. Overview of the proposed MMANet. It consists of three parts: the deployment network used for final inference, the teacher
+network transferring comprehensive multimodal knowledge to the deployment network, and the regularization network guiding the de-
+ployment network to balance weak modality combinations.
+
+
+                                                                                       can be expressed as follows,
+
+                                                                                                       r^{d}(i,j)=R(z^{d^{\prime }}(i,:),z^{d^{\prime }}(j,:))         (3)
+                                                                                          Theoretically, R(u, v) can be any metric for measur-
+                                                                                       ing the vector distance, such as the Euclidean distance and
+                                                                                       the cosine distance. Because the dimension of the feature
+                                                                                       vectors of the teacher and the deployment networks could
+                                                                                       be very high, to eliminate the curse of dimensionality, we
+                                                                                       choose cosine distance as the R(u, v),
+
+                                                                                                               R(u,v)=\frac {{u}^{T} {v}}{\|{u}\|_{2}|| {v} \|_{2}}    (4)
+        Figure 2. The illustration of the proposed MAD.
+
+                                                                                          Furthermore, MAD calculates the discrepancy matrix
+are more likely to be misclassified and have higher classifi-                          between rt and rd and sum each row to get g td .
+cation uncertainty, this can realize attention to them.
+      The overview of the MAD is shown in Fig. 2. It takes
+                                                                                                                 g^{td}= \sum _{i=1}^{b} (r^t-r^d)_{i}                 (5)
+z t , z d , and y t as the input and consists of three steps: (a)
+calculating the relation discrepancy vector g td ∈ Rb , (b)
+calculating the classification uncertainty vector π t ∈ Rb                                Here, g td (i) denotes the relation gap between the teacher
+and (c) calculating the total loss LM AD for MAD.                                      and deployment networks from the ith sample to other sam-
+      (a) MAD calculates g td from z t and z d . Specifically,                         ples in the same mini-batch.
+                                         ′        t  t  t  t
+MAD first reshape z t and z d into z t ∈ Rb ×c ∗h ∗w and                                  (b) MAD calculates π t from y t . In detail, it takes the
+    ′         d   d   d   d
+z d ∈ Rb ×c ∗h ∗w . Then MAD calculates the relation                                   information entropy of the logit output of each sample as its
+matrix rt ∈ Rb×b and rd ∈ Rb×b via the same relation                                   classification uncertainty. And the classification uncertainty
+function R(u,v), respectively. And the rt (i, j) that denotes                          for ith sample, π t (i), can be expressed as follows,
+the relation between ith and jth sample representations of
+the teacher network can be expressed as follows,
+                                                                                                          π t (i) = H(y t (i, :))
+                                                                                                     
+                                                                                                                                                                       (6)
+                 {r}^{t}(i,j)=R(z^{t^{\prime }}(i,:),z^{t^{\prime }}(j,:))    (2)                         H(x) = −σ(x) ∗ log(σ(x))                                     (7)
+
+   Besides, the rd (i, j) that denotes the relation between ith                        where σ(.) is the softmax function for normalization. H(x)
+and jth sample representations of the deployment network                               is the information entropy of x. A sample that has a higher
+
+
+
+                                                                                    20042
+classification uncertainty is usually closer to the decision
+boundaries, since it is more likely to be misclassified. Thus,
+π t (i), i ∈ [1, b] can also denote the margin from the ith
+sample representation to the decision boundary.
+     (c) Finally, MAD takes π t (i) as the weight for the corre-
+sponding component g td (i) to calculate LM AD ,
+
+
+                L_{MAD}=\sum _{i=1}^{b} \sigma (\pi ^{t})(i)* g^{td}(i)     (8)
+
+This encourages the deployment network to focus on the
+samples near the decision boundaries and preserve the inter-                                Figure 3. The illustration of the proposed MAR.
+class margin refined by the comprehensive multimodal in-
+formation from the teacher network.
+                                                                                     where j ∈ [0, k − 1]. Compared with Y O , Y d needs only
+3.3. MAR                                                                             class-wise but not sample-wise consistency. Then the vector
+    This section introduces the MAR algorithm that forces                            discrepancy vector g d ∈ Rm is defined as follows,
+the deployment network to improve its discriminating abil-
+ity for weak modality combinations adaptively. As shown                                         \label {gd} g^{d}(i)=KL(log(\sigma ({Y}^{d}(i))),\sigma ({Y}^{d}(0)))                 (12)
+in Fig. 1, MAR takes the y r , y d and ∆d as as the input                            where KL(,) means the KL divergence, i ∈ [1, m].
+to calculate the LM AR . Specifically, MAR first proposes                               Secondly, MAR introduces a memory bank M d ∈
+                                                                                       N ×m
+a contrastive ranking strategy to mine the weak modality                             R      to save the g d among the warm-up epochs and per-
+combinations. Compared to simply taking the combination                              forms average filtering to obtain g d ,
+with a single modality as the weak one, this further con-
+siders the combination with multiple modalities and can get
+more accurate mining results. Then, MAR calculates the                                                            \overline {g}^{d} = \sum _{i=1}^{N} \frac {1}{N} (M^{d})_{i}        (13)
+prediction loss for the weak modality combinations, guid-
+ing the deployment network to pay more attention to them.                            where (M d )i is the g d in the ith epoch. And ∆w can be
+    The overview of MAR is shown in Fig. 3. It consists                              determined as ∆i where i = argmax(g d ).
+of two steps: (a) when E ≤ N , mining the weak modal-                                   (b) MAR calculates LM AR from y r , ∆d and Ω. In detail,
+ity combination set Ω, and (b) when E > N , calculating                              MAR first calculates the weak combination mask M r ∈ Rb
+LM AR . Here E is the current training epoch, and N is the                           from ∆d and Ω,
+                                                                                                r
+number of warm-up epochs.                                                                         M (i) = F ALSE if ∆d (i) ∈     /Ω        (14)
+    (a) MAR calculates Ω from y d using contrastive rank-                                           M r (i) = T RU E                                        if ∆d (i) ∈ Ω             (15)
+ing. MAR proposes to calculate the predicted output Y O ∈
+R(m+1)×n×k of ∆i , i ∈ [0, m], on the train set after each                           where i ∈ [0, b − 1], ∆d (i) is the ∆ for the ith sample in
+training epoch.                                                                      this mini-batch. Then, the LM AR is defined as follows,
+                          Y^{O}(i,:,:)=y^{d}(\Delta _{i})                   (9)
+                                                                                                       L_{MAR}=L_{TL}(y^{r}[M^{r}],l[M^{r}])                                          (16)
+n is sample number. ∆i means the ith component of ∆ is 0.                                                                                                                         r
+∆0 means none component of ∆ are 0, which must contain                               where l is the groundtruth vector for y . [.] denotes the
+the strong modality. Since the deployment network tends to                           index operator.
+first memorize the samples with strong modality, ∆w , w ∈
+[1, m] that makes Y O (w, :, :) has the biggest distance with
+                                                                                     4. Experiments
+Y O (0, :, :) is the hard combination that does not contain the                         We conduct experiments on multimodal classification
+strong modality. And the element of Ω can be determined                              and segmentation tasks to evaluate the proposed MMANet.
+as ∆w and the ∆ consists of the modalities in it.                                    In the following, we first compare the MMANet architec-
+    Specifically, to make ∆w robust for the randomness of                            ture with the state-of-the-art on these two tasks. Then, we
+neural network learning, MAR introduces two innovations.                             ablate the MAD and MAR strategies of MMANet.
+Firstly, MAR calculates the prediction discrepancy from the
+prediction distribution Y d ∈ R(m+1)×k instead of Y O ,                              4.1. Performance and Comparison on Multimodal
+                (               X                                                          Classification
+                   Y d (i, j) =   (Y D (i, :) == j)        (10)                        Datasets: We take the face anti-spoofing task as the ex-
+                Y   D
+                        = arg max(Y , dim = 2)    O
+                                                                           (11)      ample of the multimodal classification and conduct exper-
+
+
+
+                                                                                  20043
+Table 2. Performance on the multimodal classification task with CASIA-SURF. ↓ means that the lower the value, the better the performance.
+
+                   Modalities                                           ACER(↓)
+                                     Customized                               Unified
+            RGB        Depth    IR
+                                         SF           SF-MD       HeMIS LCR RFNet                MMFormer        MMANet
+                        #       #        10.01         11.75      14.36      13.44     12.43        11.15           8.57
+               #                #        4.45           5.87       4.70       4.40      4.17         4.67           2.27
+               #        #                11.65         16.62      16.21      15.26     14.69        13.99          10.04
+                                #        3.41           4.61       3.23       3.32      2.23         1.93           1.61
+                        #                6.32           6.68       6.27       5.16      4.27         4.77           3.01
+               #                         3.54           4.95       3.68       3.53      3.22         3.10           1.18
+                                         1.23           2.21       1.97       1.88      1.18         1.94           0.87
+                    Average              5.80          7.52        7.18      6.71      6.02          5.93           3.94
+
+
+Table 3. Performance on the multimodal classification task with        ferent unified methods for incomplete multimodal learn-
+the CeFA dataset.                                                      ing. One is an early method that only focuses on extract-
+                                                                       ing modality-invariant features, such as HeMIS [17] and
+    Modalities           ACER(↓)                                       LCR [52]. Another is the enhanced method that further con-
+              Customized      Unified                                  siders improving the discrimination ability for single-modal
+ RGB Depth IR
+                  SF     MMFormer MMANet                               combinations, such as RFNet [11], and mmFormer [51].
+           #       #        27.44        28.51         27.15
+                                                                          Besides, we introduce two baseline methods, SF and
+  #                #        33.75        33.58         32.50
+                                                                       SF-MD. SF [50] is the benchmark method of the CASIA-
+  #        #                36.17        39.56         35.62
+                                                                       SURF, which is a customized method that trains the model
+                   #        35.62        29.47         22.87
+                                                                       for each modality combination. SF-MD is the variant of SF
+           #                31.62        27.66         23.27
+                                                                       by simply adding the Bernoulli indicator after its modality
+  #                         36.62        32.17         30.45
+                                                                       encoder. This enables SF-MD to become a unified model
+                            24.15        30.72         23.68
+                                                                       that trains a single model for all modality combinations.
+      Average               32.20        31.52         27.94
+                                                                          Finally, for a fair comparison, we follow the basic im-
+                                                                       plementation of SF for all the comparison methods. Specif-
+iments on the CASIA-SURF [50] and CeFA [31] datasets.                  ically, we unify the modality encoders of HeMIS, LCR,
+Both of them consist of the RGB, Depth, and IR modalities.             RFNet, and mmFormer as the ResNet18 used in SF. Be-
+For CASIA-SURF, we follow the intra-testing protocol sug-              sides, we set the SF model trained with complete multi-
+gested by the authors and divide it into train, validation, and        modal data as the teacher network and the SF-MD model
+test sets with 29k, 1k, and 57k samples, respectively. For             as the development network.
+CeFA, we follow the cross-ethnicity and cross-attack proto-               Results: Table 2 and Table 3 show the comparison
+col suggested by the authors and divide it into train, valida-         results with the state-of-the-art methods on the CASIS-
+tion, and test sets with 35k, 18k, and 54k samples, respec-            SURF and CeFA datasets, respectively. Compared with
+tively. Here we report the results on the test set using the           the second-best unified method, i.e. mmFormer, MMANet
+metric of Average Classification Error Rate (ACER) [50].               decreases the average ACER by 1.99% and 3.58% on the
+   Implementation: We use random flipping, rotation, and               CASIS-SURF and CeFA, respectively. Besides, we can
+cropping for data augmentation. All models are optimized               see that MMANet achieves the best performance on both
+by an SGD for 100 epochs with a mini-batch 64. The learn-              datasets for all the nine modality combinations for CASIA-
+ing rate is initialized to 0.001 with 5 epochs of linear warm-         SURF. This shows the superiority of our method on the
+up and divided by 10 at 16, 33, and 50 epochs. Weight decay            incomplete multimodal classification task. More impor-
+and momentum are set to 0.0005 and 0.9, respectively.                  tantly, MMANet even outperforms the customized baseline
+   The hyper-parameters of comparison methods use the                  method, i.e. SF, for all the modality combinations on the
+suggested ones in the original articles. The (α, β) for                CASIA-SURF and CeFA, decreasing the average ACER by
+MMANet is set as (30, 0.5) and (30, 0.5) for CASIA-SURF                1.86% and 4.26%. This demonstrates the effectiveness of
+and CeFA, respectively. The warm-up epoch N is set as 5.               the proposed MAD and MAR for the incomplete multi-
+   Comparison: Here we compare MMANet with two dif-                    modal classification task.
+
+
+
+                                                                   20044
+ Table 4. Performance on the multimodal segmentation task with NYUv2. ↑ means that the higher the value, the better the performance.
+
+                Modality                                              mIOU(↑)
+                               Customized                                    Unified
+           RGB      Depth
+                                ESANet        ESANet-MD         HeMIS      LCR RFNet          mmFormer       MMANet
+                      #          44.22            41.34         33.23     41.91     42.89        43.22          44.93
+              #                  40.55            39.76         31.23     39.88     40.76        41.12          42.75
+                                 49.18            47.23         37.77     47.46     48.13        48.45          49.62
+                Average          44.65            42.77         34.07     43.08     43.92        44.26          45.58
+
+Table 5. Performance on the multimodal segmentation task with        ESANet [42] is an efficient and robust model for RGB-
+the Cityscapes dataset.                                              D segmentation, which trains the model for each modal-
+                                                                     ity combination. ESANet-MD is the variant of ESANet
+    Modality                       mIOU(↑)                           by simply adding the Bernoulli indicator after its modal-
+                    Customized           Unified                     ity encoder. ESANet-MD trains only a single model for all
+ RGB      Depth
+                     ESANet        mmFormer MMANet                   modality combinations. Finally, for a fair comparison, we
+            #          77.60          76.62          77.61           unify the modality encoder of HeMIS, LCR, RFNet, and
+   #                   59.11          58.53          60.12           mmFormer as the ResNet50 with NBt1 used in ESANet.
+                       78.62          78.01          78.89           Besides, we set the ESANet model trained with complete
+                                                                     multimodal data as the teacher network and the ESANet-
+    Average            71.77          71.05          72.20
+                                                                     MD model as the development network.
+                                                                         Results: Table 4 and Table 5 list the comparison re-
+4.2. Performance and Comparison on Multimodal                        sults on the NYUv2 and Cityscapes datasets, respectively.
+      Segmentation                                                   From these results, we can see that MMANet achieves
+                                                                     the best performance on both datasets for all the modality
+   Datasets: We take the semantic segmentation task as the           combinations. In particular, it outperforms the second-best
+example of multimodal segmentation and conduct experi-               method, mmFormer, by 1.32% and 1.05% in the NYUv2
+ments on the NYUv2 [43] and Cityscapes [9] datasets. Both            and Cityscapes datasets, respectively. This demonstrates the
+of them consist of the RGB and Depth modalities. Specif-             effectiveness of the MMANet on the multimodal segmenta-
+ically, NYUv2 contains 1,449 indoor RGB-D images, of                 tion task. Moreover, MMANet improves the average per-
+which 795 are used for training and 654 for testing. We              formance of ESANet-MD by 2.81% in the NYUv2 dataset
+used the common 40-class label setting. Cityscapes is a              and even outperforms the customized baseline, ESANet, by
+large-scale outdoor RGB-D dataset for urban scene under-             0.97% and 0.43% in NYUv2 and Cityscapes datasets. This
+standing. It contains 5,000 finely annotated samples with a          shows the effectiveness of the proposed MAD and MAR on
+resolution of 2048×1024, of which 2,975 for training, 500            the incomplete multimodal segmentation task.
+for validation, and 1,525 for testing. Cityscapes also pro-
+vides 20k coarsely annotated images, which we did not use            5. Ablation Study
+for training. For both datasets, we report the results on the
+validation set using the metric of mean IOU (mIOU).                     This section will study the effectiveness of MAD and
+   Implementation: We use random scaling, cropping,                  MAR and conduct extensive ablation experiments on four
+color jittering, and flipping for data augmentation. All mod-        datasets. Limited by page, we only present the results of
+els are optimized by Adam for 300 epochs with a mini-batch           the CASIA-SURF dataset and other results can be seen in
+8. The learning rate is initialized with 1e-2 and adapted by         the supplementary material.
+the PyTorch’s one-cycle scheduler [44].
+                                                                     5.1. The effectiveness of MAD
+   The hyper-parameters of the comparison methods use
+the suggested ones in their article.The hyper-parameter                 To study the effect of MAD, we conduct experiments to
+(α, β) for MMANet is set as (4, 0.2) and (10, 0.1) for the           compare the performance of the vanilla SF-MD and its vari-
+NYUv2 and Cityscapes datasets, respectively. The warm-               ant with SP and MAD. Here, SP is the degradation method
+up epoch N is set as 20.                                             of MAD that transfers knowledge by directly matching
+   Comparison: We also compare MMANet with the                       the cosine distance of the sample representations between
+HeMIS [17], LCR [52], RFNet [11], and mmFormer [51].                 teacher and deployment networks. The results are shown
+Here, we set ESANet and ESANnet-MD as the baseline.                  in Table 6. We can see that the variant of SF-MD con-
+
+
+
+                                                                 20045
+ Table 6. Ablation result of MAD on the CASIA-SURF dataset.             Table 7. Ablation result of MAR on the CASIA-SURF dataset.
+
+     RGB      Depth     IR    SF-MD        +SP     +MAD                     RGB     Depth     IR    SF-MAD         +SR     +MAR
+                #       #      11.75       10.7     10.36                             #       #       10.36        9.17      8.57
+                        #       5.87        3.3      2.54                                     #        2.54       1.89       2.27
+                #              16.62      15.03     11.67                             #               11.67       10.21     10.04
+                        #       4.61       2.52      1.23                                     #        1.23       1.66       1.61
+                #               6.68       5.16      4.09                             #                4.09        4.37      3.01
+                                4.95       3.18      1.44                                              1.44        2.12      1.18
+                                2.21       1.13      0.77                                              0.77       0.92       0.87
+           Average               7.5       5.9       4.57                         Average              4.57        4.33      3.94
+
+
+
+
+Figure 4. The prediction distribution of the SF-MD model assisted      Figure 5. (a) The learning process of different modality combina-
+by SP and MAD on CASIA-SURF dataset. X-axis represents the             tions on the CASIA-SURF dataset during the warm-up stage. (b)
+normalized logit output and x=0.5 is the classification boundary.      The corresponding g d ∈ R3 for (dashed line) and its average re-
+orange and blue dots denotes two different classes.                    sult g d (solid line) for the warm-up stage.
+
+sistently outperforms the vanilla SF-MD in all the modal-              ‘RGB’, ‘IR’ and, ‘RGB+IR’. However, SR only focuses
+ity combination and improve its performance by 1.6% and                on the combinations of single modality, RGB (1.19%), IR
+2.93% in average. This demonstrates the effectiveness of               (1.46%), and Depth (0.65%), where ‘Depth’ is exactly a
+transferring comprehensive multimodal information from                 strong modality. In contrast, Fig. 5(b) shows that the predic-
+the teacher network to the deployment network. Further-                tion discrepancy between ‘RGB+IR’ and ‘RGB+Depth+IR’
+more, the proposed MAD outperforms SP by 1.33%, which                  is the largest. And the performance gain of MAR mainly
+demonstrates the validity of re-weighing sample loss via the           comes from RGB (1.79%), IR (1.63%), as well as the com-
+classification uncertainty. This is because the classification         bination of RGB and IR (1.02%). These results show that
+uncertainty re-weighing can encourage the deployment to                MAR can mine the weak modality combinations more ac-
+focus on the hard samples and thus acquire a more separa-              curately and force the deployment network to improve its
+ble inter-class margin than the conventional SP (see Fig. 4).          discrimination ability for them.
+
+5.2. The effectiveness of MAR                                          6. Conclusion
+   To study the effect of MAR, we conduct experiments to                   This paper presents an MMANet framework to aid the
+compare the performance of the SF-MAD, namely the SF-                  deployment network for incomplete multimodal learning.
+MD with the MAD, and its variant with SR and MAR. Here                 Specifically, MMANet introduces a teacher network pre-
+SR is the conventional modality regularization strategy con-           trained with complete multimodal data to transfer the com-
+sidering only the single modality combination. As shown                prehensive multimodal information to the deployment net-
+in Table 6, SR and MAR improve the performance of SF-                  work via MAD. This helps it acquire modality-invariant and
+MAD by 0.24% and 0.63% in average, respectively, show-                 specific information while maintaining robustness for in-
+ing the effeteness to regularize the single and weak modality          complete modality input. Besides, MMANet introduces a
+combinations. Moreover, MAR outperforms SR by 0.39%                    regularization network to mine and regularize weak modal-
+in average, demonstrating the superiority of MAR.                      ity combinations via MAR. This forces the deployment
+   Here the average gain of SR and MAR is less than SP                 network to improve its discrimination ability for them ef-
+and MAD since they aim to improve the performance of                   fectively and adaptively. Finally, extensive experiments
+only the weak, not all combinations. Specifically, as shown            demonstrate the effectiveness of the proposed MMANet,
+in Table 6, the three worst-performing combinations are                MAD, and MAR for incomplete multimodal learning.
+
+
+
+                                                                    20046
+References                                                            [12] Reuben Dorent, Samuel Joutard, Marc Modat, Sébastien
+                                                                           Ourselin, and Tom Vercauteren. Hetero-modal variational
+ [1] Devansh Arpit, Stanisław Jastrzebski, Nicolas Ballas, David           encoder-decoder for joint modality completion and segmen-
+     Krueger, Emmanuel Bengio, Maxinder S Kanwal, Tegan                    tation. In International Conference on Medical Image Com-
+     Maharaj, Asja Fischer, Aaron Courville, Yoshua Bengio,                puting and Computer-Assisted Intervention, pages 74–82.
+     et al. A closer look at memorization in deep networks. In             Springer, 2019.
+     International conference on machine learning, pages 233–         [13] Kai Fan, Wei Jiang, Hui Li, and Yintang Yang. Lightweight
+     242. PMLR, 2017.                                                      rfid protocol for medical privacy protection in iot. IEEE
+ [2] Tadas Baltrušaitis, Chaitanya Ahuja, and Louis-Philippe              Transactions on Industrial Informatics, 14(4):1656–1665,
+     Morency. Multimodal machine learning: A survey and tax-               2018.
+     onomy. IEEE transactions on pattern analysis and machine         [14] Nuno C Garcia, Pietro Morerio, and Vittorio Murino. Modal-
+     intelligence, 41(2):423–443, 2018.                                    ity distillation with multiple stream networks for action
+ [3] Jonathan C, David A Stroud, Chen Ross, Jia Sun, Rahul                 recognition. In Proceedings of the European Conference on
+     Deng, and Sukthankar. D3d: Distilled 3d networks for video            Computer Vision, pages 103–118, 2018.
+     action recognition. In Proceedings of the IEEE/CVF Win-          [15] Nuno C Garcia, Pietro Morerio, and Vittorio Murino. Learn-
+     ter Conference on Applications of Computer Vision, pages              ing with privileged information via adversarial discrimina-
+     2755–2764, 2020.                                                      tive modality distillation. IEEE transactions on pattern anal-
+ [4] Lei Cai, Zhengyang Wang, Hongyang Gao, Dinggang Shen,                 ysis and machine intelligence, 42(10):2581–2593, 2019.
+     and Shuiwang Ji. Deep adversarial learning for multi-            [16] Bo Han, Quanming Yao, Xingrui Yu, Gang Niu, Miao
+     modality missing data completion. In Proceedings of the               Xu, Weihua Hu, Ivor Tsang, and Masashi Sugiyama. Co-
+     ACM SIGKDD International Conference on Knowledge Dis-                 teaching: Robust training of deep neural networks with ex-
+     covery & Data Mining, pages 1158–1166, 2018.                          tremely noisy labels. Advances in neural information pro-
+ [5] Jinming Cao, Hanchao Leng, Dani Lischinski, Daniel                    cessing systems, 31, 2018.
+     Cohen-Or, Changhe Tu, and Yangyan Li. Shapeconv: Shape-          [17] Mohammad Havaei, Nicolas Guizard, Nicolas Chapados,
+     aware convolutional layer for indoor rgb-d semantic segmen-           and Yoshua Bengio. Hemis: Hetero-modal image segmen-
+     tation. In Proceedings of the IEEE/CVF International Con-             tation. In International Conference on Medical Image Com-
+     ference on Computer Vision, pages 7088–7097, 2021.                    puting and Computer-Assisted Intervention, pages 469–477.
+ [6] Cheng Chen, Qi Dou, Yueming Jin, Hao Chen, Jing Qin,                  Springer, 2016.
+     and Pheng-Ann Heng. Robust multimodal brain tumor seg-           [18] Jack Hessel and Lillian Lee. Does my multimodal model
+     mentation via feature disentanglement and gated fusion. In            learn cross-modal interactions? it’s harder to tell than you
+     International Conference on Medical Image Computing and               might think! arXiv preprint arXiv:2010.06572, 2020.
+     Computer-Assisted Intervention, pages 447–456. Springer,         [19] Geoffrey Hinton, Oriol Vinyals, and Jeff Dean. Distill-
+     2019.                                                                 ing the knowledge in a neural network. arXiv preprint
+ [7] Cheng Chen, Qi Dou, Yueming Jin, Quande Liu, and                      arXiv:1503.02531, 2015.
+     Pheng Ann Heng. Learning with privileged multimodal              [20] Judy Hoffman, Saurabh Gupta, and Trevor Darrell. Learn-
+     knowledge for unimodal segmentation. IEEE Transactions                ing with side information through modality hallucination. In
+     on Medical Imaging, 41(3):621–632, 2021.                              Proceedings of the IEEE Conference on Computer Vision
+ [8] Zhuangzhuang Chen, Jin Zhang, Zhuonan Lai, Jie Chen, Zun              and Pattern Recognition, pages 826–834, 2016.
+     Liu, and Jianqiang Li. Geometry-aware guided loss for deep       [21] Danfeng Hong, Jingliang Hu, Jing Yao, Jocelyn Chanussot,
+     crack recognition. In Proceedings of the IEEE/CVF Con-                and Xiao Xiang Zhu. Multimodal remote sensing benchmark
+     ference on Computer Vision and Pattern Recognition, pages             datasets for land cover classification with a shared and spe-
+     4703–4712, 2022.                                                      cific feature learning model. ISPRS Journal of Photogram-
+ [9] Marius Cordts, Mohamed Omran, Sebastian Ramos, Timo                   metry and Remote Sensing, 178:68–80, 2021.
+     Rehfeld, Markus Enzweiler, Rodrigo Benenson, Uwe                 [22] Minhao Hu, Matthis Maillard, Ya Zhang, Tommaso Ci-
+     Franke, Stefan Roth, and Bernt Schiele. The cityscapes                ceri, Giammarco La Barbera, Isabelle Bloch, and Pietro
+     dataset for semantic urban scene understanding. In Proceed-           Gori. Knowledge distillation from multi-modal to mono-
+     ings of the IEEE conference on computer vision and pattern            modal segmentation networks. In International Conference
+     recognition, pages 3213–3223, 2016.                                   on Medical Image Computing and Computer-Assisted Inter-
+[10] Nieves Crasto, Philippe Weinzaepfel, Karteek Alahari, and             vention, pages 772–781. Springer, 2020.
+     Cordelia Schmid. Mars: Motion-augmented rgb stream for           [23] Xinxin Hu, Kailun Yang, Lei Fei, and Kaiwei Wang. Acnet:
+     action recognition. In Proceedings of the IEEE/CVF Con-               Attention based network to exploit complementary features
+     ference on Computer Vision and Pattern Recognition, pages             for rgbd semantic segmentation. In 2019 IEEE International
+     7882–7891, 2019.                                                      Conference on Image Processing (ICIP), pages 1440–1444.
+[11] Yuhang Ding, Xin Yu, and Yi Yang. Rfnet: Region-aware                 IEEE, 2019.
+     fusion network for incomplete multi-modal brain tumor seg-       [24] Zehao Huang and Naiyan Wang. Like what you like: Knowl-
+     mentation. In Proceedings of the IEEE/CVF International               edge distill via neuron selectivity transfer. arXiv preprint
+     Conference on Computer Vision, pages 3975–3984, 2021.                 arXiv:1707.01219, 2017.
+
+
+
+
+                                                                   20047
+[25] Mimansa Jaiswal and Emily Mower Provost. Privacy                      [37] Yongsheng Pan, Mingxia Liu, Chunfeng Lian, Yong Xia,
+     enhanced multimodal neural representations for emotion                     and Dinggang Shen. Spatially-constrained fisher represen-
+     recognition. In Proceedings of the AAAI Conference on Ar-                  tation for brain disease identification with incomplete multi-
+     tificial Intelligence, volume 34, pages 7985–7993, 2020.                   modal neuroimages. IEEE Transactions on Medical Imag-
+[26] Wen-Da Jin, Jun Xu, Qi Han, Yi Zhang, and Ming-Ming                        ing, 39(9):2965–2975, 2020.
+     Cheng. Cdnet: Complementary depth network for rgb-d                   [38] Nikolaos Passalis and Anastasios Tefas. Learning deep rep-
+     salient object detection. IEEE Transactions on Image Pro-                  resentations with probabilistic knowledge transfer. In Pro-
+     cessing, 30:3376–3390, 2021.                                               ceedings of the European Conference on Computer Vision,
+[27] Jiang Jue, Hu Jason, Tyagi Neelam, Rimner Andreas,                         pages 268–284, 2018.
+     Berry L Sean, Deasy O Joseph, and Veeraraghavan Harini.               [39] Allan Pinto, Helio Pedrini, William Robson Schwartz, and
+     Integrating cross-modality hallucinated mri with ct to aid                 Anderson Rocha. Face spoofing detection through visual
+     mediastinal lung tumor segmentation. In International                      codebooks of spectral temporal cubes. IEEE Transactions
+     Conference on Medical Image Computing and Computer-                        on Image Processing, 24(12):4726–4740, 2015.
+     Assisted Intervention, pages 221–229. Springer, 2019.                 [40] Adriana Romero, Nicolas Ballas, Samira Ebrahimi Kahou,
+[28] Nikos Komodakis and Sergey Zagoruyko. Paying more at-                      Antoine Chassang, Carlo Gatta, and Yoshua Bengio. Fitnets:
+     tention to attention: improving the performance of convolu-                Hints for thin deep nets. arXiv preprint arXiv:1412.6550,
+     tional neural networks via attention transfer. In International            2014.
+     Conference on Learning Representations, 2017.                         [41] Daniel Seichter, Mona Köhler, Benjamin Lewandowski, Tim
+[29] Xiao Li, Lin Lei, Yuli Sun, and Gangyao Kuang. Dynamic-                    Wengefeld, and Horst-Michael Gross. Efficient rgb-d seman-
+     hierarchical attention distillation with synergetic instance se-           tic segmentation for indoor scene analysis. In 2021 IEEE In-
+     lection for land cover classification using missing hetero-                ternational Conference on Robotics and Automation (ICRA),
+     geneity images. IEEE Transactions on Geoscience and Re-                    pages 13525–13531. IEEE, 2021.
+     mote Sensing, 60:1–16, 2021.
+                                                                           [42] Daniel Seichter, Mona Köhler, Benjamin Lewandowski, Tim
+[30] Yijie Lin, Yuanbiao Gou, Zitao Liu, Boyun Li, Jiancheng Lv,                Wengefeld, and Horst-Michael Gross. Efficient rgb-d seman-
+     and Xi Peng. Completer: Incomplete multi-view clustering                   tic segmentation for indoor scene analysis. In 2021 IEEE In-
+     via contrastive prediction. In Proceedings of the IEEE/CVF                 ternational Conference on Robotics and Automation (ICRA),
+     Conference on Computer Vision and Pattern Recognition,                     pages 13525–13531. IEEE, 2021.
+     pages 11174–11183, 2021.
+                                                                           [43] Nathan Silberman, Derek Hoiem, Pushmeet Kohli, and Rob
+[31] Ajian Liu, Zichang Tan, Jun Wan, Sergio Escalera, Guodong
+                                                                                Fergus. Indoor segmentation and support inference from
+     Guo, and Stan Z Li. Casia-surf cefa: A benchmark for multi-
+                                                                                rgbd images. In European conference on computer vision,
+     modal cross-ethnicity face anti-spoofing. In Proceedings of
+                                                                                pages 746–760. Springer, 2012.
+     the IEEE/CVF Winter Conference on Applications of Com-
+     puter Vision, pages 1179–1187, 2021.                                  [44] Leslie N Smith and Nicholay Topin. Super-convergence:
+                                                                                Very fast training of neural networks using large learning
+[32] Ajian Liu, Zichang Tan, Jun Wan, Yanyan Liang, Zhen Lei,
+                                                                                rates. In Artificial intelligence and machine learning for
+     Guodong Guo, and Stan Z Li. Face anti-spoofing via ad-
+                                                                                multi-domain operations applications, volume 11006, pages
+     versarial cross-modality translation. IEEE Transactions on
+                                                                                369–386. SPIE, 2019.
+     Information Forensics and Security, 16:2759–2772, 2021.
+[33] Ajian Liu, Jun Wan, Sergio Escalera, Hugo Jair Escalante,             [45] Peng Sun, Wenhu Zhang, Huanyu Wang, Songyuan Li, and
+     Zichang Tan, Qi Yuan, Kai Wang, Chi Lin, Guodong Guo,                      Xi Li. Deep rgb-d saliency detection with depth-sensitive
+     Isabelle Guyon, et al. Multi-modal face anti-spoofing at-                  attention and automatic multi-modal fusion. In Proceedings
+     tack detection challenge at cvpr2019. In Proceedings of                    of the IEEE/CVF conference on computer vision and pattern
+     the IEEE/CVF Conference on Computer Vision and Pattern                     recognition, pages 1407–1417, 2021.
+     Recognition Workshops, pages 0–0, 2019.                               [46] Haiman Tian, Yudong Tao, Samira Pouyanfar, Shu-Ching
+[34] Haojie Liu, Shun Ma, Daoxun Xia, and Shaozi Li.                            Chen, and Mei-Ling Shyu. Multimodal deep representa-
+     Sfanet: A spectrum-aware feature augmentation network                      tion learning for video classification. World Wide Web,
+     for visible-infrared person re-identification. arXiv preprint              22(3):1325–1341, 2019.
+     arXiv:2102.12137, 2021.                                               [47] Frederick Tung and Greg Mori. Similarity-preserving knowl-
+[35] Jiyuan Liu, Xinwang Liu, Yi Zhang, Pei Zhang, Wenxuan                      edge distillation. In Proceedings of the IEEE/CVF Interna-
+     Tu, Siwei Wang, Sihang Zhou, Weixuan Liang, Siqi Wang,                     tional Conference on Computer Vision, pages 1365–1374,
+     and Yuexiang Yang. Self-representation subspace clustering                 2019.
+     for incomplete multi-view data. In Proceedings of the 29th            [48] Yixin Wang, Yang Zhang, Yang Liu, Zihao Lin, Jiang Tian,
+     ACM International Conference on Multimedia, pages 2726–                    Cheng Zhong, Zhongchao Shi, Jianping Fan, and Zhiqiang
+     2734, 2021.                                                                He. Acn: Adversarial co-training network for brain tu-
+[36] Yan Lu, Yue Wu, Bin Liu, Tianzhu Zhang, Baopu Li, Qi Chu,                  mor segmentation with missing modalities. In International
+     and Nenghai Yu. Cross-modality person re-identification                    Conference on Medical Image Computing and Computer-
+     with shared-specific feature transfer. In Proceedings of                   Assisted Intervention, pages 410–420. Springer, 2021.
+     the IEEE/CVF Conference on Computer Vision and Pattern                [49] Chiyuan Zhang, Samy Bengio, Moritz Hardt, Benjamin
+     Recognition, pages 13379–13389, 2020.                                      Recht, and Oriol Vinyals. Understanding deep learning (still)
+
+
+
+
+                                                                        20048
+     requires rethinking generalization. Communications of the
+     ACM, 64(3):107–115, 2021.
+[50] Shifeng Zhang, Xiaobo Wang, Ajian Liu, Chenxu Zhao, Jun
+     Wan, Sergio Escalera, Hailin Shi, Zezheng Wang, and Stan Z
+     Li. A dataset and benchmark for large-scale multi-modal
+     face anti-spoofing. In Proceedings of the IEEE/CVF Con-
+     ference on Computer Vision and Pattern Recognition, pages
+     919–928, 2019.
+[51] Yao Zhang, Nanjun He, Jiawei Yang, Yuexiang Li, Dong
+     Wei, Yawen Huang, Yang Zhang, Zhiqiang He, and Yefeng
+     Zheng. mmformer: Multimodal medical transformer for in-
+     complete multimodal learning of brain tumor segmentation.
+     arXiv preprint arXiv:2206.02425, 2022.
+[52] Tongxue Zhou, Stéphane Canu, Pierre Vera, and Su Ruan.
+     Brain tumor segmentation with missing modalities via la-
+     tent multi-source correlation representation. In International
+     Conference on Medical Image Computing and Computer-
+     Assisted Intervention, pages 533–541. Springer, 2020.
+[53] Tao Zhou, Deng-Ping Fan, Ming-Ming Cheng, Jianbing
+     Shen, and Ling Shao. Rgb-d salient object detection: A sur-
+     vey. Computational Visual Media, 7(1):37–69, 2021.
+
+
+
+
+                                                                      20049
+

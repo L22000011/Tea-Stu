@@ -1,0 +1,12 @@
+from __future__ import annotations
+
+import sys
+
+from run_xfi_rgb_pipeline import main
+
+
+if "--tasks" not in sys.argv:
+    sys.argv += ["--tasks", "hpe"]
+
+if __name__ == "__main__":
+    main()

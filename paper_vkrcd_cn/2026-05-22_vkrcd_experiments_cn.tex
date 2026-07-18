@@ -1,0 +1,737 @@
+\documentclass[UTF8,10pt]{ctexart}
+\usepackage[a4paper,margin=1.45cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,longtable,tabularx,array,float,xcolor,hyperref}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,citecolor=black}
+\definecolor{goodblue}{RGB}{0,72,180}
+\definecolor{badred}{RGB}{210,40,40}
+\newcommand{\better}[1]{\textcolor{goodblue}{#1}}
+\newcommand{\worse}[1]{\textcolor{badred}{#1}}
+\renewcommand{\arraystretch}{0.92}
+\setlength{\tabcolsep}{3.2pt}
+\title{VK-RCD 实验结果汇总（中文实验部分）}
+\author{作者信息待补充}
+\date{2026-05-22}
+\begin{document}
+\maketitle
+
+\section{实验设置}
+本文仅汇总实验部分，不包含完整引言、相关工作与方法推导。实验基于 MM-Fi/X-Fi 风格多模态协议：HPE 使用 VK、Depth、LiDAR、mmWave、WiFi-CSI，报告 MPJPE 与 PA-MPJPE，单位为 mm，越低越好；HAR 使用 VK、Depth、LiDAR、mmWave，报告 Accuracy 与 Macro-F1，越高越好。表中 I/VK 表示官方 X-Fi 的 I 为 RGB，本文对应位置使用 VK，不将二者视为完全同源输入。Teacher 是全模态特权知识源；缺失模态部署结论主要依据 Student-VK 与 Student-NV。
+
+HPE 的相对提升定义为 $(\mathrm{Official}-\mathrm{Ours})/\mathrm{Official}$；HAR 的相对提升定义为 $(\mathrm{Ours}-\mathrm{Official})/\mathrm{Official}$。\better{蓝色} 表示优于官方或优于参考项，\worse{红色} 表示退化。官方 X-Fi 数值来自本地 legacy CSV 与公开代码仓库 \url{https://github.com/NTUMARS/X-Fi}。
+
+\section{HPE 定量结果}
+\subsection{Random Split 主结果}
+\begin{table}[H]\centering\scriptsize
+\caption{HPE random split 全模态/非视觉主结果与官方 X-Fi 对比。Student-NV 不含 VK，因此与官方 D+L+R+W 对比。}
+\begin{tabular}{llrrrrrr}
+\toprule
+方法 & 组合 & MPJPE & X-Fi MPJPE & Imp & PA-MPJPE & X-Fi PA & Imp\\
+\midrule
+Baseline & I/VK+D+L+R+W & 49.14 & 83.70 & \better{+41.30\%} & 33.48 & 47.60 & \better{+29.66\%}\\
+Teacher & I/VK+D+L+R+W & 48.45 & 83.70 & \better{+42.11\%} & 33.06 & 47.60 & \better{+30.54\%}\\
+Student-VK & I/VK+D+L+R+W & 50.17 & 83.70 & \better{+40.06\%} & 33.48 & 47.60 & \better{+29.66\%}\\
+Student-NV & D+L+R+W & 51.03 & 97.60 & \better{+47.72\%} & 35.69 & 47.40 & \better{+24.69\%}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Cross-Scene 迁移}
+\begin{table}[H]\centering\scriptsize
+\caption{HPE cross-scene 与 random split 对比。$\Delta$ 为 cross-scene 减 random，越小越好。}
+\begin{tabular}{llrrrrrr}
+\toprule
+方法 & 组合 & Random MPJPE & Cross MPJPE & $\Delta$ & Random PA & Cross PA & $\Delta$\\
+\midrule
+Teacher & I/VK+D+L+R+W & 48.45 & 76.06 & \worse{+27.61} & 33.06 & 37.89 & \worse{+4.83}\\
+Student-VK & I/VK+D+L+R+W & 50.17 & 71.70 & \worse{+21.53} & 33.48 & 47.74 & \worse{+14.26}\\
+Student-NV & D+L+R+W & 51.03 & 78.96 & \worse{+27.93} & 35.69 & 46.38 & \worse{+10.69}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{任意模态组合汇总}
+\begin{table}[H]\centering\tiny
+\caption{HPE Student-VK 31 种组合按可用模态数量汇总。Best/Worst 使用 MPJPE 排序。}
+\begin{tabular}{rrrrrrrrll}
+\toprule
+可用数 & 组合数 & MPJPE & X-Fi & Imp & PA & X-Fi PA & Imp & Best & Worst\\
+\midrule
+1 & 5 & 124.76 & 143.16 & \better{+12.85\%} & 68.01 & 77.40 & \better{+12.13\%} & D / 53.88 & W / 222.14\\
+2 & 10 & 78.10 & 104.97 & \better{+25.60\%} & 46.85 & 59.72 & \better{+21.56\%} & I/VK+D / 51.65 & L+W / 134.16\\
+3 & 10 & 60.78 & 92.58 & \better{+34.35\%} & 38.08 & 52.32 & \better{+27.21\%} & I/VK+D+R / 50.50 & L+R+W / 94.17\\
+4 & 5 & 53.55 & 87.94 & \better{+39.11\%} & 34.89 & 49.58 & \better{+29.62\%} & I/VK+D+L+R / 50.25 & I/VK+L+R+W / 64.25\\
+5 & 1 & 50.17 & 83.70 & \better{+40.06\%} & 33.48 & 47.60 & \better{+29.66\%} & I/VK+D+L+R+W / 50.17 & I/VK+D+L+R+W / 50.17\\
+\midrule 平均 & 31 & 75.18 & 103.70 & \better{+27.51\%} & 45.07 & 58.16 & \better{+22.50\%} & I/VK+D+L+R+W / 50.17 & W / 222.14\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{HAR 定量结果}
+\subsection{Random、Cross-Scene 与 Cross-Subject 主结果}
+\begin{table}[H]\centering\scriptsize
+\caption{HAR 主结果与官方 X-Fi 对比。为避免 final\_eval metadata 混淆，本表统一取 all-combinations 评估中的完整组合行。}
+\begin{tabular}{lllrrrr}
+\toprule
+协议 & 方法 & 组合 & Acc & Macro-F1 & X-Fi Acc & Imp\\
+\midrule
+random & Teacher & I/VK+D+L+R & 95.57 & 95.56 & 72.20 & \better{+32.37\%}\\
+random & Student-VK & I/VK+D+L+R & 96.56 & 96.55 & 72.20 & \better{+33.74\%}\\
+random & Student-NV & D+L+R & 96.12 & 96.13 & 80.50 & \better{+19.41\%}\\
+cross-scene & Teacher & I/VK+D+L+R & 94.80 & 94.83 & 72.20 & \better{+31.30\%}\\
+cross-scene & Student-VK & I/VK+D+L+R & 95.25 & 95.25 & 72.20 & \better{+31.92\%}\\
+cross-scene & Student-NV & D+L+R & 95.41 & 95.40 & 80.50 & \better{+18.52\%}\\
+cross-subject & Teacher & I/VK+D+L+R & 95.52 & 95.48 & 72.20 & \better{+32.30\%}\\
+cross-subject & Student-VK & I/VK+D+L+R & 96.12 & 96.10 & 72.20 & \better{+33.13\%}\\
+cross-subject & Student-NV & D+L+R & 95.70 & 95.67 & 80.50 & \better{+18.88\%}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{HAR 组合鲁棒性汇总}
+\begin{table}[H]\centering\tiny
+\caption{HAR Student-VK 15 组合与 Student-NV 7 个非视觉组合的协议级汇总。Best/Worst 使用 Acc 排序。}
+\begin{tabular}{llrrrrrll}
+\toprule
+协议 & 方法 & 组合数 & Avg Acc & X-Fi Avg & Imp & Avg F1 & Best & Worst\\
+\midrule
+random & Student-VK & 15 & 85.15 & 62.46 & \better{+36.32\%} & 85.15 & I/VK+D+L+R / 96.56 & L / 40.80\\
+cross-scene & Student-VK & 15 & 80.61 & 62.46 & \better{+29.06\%} & 80.35 & I/VK+D+R / 95.32 & L / 19.98\\
+cross-subject & Student-VK & 15 & 85.30 & 62.46 & \better{+36.56\%} & 85.46 & I/VK+D+L+R / 96.12 & L / 38.46\\
+random & Student-NV & 7 & 80.62 & 69.59 & \better{+15.86\%} & 80.48 & D+R / 96.18 & L / 26.12\\
+cross-scene & Student-NV & 7 & 76.70 & 69.59 & \better{+10.23\%} & 76.41 & D+R / 95.45 & L / 8.94\\
+cross-subject & Student-NV & 7 & 81.26 & 69.59 & \better{+16.77\%} & 80.82 & D+R / 95.76 & L / 25.30\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{消融、鲁棒性与复杂度}
+\subsection{HPE 消融}
+\begin{table}[H]\centering\scriptsize
+\caption{HPE 全模态消融。$\Delta$ 相对 Student-VK 完整目标，MPJPE/PA 越低越好。}
+\begin{tabular}{lrrrrp{5.4cm}}
+\toprule
+设置 & MPJPE & $\Delta$ & PA-MPJPE & $\Delta$ & 说明\\
+\midrule
+Student-VK 完整目标 & 50.17 & \better{+0.00} & 33.48 & \better{+0.00} & 随机缺失 + 蒸馏 + 可靠性融合\\
+NoKD & 48.83 & \better{-1.35} & 32.51 & \better{-0.97} & 移除 Teacher 蒸馏\\
+Output KD & 47.62 & \better{-2.55} & 32.15 & \better{-1.33} & 仅输出蒸馏\\
+Output+Token KD & 48.76 & \better{-1.42} & 33.24 & \better{-0.24} & 输出与 token 蒸馏\\
+Output+Bone KD & 49.34 & \better{-0.84} & 33.38 & \better{-0.10} & 输出与骨架结构蒸馏\\
+Full Structural KD & 49.20 & \better{-0.97} & 34.63 & \worse{+1.15} & 完整结构蒸馏变体\\
+Uniform Fusion & 52.28 & \worse{+2.11} & 37.22 & \worse{+3.74} & 等权融合\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{HAR 消融}
+\begin{table}[H]\centering\scriptsize
+\caption{HAR random split 消融。Full $\Delta$ 相对 Student-VK，Acc 越高越好。}
+\begin{tabular}{lrrrrr}
+\toprule
+设置 & Full Acc & $\Delta$ & Full F1 & Avg-15 Acc & Avg-15 F1\\
+\midrule
+Student-VK & 96.54 & \better{+0.00} & 96.53 & 85.15 & 85.15\\
+NoKD & 95.97 & \worse{-0.57} & 95.95 & 82.86 & 82.56\\
+Uniform & 95.40 & \worse{-1.13} & 95.40 & 67.46 & 66.44\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{HPE VK 噪声与关节缺失鲁棒性}
+\begin{table}[H]\centering\scriptsize
+\caption{Student-VK 在 VK 噪声与关节随机丢弃下的鲁棒性。$\Delta$ 相对无噪声/无丢弃。}
+\begin{tabular}{rrrrrr}
+\toprule
+噪声标准差 & 关节丢弃率 & MPJPE & $\Delta$ & PA-MPJPE & $\Delta$\\
+\midrule
+0.0 & 0.0 & 50.18 & \better{+0.00} & 33.48 & \better{+0.00}\\
+0.0 & 0.1 & 52.64 & \worse{+2.47} & 34.57 & \worse{+1.09}\\
+0.0 & 0.3 & 54.10 & \worse{+3.93} & 35.19 & \worse{+1.71}\\
+0.0 & 0.5 & 54.75 & \worse{+4.57} & 35.50 & \worse{+2.02}\\
+5.0 & 0.0 & 50.88 & \worse{+0.70} & 33.92 & \worse{+0.45}\\
+5.0 & 0.1 & 52.88 & \worse{+2.70} & 34.71 & \worse{+1.23}\\
+5.0 & 0.3 & 54.12 & \worse{+3.94} & 35.19 & \worse{+1.71}\\
+5.0 & 0.5 & 54.76 & \worse{+4.59} & 35.50 & \worse{+2.02}\\
+10.0 & 0.0 & 52.08 & \worse{+1.90} & 34.57 & \worse{+1.09}\\
+10.0 & 0.1 & 53.26 & \worse{+3.09} & 34.93 & \worse{+1.45}\\
+10.0 & 0.3 & 54.12 & \worse{+3.94} & 35.20 & \worse{+1.72}\\
+10.0 & 0.5 & 54.74 & \worse{+4.57} & 35.52 & \worse{+2.04}\\
+20.0 & 0.0 & 53.63 & \worse{+3.45} & 35.20 & \worse{+1.72}\\
+20.0 & 0.1 & 53.85 & \worse{+3.67} & 35.15 & \worse{+1.67}\\
+20.0 & 0.3 & 54.21 & \worse{+4.03} & 35.25 & \worse{+1.77}\\
+20.0 & 0.5 & 54.78 & \worse{+4.61} & 35.54 & \worse{+2.06}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{模型复杂度}
+\begin{table}[H]\centering\scriptsize
+\caption{HPE 已同步模型复杂度。HAR 当前 final/eval CSV 含参数量，但未同步有效 FPS/显存。}
+\begin{tabular}{llrrr}
+\toprule
+模型 & 组合 & Params & FPS & Peak Memory\\
+\midrule
+Baseline & I/VK+D+L+R+W & 5.74M & 52.04 & 4.60 GB\\
+Teacher & I/VK+D+L+R+W & 8.90M & 63.24 & 4.61 GB\\
+Student-VK & I/VK+D+L+R+W & 8.90M & 62.01 & 4.61 GB\\
+Student-NV & D+L+R+W & 8.90M & 63.37 & 4.61 GB\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{实验结论与不足}
+\begin{enumerate}
+\item 在 HPE random split 中，Student-VK 在全模态下达到约 50.17 mm MPJPE，相比官方全模态 83.70 mm 有明显下降；Student-NV 在不使用 VK 的 D+L+R+W 下也优于官方非视觉组合，说明非 RGB 部署路线具备可行性。
+\item Teacher 的全模态精度较强，但其缺失模态组合结果只用于诊断；面向任意模态缺失部署时，应优先报告随机缺失训练后的 Student-VK 与 Student-NV。
+\item HPE cross-scene 明显高于 random split，说明环境迁移仍是 HPE 的主要挑战；目前 HPE cross-subject 结果未完整同步，不能写成已完成结论。
+\item HAR 在 random、cross-scene、cross-subject 的 Student-VK/Student-NV 结果整体较强，尤其 Student-NV 说明无视觉输入也能保持较高动作识别性能。
+\item 消融结果表明蒸馏策略与可靠性融合需要分任务讨论：HAR 中 NoKD/Uniform 仍强，但低于 Student-VK；HPE 中部分蒸馏变体可能优于默认 Student-VK，需要后续用统一随机种子和重复实验确认显著性。
+\end{enumerate}
+
+\appendix
+\section{HPE Student-VK Random 31 组合全表}
+{\tiny
+\begin{longtable}{lrrrrrr}
+\toprule
+组合 & MPJPE & X-Fi & Imp & PA-MPJPE & X-Fi PA & Imp\\
+\midrule
+\endfirsthead
+\toprule
+组合 & MPJPE & X-Fi & Imp & PA-MPJPE & X-Fi PA & Imp\\
+\midrule
+\endhead
+D & 53.88 & 101.80 & \better{+47.08\%} & 35.61 & 48.40 & \better{+26.44\%}\\
+L & 140.14 & 167.10 & \better{+16.13\%} & 93.52 & 103.20 & \better{+9.38\%}\\
+R & 114.98 & 127.40 & \better{+9.75\%} & 58.13 & 69.80 & \better{+16.71\%}\\
+I/VK & 92.66 & 93.90 & \better{+1.32\%} & 42.60 & 60.30 & \better{+29.35\%}\\
+W & 222.14 & 225.60 & \better{+1.53\%} & 110.19 & 105.30 & \worse{-4.64\%}\\
+D+L & 53.00 & 102.50 & \better{+48.29\%} & 35.35 & 48.40 & \better{+26.96\%}\\
+D+R & 52.32 & 98.00 & \better{+46.62\%} & 34.64 & 47.30 & \better{+26.77\%}\\
+D+W & 53.54 & 101.80 & \better{+47.40\%} & 35.52 & 48.10 & \better{+26.15\%}\\
+L+R & 97.52 & 109.80 & \better{+11.18\%} & 55.08 & 63.40 & \better{+13.12\%}\\
+L+W & 134.16 & 159.50 & \better{+15.89\%} & 93.18 & 102.70 & \better{+9.27\%}\\
+R+W & 108.54 & 117.20 & \better{+7.39\%} & 57.27 & 62.70 & \better{+8.66\%}\\
+I/VK+D & 51.65 & 86.10 & \better{+40.01\%} & 34.29 & 48.10 & \better{+28.70\%}\\
+I/VK+L & 73.18 & 93.00 & \better{+21.31\%} & 41.92 & 59.70 & \better{+29.79\%}\\
+I/VK+R & 68.93 & 88.80 & \better{+22.38\%} & 38.90 & 57.30 & \better{+32.12\%}\\
+I/VK+W & 88.11 & 93.00 & \better{+5.26\%} & 42.30 & 59.50 & \better{+28.90\%}\\
+D+L+R & 51.92 & 96.00 & \better{+45.92\%} & 34.50 & 47.30 & \better{+27.06\%}\\
+D+L+W & 52.85 & 102.00 & \better{+48.18\%} & 35.38 & 48.10 & \better{+26.44\%}\\
+D+R+W & 52.13 & 97.00 & \better{+46.26\%} & 34.62 & 47.10 & \better{+26.50\%}\\
+L+R+W & 94.17 & 107.40 & \better{+12.32\%} & 55.05 & 63.10 & \better{+12.75\%}\\
+I/VK+D+L & 51.10 & 84.80 & \better{+39.74\%} & 34.16 & 48.20 & \better{+29.14\%}\\
+I/VK+D+R & 50.50 & 83.40 & \better{+39.45\%} & 33.52 & 47.30 & \better{+29.12\%}\\
+I/VK+D+W & 51.63 & 85.30 & \better{+39.47\%} & 34.29 & 48.10 & \better{+28.70\%}\\
+I/VK+L+R & 66.08 & 88.40 & \better{+25.25\%} & 38.77 & 57.20 & \better{+32.23\%}\\
+I/VK+L+W & 70.73 & 93.00 & \better{+23.95\%} & 41.76 & 59.70 & \better{+30.05\%}\\
+I/VK+R+W & 66.69 & 88.50 & \better{+24.64\%} & 38.80 & 57.10 & \better{+32.06\%}\\
+D+L+R+W & 51.78 & 97.60 & \better{+46.95\%} & 34.54 & 47.40 & \better{+27.13\%}\\
+I/VK+D+L+R & 50.25 & 83.50 & \better{+39.82\%} & 33.45 & 47.60 & \better{+29.73\%}\\
+I/VK+D+L+W & 51.05 & 86.00 & \better{+40.64\%} & 34.18 & 48.20 & \better{+29.08\%}\\
+I/VK+D+R+W & 50.41 & 84.00 & \better{+39.98\%} & 33.54 & 47.60 & \better{+29.55\%}\\
+I/VK+L+R+W & 64.25 & 88.60 & \better{+27.49\%} & 38.75 & 57.10 & \better{+32.13\%}\\
+I/VK+D+L+R+W & 50.17 & 83.70 & \better{+40.06\%} & 33.48 & 47.60 & \better{+29.66\%}\\
+\bottomrule
+\end{longtable}
+}
+
+\section{HPE Student-VK Cross-Scene 31 组合全表}
+{\tiny
+\begin{longtable}{lrrrrrr}
+\toprule
+组合 & MPJPE & X-Fi & Imp & PA-MPJPE & X-Fi PA & Imp\\
+\midrule
+\endfirsthead
+\toprule
+组合 & MPJPE & X-Fi & Imp & PA-MPJPE & X-Fi PA & Imp\\
+\midrule
+\endhead
+D & 71.91 & 101.80 & \better{+29.36\%} & 47.74 & 48.40 & \better{+1.36\%}\\
+L & 500.56 & 167.10 & \worse{-199.56\%} & 162.44 & 103.20 & \worse{-57.40\%}\\
+R & 155.81 & 127.40 & \worse{-22.30\%} & 75.70 & 69.80 & \worse{-8.45\%}\\
+I/VK & 144.98 & 93.90 & \worse{-54.39\%} & 61.46 & 60.30 & \worse{-1.92\%}\\
+W & 355.26 & 225.60 & \worse{-57.47\%} & 112.24 & 105.30 & \worse{-6.59\%}\\
+D+L & 79.79 & 102.50 & \better{+22.15\%} & 50.35 & 48.40 & \worse{-4.02\%}\\
+D+R & 68.84 & 98.00 & \better{+29.75\%} & 46.03 & 47.30 & \better{+2.69\%}\\
+D+W & 72.45 & 101.80 & \better{+28.83\%} & 47.34 & 48.10 & \better{+1.59\%}\\
+L+R & 283.93 & 109.80 & \worse{-158.59\%} & 115.53 & 63.40 & \worse{-82.23\%}\\
+L+W & 484.16 & 159.50 & \worse{-203.55\%} & 160.80 & 102.70 & \worse{-56.57\%}\\
+R+W & 153.26 & 117.20 & \worse{-30.77\%} & 75.32 & 62.70 & \worse{-20.13\%}\\
+I/VK+D & 67.16 & 86.10 & \better{+22.00\%} & 45.92 & 48.10 & \better{+4.53\%}\\
+I/VK+L & 151.56 & 93.00 & \worse{-62.97\%} & 80.49 & 59.70 & \worse{-34.82\%}\\
+I/VK+R & 115.13 & 88.80 & \worse{-29.65\%} & 56.42 & 57.30 & \better{+1.54\%}\\
+I/VK+W & 127.91 & 93.00 & \worse{-37.54\%} & 60.55 & 59.50 & \worse{-1.76\%}\\
+D+L+R & 77.47 & 96.00 & \better{+19.30\%} & 48.84 & 47.30 & \worse{-3.26\%}\\
+D+L+W & 79.94 & 102.00 & \better{+21.63\%} & 50.22 & 48.10 & \worse{-4.41\%}\\
+D+R+W & 69.70 & 97.00 & \better{+28.14\%} & 46.20 & 47.10 & \better{+1.90\%}\\
+L+R+W & 278.03 & 107.40 & \worse{-158.87\%} & 115.21 & 63.10 & \worse{-82.59\%}\\
+I/VK+D+L & 73.32 & 84.80 & \better{+13.54\%} & 48.09 & 48.20 & \better{+0.22\%}\\
+I/VK+D+R & 66.24 & 83.40 & \better{+20.57\%} & 45.47 & 47.30 & \better{+3.87\%}\\
+I/VK+D+W & 67.86 & 85.30 & \better{+20.45\%} & 46.05 & 48.10 & \better{+4.27\%}\\
+I/VK+L+R & 126.79 & 88.40 & \worse{-43.42\%} & 72.75 & 57.20 & \worse{-27.18\%}\\
+I/VK+L+W & 140.48 & 93.00 & \worse{-51.05\%} & 80.43 & 59.70 & \worse{-34.73\%}\\
+I/VK+R+W & 109.38 & 88.50 & \worse{-23.59\%} & 56.30 & 57.10 & \better{+1.41\%}\\
+D+L+R+W & 77.38 & 97.60 & \better{+20.72\%} & 48.90 & 47.40 & \worse{-3.17\%}\\
+I/VK+D+L+R & 71.62 & 83.50 & \better{+14.23\%} & 47.64 & 47.60 & \worse{-0.08\%}\\
+I/VK+D+L+W & 73.50 & 86.00 & \better{+14.54\%} & 48.18 & 48.20 & \better{+0.05\%}\\
+I/VK+D+R+W & 66.77 & 84.00 & \better{+20.51\%} & 45.69 & 47.60 & \better{+4.00\%}\\
+I/VK+L+R+W & 119.89 & 88.60 & \worse{-35.32\%} & 72.42 & 57.10 & \worse{-26.83\%}\\
+I/VK+D+L+R+W & 71.71 & 83.70 & \better{+14.33\%} & 47.76 & 47.60 & \worse{-0.34\%}\\
+\bottomrule
+\end{longtable}
+}
+
+\section{HPE Student-NV 非视觉组合全表}
+{\tiny
+\begin{longtable}{llrrrrrr}
+\toprule
+协议 & 组合 & MPJPE & X-Fi & Imp & PA-MPJPE & X-Fi PA & Imp\\
+\midrule
+\endfirsthead
+\toprule
+协议 & 组合 & MPJPE & X-Fi & Imp & PA-MPJPE & X-Fi PA & Imp\\
+\midrule
+\endhead
+random & D & 52.34 & 101.80 & \better{+48.59\%} & 36.44 & 48.40 & \better{+24.72\%}\\
+random & L & 123.10 & 167.10 & \better{+26.33\%} & 84.16 & 103.20 & \better{+18.45\%}\\
+random & R & 109.44 & 127.40 & \better{+14.10\%} & 57.49 & 69.80 & \better{+17.63\%}\\
+random & W & 212.40 & 225.60 & \better{+5.85\%} & 106.87 & 105.30 & \worse{-1.50\%}\\
+random & D+L & 52.03 & 102.50 & \better{+49.24\%} & 36.39 & 48.40 & \better{+24.81\%}\\
+random & D+R & 51.24 & 98.00 & \better{+47.71\%} & 35.86 & 47.30 & \better{+24.18\%}\\
+random & D+W & 52.46 & 101.80 & \better{+48.47\%} & 36.36 & 48.10 & \better{+24.41\%}\\
+random & L+R & 91.13 & 109.80 & \better{+17.01\%} & 54.08 & 63.40 & \better{+14.71\%}\\
+random & L+W & 123.65 & 159.50 & \better{+22.48\%} & 84.02 & 102.70 & \better{+18.19\%}\\
+random & R+W & 106.06 & 117.20 & \better{+9.51\%} & 57.44 & 62.70 & \better{+8.39\%}\\
+random & D+L+R & 51.11 & 96.00 & \better{+46.76\%} & 35.75 & 47.30 & \better{+24.42\%}\\
+random & D+L+W & 52.02 & 102.00 & \better{+49.00\%} & 36.37 & 48.10 & \better{+24.39\%}\\
+random & D+R+W & 51.22 & 97.00 & \better{+47.20\%} & 35.77 & 47.10 & \better{+24.06\%}\\
+random & L+R+W & 90.93 & 107.40 & \better{+15.34\%} & 54.14 & 63.10 & \better{+14.21\%}\\
+random & D+L+R+W & 51.03 & 97.60 & \better{+47.72\%} & 35.69 & 47.40 & \better{+24.70\%}\\
+
+cross-scene & D & 73.59 & 101.80 & \better{+27.71\%} & 41.34 & 48.40 & \better{+14.59\%}\\
+cross-scene & L & 294.85 & 167.10 & \worse{-76.45\%} & 137.42 & 103.20 & \worse{-33.16\%}\\
+cross-scene & R & 138.70 & 127.40 & \worse{-8.87\%} & 67.71 & 69.80 & \better{+2.99\%}\\
+cross-scene & W & 372.60 & 225.60 & \worse{-65.16\%} & 118.38 & 105.30 & \worse{-12.42\%}\\
+cross-scene & D+L & 82.29 & 102.50 & \better{+19.72\%} & 48.46 & 48.40 & \worse{-0.12\%}\\
+cross-scene & D+R & 71.38 & 98.00 & \better{+27.16\%} & 41.03 & 47.30 & \better{+13.25\%}\\
+cross-scene & D+W & 74.08 & 101.80 & \better{+27.23\%} & 41.38 & 48.10 & \better{+13.97\%}\\
+cross-scene & L+R & 218.15 & 109.80 & \worse{-98.68\%} & 111.45 & 63.40 & \worse{-75.80\%}\\
+cross-scene & L+W & 297.00 & 159.50 & \worse{-86.21\%} & 138.56 & 102.70 & \worse{-34.92\%}\\
+cross-scene & R+W & 155.05 & 117.20 & \worse{-32.29\%} & 68.75 & 62.70 & \worse{-9.66\%}\\
+cross-scene & D+L+R & 78.60 & 96.00 & \better{+18.13\%} & 46.25 & 47.30 & \better{+2.23\%}\\
+cross-scene & D+L+W & 81.72 & 102.00 & \better{+19.88\%} & 48.25 & 48.10 & \worse{-0.31\%}\\
+cross-scene & D+R+W & 72.42 & 97.00 & \better{+25.34\%} & 41.06 & 47.10 & \better{+12.81\%}\\
+cross-scene & L+R+W & 218.96 & 107.40 & \worse{-103.87\%} & 112.27 & 63.10 & \worse{-77.93\%}\\
+cross-scene & D+L+R+W & 78.96 & 97.60 & \better{+19.10\%} & 46.38 & 47.40 & \better{+2.14\%}\\
+
+\bottomrule
+\end{longtable}
+}
+
+\section{HAR Student-VK 15 组合全表}
+{\tiny
+\begin{longtable}{llrrrr}
+\toprule
+协议/模型 & 组合 & Acc & X-Fi Acc & Imp & Macro-F1\\
+\midrule
+\endfirsthead
+\toprule
+协议/模型 & 组合 & Acc & X-Fi Acc & Imp & Macro-F1\\
+\midrule
+\endhead
+random Student-VK & D & 88.02 & 48.10 & \better{+83.00\%} & 87.86\\
+random Student-VK & L & 40.80 & 52.70 & \worse{-22.59\%} & 40.10\\
+random Student-VK & R & 85.88 & 85.70 & \better{+0.21\%} & 86.06\\
+random Student-VK & I/VK & 65.31 & 26.50 & \better{+146.47\%} & 65.70\\
+random Student-VK & D+L & 88.52 & 51.60 & \better{+71.54\%} & 88.39\\
+random Student-VK & D+R & 96.45 & 79.80 & \better{+20.86\%} & 96.44\\
+random Student-VK & L+R & 89.51 & 88.70 & \better{+0.91\%} & 89.57\\
+random Student-VK & I/VK+D & 89.51 & 45.30 & \better{+97.59\%} & 89.36\\
+random Student-VK & I/VK+L & 68.54 & 35.20 & \better{+94.73\%} & 69.05\\
+random Student-VK & I/VK+R & 92.75 & 73.40 & \better{+26.36\%} & 92.82\\
+random Student-VK & D+L+R & 96.44 & 80.50 & \better{+19.80\%} & 96.43\\
+random Student-VK & I/VK+D+L & 89.62 & 48.70 & \better{+84.01\%} & 89.49\\
+random Student-VK & I/VK+D+R & 96.56 & 70.70 & \better{+36.57\%} & 96.55\\
+random Student-VK & I/VK+L+R & 92.73 & 77.80 & \better{+19.19\%} & 92.81\\
+random Student-VK & I/VK+D+L+R & 96.56 & 72.20 & \better{+33.74\%} & 96.55\\
+cross-scene Student-VK & D & 87.41 & 48.10 & \better{+81.73\%} & 87.30\\
+cross-scene Student-VK & L & 19.98 & 52.70 & \worse{-62.09\%} & 17.51\\
+cross-scene Student-VK & R & 80.30 & 85.70 & \worse{-6.30\%} & 80.17\\
+cross-scene Student-VK & I/VK & 57.99 & 26.50 & \better{+118.82\%} & 57.53\\
+cross-scene Student-VK & D+L & 87.65 & 51.60 & \better{+69.86\%} & 87.49\\
+cross-scene Student-VK & D+R & 94.94 & 79.80 & \better{+18.97\%} & 94.93\\
+cross-scene Student-VK & L+R & 81.15 & 88.70 & \worse{-8.51\%} & 81.42\\
+cross-scene Student-VK & I/VK+D & 88.84 & 45.30 & \better{+96.11\%} & 88.79\\
+cross-scene Student-VK & I/VK+L & 59.39 & 35.20 & \better{+68.72\%} & 58.81\\
+cross-scene Student-VK & I/VK+R & 88.76 & 73.40 & \better{+20.93\%} & 88.65\\
+cross-scene Student-VK & D+L+R & 94.87 & 80.50 & \better{+17.86\%} & 94.87\\
+cross-scene Student-VK & I/VK+D+L & 88.95 & 48.70 & \better{+82.64\%} & 88.88\\
+cross-scene Student-VK & I/VK+D+R & 95.32 & 70.70 & \better{+34.82\%} & 95.32\\
+cross-scene Student-VK & I/VK+L+R & 88.33 & 77.80 & \better{+13.53\%} & 88.34\\
+cross-scene Student-VK & I/VK+D+L+R & 95.25 & 72.20 & \better{+31.92\%} & 95.25\\
+cross-subject Student-VK & D & 90.05 & 48.10 & \better{+87.21\%} & 89.96\\
+cross-subject Student-VK & L & 38.46 & 52.70 & \worse{-27.03\%} & 36.69\\
+cross-subject Student-VK & R & 85.21 & 85.70 & \worse{-0.58\%} & 85.45\\
+cross-subject Student-VK & I/VK & 65.22 & 26.50 & \better{+146.13\%} & 67.65\\
+cross-subject Student-VK & D+L & 90.28 & 51.60 & \better{+74.97\%} & 90.17\\
+cross-subject Student-VK & D+R & 95.71 & 79.80 & \better{+19.93\%} & 95.68\\
+cross-subject Student-VK & L+R & 88.10 & 88.70 & \worse{-0.67\%} & 88.14\\
+cross-subject Student-VK & I/VK+D & 91.58 & 45.30 & \better{+102.17\%} & 91.51\\
+cross-subject Student-VK & I/VK+L & 68.95 & 35.20 & \better{+95.88\%} & 70.90\\
+cross-subject Student-VK & I/VK+R & 93.12 & 73.40 & \better{+26.87\%} & 93.12\\
+cross-subject Student-VK & D+L+R & 95.74 & 80.50 & \better{+18.94\%} & 95.71\\
+cross-subject Student-VK & I/VK+D+L & 91.72 & 48.70 & \better{+88.33\%} & 91.64\\
+cross-subject Student-VK & I/VK+D+R & 96.10 & 70.70 & \better{+35.92\%} & 96.07\\
+cross-subject Student-VK & I/VK+L+R & 93.06 & 77.80 & \better{+19.62\%} & 93.06\\
+cross-subject Student-VK & I/VK+D+L+R & 96.12 & 72.20 & \better{+33.13\%} & 96.10\\
+\bottomrule
+\end{longtable}
+}
+
+\section{HAR Student-NV 非视觉 7 组合全表}
+{\tiny
+\begin{longtable}{llrrrr}
+\toprule
+协议/模型 & 组合 & Acc & X-Fi Acc & Imp & Macro-F1\\
+\midrule
+\endfirsthead
+\toprule
+协议/模型 & 组合 & Acc & X-Fi Acc & Imp & Macro-F1\\
+\midrule
+\endhead
+random Student-NV & D & 88.57 & 48.10 & \better{+84.14\%} & 88.47\\
+random Student-NV & L & 26.12 & 52.70 & \worse{-50.43\%} & 25.01\\
+random Student-NV & R & 83.37 & 85.70 & \worse{-2.72\%} & 83.57\\
+random Student-NV & D+L & 88.68 & 51.60 & \better{+71.85\%} & 88.56\\
+random Student-NV & D+R & 96.18 & 79.80 & \better{+20.53\%} & 96.19\\
+random Student-NV & L+R & 85.30 & 88.70 & \worse{-3.83\%} & 85.38\\
+random Student-NV & D+L+R & 96.12 & 80.50 & \better{+19.41\%} & 96.13\\
+cross-scene Student-NV & D & 88.82 & 48.10 & \better{+84.65\%} & 88.79\\
+cross-scene Student-NV & L & 8.94 & 52.70 & \worse{-83.03\%} & 6.39\\
+cross-scene Student-NV & R & 79.70 & 85.70 & \worse{-7.01\%} & 79.99\\
+cross-scene Student-NV & D+L & 88.92 & 51.60 & \better{+72.32\%} & 88.87\\
+cross-scene Student-NV & D+R & 95.45 & 79.80 & \better{+19.62\%} & 95.45\\
+cross-scene Student-NV & L+R & 79.68 & 88.70 & \worse{-10.16\%} & 79.99\\
+cross-scene Student-NV & D+L+R & 95.41 & 80.50 & \better{+18.52\%} & 95.40\\
+cross-subject Student-NV & D & 90.30 & 48.10 & \better{+87.73\%} & 90.21\\
+cross-subject Student-NV & L & 25.30 & 52.70 & \worse{-51.99\%} & 22.23\\
+cross-subject Student-NV & R & 84.57 & 85.70 & \worse{-1.31\%} & 84.75\\
+cross-subject Student-NV & D+L & 90.43 & 51.60 & \better{+75.26\%} & 90.34\\
+cross-subject Student-NV & D+R & 95.76 & 79.80 & \better{+20.00\%} & 95.74\\
+cross-subject Student-NV & L+R & 86.74 & 88.70 & \worse{-2.21\%} & 86.76\\
+cross-subject Student-NV & D+L+R & 95.70 & 80.50 & \better{+18.88\%} & 95.67\\
+\bottomrule
+\end{longtable}
+}
+
+\section{HPE Teacher/Baseline/消融诊断组合表}
+{\tiny
+\begin{longtable}{llrrrrrr}
+\toprule
+模型/设置 & 组合 & MPJPE & X-Fi & Imp & PA-MPJPE & X-Fi PA & Imp\\
+\midrule
+\endfirsthead
+\toprule
+模型/设置 & 组合 & MPJPE & X-Fi & Imp & PA-MPJPE & X-Fi PA & Imp\\
+\midrule
+\endhead
+Teacher random & D & 234.48 & 101.80 & \worse{-130.33\%} & 84.60 & 48.40 & \worse{-74.79\%}\\
+Teacher random & L & 1615.86 & 167.10 & \worse{-867.00\%} & 387.35 & 103.20 & \worse{-275.34\%}\\
+Teacher random & R & 4196.64 & 127.40 & \worse{-3194.06\%} & 298.72 & 69.80 & \worse{-327.97\%}\\
+Teacher random & I/VK & 487.99 & 93.90 & \worse{-419.69\%} & 139.35 & 60.30 & \worse{-131.10\%}\\
+Teacher random & W & 4173.33 & 225.60 & \worse{-1749.88\%} & 378.22 & 105.30 & \worse{-259.18\%}\\
+Teacher random & D+L & 285.88 & 102.50 & \worse{-178.91\%} & 87.48 & 48.40 & \worse{-80.74\%}\\
+Teacher random & D+R & 178.87 & 98.00 & \worse{-82.52\%} & 65.56 & 47.30 & \worse{-38.60\%}\\
+Teacher random & D+W & 197.61 & 101.80 & \worse{-94.11\%} & 74.07 & 48.10 & \worse{-53.99\%}\\
+Teacher random & L+R & 2158.39 & 109.80 & \worse{-1865.75\%} & 387.74 & 63.40 & \worse{-511.58\%}\\
+Teacher random & L+W & 4007.14 & 159.50 & \worse{-2412.31\%} & 384.12 & 102.70 & \worse{-274.02\%}\\
+Teacher random & R+W & 4675.91 & 117.20 & \worse{-3889.68\%} & 273.15 & 62.70 & \worse{-335.65\%}\\
+Teacher random & I/VK+D & 369.12 & 86.10 & \worse{-328.71\%} & 97.31 & 48.10 & \worse{-102.31\%}\\
+Teacher random & I/VK+L & 1072.73 & 93.00 & \worse{-1053.47\%} & 213.13 & 59.70 & \worse{-257.00\%}\\
+Teacher random & I/VK+R & 814.71 & 88.80 & \worse{-817.47\%} & 174.05 & 57.30 & \worse{-203.76\%}\\
+Teacher random & I/VK+W & 2491.83 & 93.00 & \worse{-2579.39\%} & 335.20 & 59.50 & \worse{-463.36\%}\\
+Teacher random & D+L+R & 310.47 & 96.00 & \worse{-223.41\%} & 75.92 & 47.30 & \worse{-60.50\%}\\
+Teacher random & D+L+W & 177.40 & 102.00 & \worse{-73.93\%} & 66.98 & 48.10 & \worse{-39.25\%}\\
+Teacher random & D+R+W & 121.88 & 97.00 & \worse{-25.65\%} & 54.83 & 47.10 & \worse{-16.40\%}\\
+Teacher random & L+R+W & 4360.36 & 107.40 & \worse{-3959.92\%} & 322.27 & 63.10 & \worse{-410.73\%}\\
+Teacher random & I/VK+D+L & 634.71 & 84.80 & \worse{-648.48\%} & 112.28 & 48.20 & \worse{-132.94\%}\\
+Teacher random & I/VK+D+R & 465.16 & 83.40 & \worse{-457.74\%} & 86.45 & 47.30 & \worse{-82.77\%}\\
+Teacher random & I/VK+D+W & 100.71 & 85.30 & \worse{-18.06\%} & 51.47 & 48.10 & \worse{-7.00\%}\\
+Teacher random & I/VK+L+R & 1034.39 & 88.40 & \worse{-1070.12\%} & 237.91 & 57.20 & \worse{-315.93\%}\\
+Teacher random & I/VK+L+W & 4736.11 & 93.00 & \worse{-4992.59\%} & 271.23 & 59.70 & \worse{-354.32\%}\\
+Teacher random & I/VK+R+W & 4769.71 & 88.50 & \worse{-5289.51\%} & 255.98 & 57.10 & \worse{-348.30\%}\\
+Teacher random & D+L+R+W & 112.99 & 97.60 & \worse{-15.77\%} & 50.72 & 47.40 & \worse{-7.01\%}\\
+Teacher random & I/VK+D+L+R & 593.40 & 83.50 & \worse{-610.66\%} & 93.25 & 47.60 & \worse{-95.90\%}\\
+Teacher random & I/VK+D+L+W & 67.89 & 86.00 & \better{+21.05\%} & 40.53 & 48.20 & \better{+15.91\%}\\
+Teacher random & I/VK+D+R+W & 71.27 & 84.00 & \better{+15.16\%} & 38.91 & 47.60 & \better{+18.25\%}\\
+Teacher random & I/VK+L+R+W & 4876.09 & 88.60 & \worse{-5403.49\%} & 239.18 & 57.10 & \worse{-318.88\%}\\
+Teacher random & I/VK+D+L+R+W & 48.45 & 83.70 & \better{+42.12\%} & 33.06 & 47.60 & \better{+30.54\%}\\
+
+Baseline random & D & 172.79 & 101.80 & \worse{-69.74\%} & 101.84 & 48.40 & \worse{-110.41\%}\\
+Baseline random & L & 1367.60 & 167.10 & \worse{-718.43\%} & 284.00 & 103.20 & \worse{-175.19\%}\\
+Baseline random & R & 420.81 & 127.40 & \worse{-230.30\%} & 135.17 & 69.80 & \worse{-93.66\%}\\
+Baseline random & I/VK & 256.34 & 93.90 & \worse{-172.99\%} & 106.01 & 60.30 & \worse{-75.80\%}\\
+Baseline random & W & 2151.81 & 225.60 & \worse{-853.82\%} & 349.26 & 105.30 & \worse{-231.68\%}\\
+Baseline random & D+L & 1413.97 & 102.50 & \worse{-1279.48\%} & 256.89 & 48.40 & \worse{-430.77\%}\\
+Baseline random & D+R & 166.92 & 98.00 & \worse{-70.33\%} & 61.81 & 47.30 & \worse{-30.67\%}\\
+Baseline random & D+W & 2417.11 & 101.80 & \worse{-2274.37\%} & 361.68 & 48.10 & \worse{-651.92\%}\\
+Baseline random & L+R & 510.63 & 109.80 & \worse{-365.05\%} & 157.61 & 63.40 & \worse{-148.59\%}\\
+Baseline random & L+W & 2157.85 & 159.50 & \worse{-1252.88\%} & 354.90 & 102.70 & \worse{-245.57\%}\\
+Baseline random & R+W & 1063.85 & 117.20 & \worse{-807.72\%} & 205.61 & 62.70 & \worse{-227.92\%}\\
+Baseline random & I/VK+D & 77.50 & 86.10 & \better{+9.98\%} & 51.37 & 48.10 & \worse{-6.79\%}\\
+Baseline random & I/VK+L & 267.25 & 93.00 & \worse{-187.36\%} & 101.89 & 59.70 & \worse{-70.67\%}\\
+Baseline random & I/VK+R & 324.61 & 88.80 & \worse{-265.55\%} & 99.91 & 57.30 & \worse{-74.36\%}\\
+Baseline random & I/VK+W & 249.86 & 93.00 & \worse{-168.67\%} & 103.47 & 59.50 & \worse{-73.91\%}\\
+Baseline random & D+L+R & 179.54 & 96.00 & \worse{-87.02\%} & 63.00 & 47.30 & \worse{-33.19\%}\\
+Baseline random & D+L+W & 2233.06 & 102.00 & \worse{-2089.27\%} & 347.07 & 48.10 & \worse{-621.57\%}\\
+Baseline random & D+R+W & 344.01 & 97.00 & \worse{-254.65\%} & 64.45 & 47.10 & \worse{-36.83\%}\\
+Baseline random & L+R+W & 1266.99 & 107.40 & \worse{-1079.70\%} & 230.97 & 63.10 & \worse{-266.04\%}\\
+Baseline random & I/VK+D+L & 64.51 & 84.80 & \better{+23.93\%} & 42.50 & 48.20 & \better{+11.82\%}\\
+Baseline random & I/VK+D+R & 83.67 & 83.40 & \worse{-0.32\%} & 43.78 & 47.30 & \better{+7.45\%}\\
+Baseline random & I/VK+D+W & 76.88 & 85.30 & \better{+9.87\%} & 42.12 & 48.10 & \better{+12.43\%}\\
+Baseline random & I/VK+L+R & 300.45 & 88.40 & \worse{-239.88\%} & 97.86 & 57.20 & \worse{-71.09\%}\\
+Baseline random & I/VK+L+W & 258.28 & 93.00 & \worse{-177.72\%} & 100.49 & 59.70 & \worse{-68.33\%}\\
+Baseline random & I/VK+R+W & 281.54 & 88.50 & \worse{-218.13\%} & 98.89 & 57.10 & \worse{-73.19\%}\\
+Baseline random & D+L+R+W & 502.74 & 97.60 & \worse{-415.10\%} & 84.98 & 47.40 & \worse{-79.28\%}\\
+Baseline random & I/VK+D+L+R & 62.11 & 83.50 & \better{+25.62\%} & 34.75 & 47.60 & \better{+26.99\%}\\
+Baseline random & I/VK+D+L+W & 68.70 & 86.00 & \better{+20.12\%} & 40.71 & 48.20 & \better{+15.55\%}\\
+Baseline random & I/VK+D+R+W & 52.64 & 84.00 & \better{+37.34\%} & 34.00 & 47.60 & \better{+28.57\%}\\
+Baseline random & I/VK+L+R+W & 289.24 & 88.60 & \worse{-226.46\%} & 97.69 & 57.10 & \worse{-71.09\%}\\
+Baseline random & I/VK+D+L+R+W & 49.14 & 83.70 & \better{+41.29\%} & 33.48 & 47.60 & \better{+29.66\%}\\
+
+NoKD random & D & 52.46 & 101.80 & \better{+48.47\%} & 34.60 & 48.40 & \better{+28.51\%}\\
+NoKD random & L & 138.35 & 167.10 & \better{+17.20\%} & 94.31 & 103.20 & \better{+8.62\%}\\
+NoKD random & R & 111.03 & 127.40 & \better{+12.85\%} & 56.90 & 69.80 & \better{+18.48\%}\\
+NoKD random & I/VK & 78.34 & 93.90 & \better{+16.57\%} & 41.68 & 60.30 & \better{+30.87\%}\\
+NoKD random & W & 224.81 & 225.60 & \better{+0.35\%} & 109.53 & 105.30 & \worse{-4.02\%}\\
+NoKD random & D+L & 52.00 & 102.50 & \better{+49.27\%} & 34.47 & 48.40 & \better{+28.78\%}\\
+NoKD random & D+R & 50.74 & 98.00 & \better{+48.22\%} & 33.49 & 47.30 & \better{+29.20\%}\\
+NoKD random & D+W & 52.54 & 101.80 & \better{+48.39\%} & 34.49 & 48.10 & \better{+28.30\%}\\
+NoKD random & L+R & 92.30 & 109.80 & \better{+15.94\%} & 53.60 & 63.40 & \better{+15.45\%}\\
+NoKD random & L+W & 134.68 & 159.50 & \better{+15.56\%} & 93.87 & 102.70 & \better{+8.59\%}\\
+NoKD random & R+W & 105.27 & 117.20 & \better{+10.18\%} & 55.88 & 62.70 & \better{+10.88\%}\\
+NoKD random & I/VK+D & 50.52 & 86.10 & \better{+41.32\%} & 33.36 & 48.10 & \better{+30.64\%}\\
+NoKD random & I/VK+L & 68.22 & 93.00 & \better{+26.64\%} & 41.28 & 59.70 & \better{+30.85\%}\\
+NoKD random & I/VK+R & 66.33 & 88.80 & \better{+25.30\%} & 38.27 & 57.30 & \better{+33.22\%}\\
+NoKD random & I/VK+W & 76.12 & 93.00 & \better{+18.15\%} & 41.75 & 59.50 & \better{+29.83\%}\\
+NoKD random & D+L+R & 50.48 & 96.00 & \better{+47.42\%} & 33.43 & 47.30 & \better{+29.31\%}\\
+NoKD random & D+L+W & 52.06 & 102.00 & \better{+48.96\%} & 34.45 & 48.10 & \better{+28.38\%}\\
+NoKD random & D+R+W & 50.73 & 97.00 & \better{+47.71\%} & 33.46 & 47.10 & \better{+28.95\%}\\
+NoKD random & L+R+W & 90.81 & 107.40 & \better{+15.45\%} & 53.65 & 63.10 & \better{+14.98\%}\\
+NoKD random & I/VK+D+L & 50.05 & 84.80 & \better{+40.97\%} & 33.30 & 48.20 & \better{+30.90\%}\\
+NoKD random & I/VK+D+R & 49.01 & 83.40 & \better{+41.23\%} & 32.52 & 47.30 & \better{+31.25\%}\\
+NoKD random & I/VK+D+W & 50.50 & 85.30 & \better{+40.80\%} & 33.33 & 48.10 & \better{+30.71\%}\\
+NoKD random & I/VK+L+R & 63.75 & 88.40 & \better{+27.89\%} & 38.05 & 57.20 & \better{+33.48\%}\\
+NoKD random & I/VK+L+W & 67.61 & 93.00 & \better{+27.30\%} & 41.30 & 59.70 & \better{+30.82\%}\\
+NoKD random & I/VK+R+W & 64.58 & 88.50 & \better{+27.03\%} & 38.30 & 57.10 & \better{+32.92\%}\\
+NoKD random & D+L+R+W & 50.49 & 97.60 & \better{+48.27\%} & 33.44 & 47.40 & \better{+29.45\%}\\
+NoKD random & I/VK+D+L+R & 48.83 & 83.50 & \better{+41.52\%} & 32.50 & 47.60 & \better{+31.73\%}\\
+NoKD random & I/VK+D+L+W & 50.08 & 86.00 & \better{+41.77\%} & 33.30 & 48.20 & \better{+30.91\%}\\
+NoKD random & I/VK+D+R+W & 48.99 & 84.00 & \better{+41.68\%} & 32.52 & 47.60 & \better{+31.69\%}\\
+NoKD random & I/VK+L+R+W & 62.65 & 88.60 & \better{+29.28\%} & 38.13 & 57.10 & \better{+33.23\%}\\
+NoKD random & I/VK+D+L+R+W & 48.83 & 83.70 & \better{+41.66\%} & 32.51 & 47.60 & \better{+31.70\%}\\
+
+Uniform random & D & 55.72 & 101.80 & \better{+45.26\%} & 38.62 & 48.40 & \better{+20.21\%}\\
+Uniform random & L & 147.07 & 167.10 & \better{+11.99\%} & 100.53 & 103.20 & \better{+2.59\%}\\
+Uniform random & R & 114.29 & 127.40 & \better{+10.29\%} & 62.21 & 69.80 & \better{+10.87\%}\\
+Uniform random & I/VK & 123.62 & 93.90 & \worse{-31.65\%} & 47.89 & 60.30 & \better{+20.58\%}\\
+Uniform random & W & 231.27 & 225.60 & \worse{-2.51\%} & 112.01 & 105.30 & \worse{-6.37\%}\\
+Uniform random & D+L & 54.97 & 102.50 & \better{+46.37\%} & 38.40 & 48.40 & \better{+20.66\%}\\
+Uniform random & D+R & 54.19 & 98.00 & \better{+44.70\%} & 38.04 & 47.30 & \better{+19.59\%}\\
+Uniform random & D+W & 55.33 & 101.80 & \better{+45.65\%} & 38.21 & 48.10 & \better{+20.57\%}\\
+Uniform random & L+R & 100.71 & 109.80 & \better{+8.28\%} & 61.29 & 63.40 & \better{+3.33\%}\\
+Uniform random & L+W & 147.28 & 159.50 & \better{+7.66\%} & 100.73 & 102.70 & \better{+1.92\%}\\
+Uniform random & R+W & 113.30 & 117.20 & \better{+3.33\%} & 62.09 & 62.70 & \better{+0.97\%}\\
+Uniform random & I/VK+D & 53.62 & 86.10 & \better{+37.72\%} & 37.69 & 48.10 & \better{+21.64\%}\\
+Uniform random & I/VK+L & 89.60 & 93.00 & \better{+3.66\%} & 47.66 & 59.70 & \better{+20.17\%}\\
+Uniform random & I/VK+R & 82.24 & 88.80 & \better{+7.39\%} & 44.22 & 57.30 & \better{+22.83\%}\\
+Uniform random & I/VK+W & 124.69 & 93.00 & \worse{-34.07\%} & 47.44 & 59.50 & \better{+20.27\%}\\
+Uniform random & D+L+R & 53.93 & 96.00 & \better{+43.82\%} & 37.89 & 47.30 & \better{+19.89\%}\\
+Uniform random & D+L+W & 54.70 & 102.00 & \better{+46.37\%} & 38.22 & 48.10 & \better{+20.54\%}\\
+Uniform random & D+R+W & 53.93 & 97.00 & \better{+44.40\%} & 37.81 & 47.10 & \better{+19.72\%}\\
+Uniform random & L+R+W & 100.78 & 107.40 & \better{+6.16\%} & 61.37 & 63.10 & \better{+2.75\%}\\
+Uniform random & I/VK+D+L & 53.31 & 84.80 & \better{+37.14\%} & 37.69 & 48.20 & \better{+21.81\%}\\
+Uniform random & I/VK+D+R & 52.43 & 83.40 & \better{+37.13\%} & 37.33 & 47.30 & \better{+21.09\%}\\
+Uniform random & I/VK+D+W & 53.46 & 85.30 & \better{+37.33\%} & 37.59 & 48.10 & \better{+21.85\%}\\
+Uniform random & I/VK+L+R & 77.10 & 88.40 & \better{+12.78\%} & 44.23 & 57.20 & \better{+22.68\%}\\
+Uniform random & I/VK+L+W & 91.49 & 93.00 & \better{+1.62\%} & 47.46 & 59.70 & \better{+20.50\%}\\
+Uniform random & I/VK+R+W & 84.38 & 88.50 & \better{+4.66\%} & 43.97 & 57.10 & \better{+23.00\%}\\
+Uniform random & D+L+R+W & 53.74 & 97.60 & \better{+44.94\%} & 37.78 & 47.40 & \better{+20.29\%}\\
+Uniform random & I/VK+D+L+R & 52.37 & 83.50 & \better{+37.28\%} & 37.28 & 47.60 & \better{+21.67\%}\\
+Uniform random & I/VK+D+L+W & 53.18 & 86.00 & \better{+38.17\%} & 37.60 & 48.20 & \better{+21.98\%}\\
+Uniform random & I/VK+D+R+W & 52.33 & 84.00 & \better{+37.70\%} & 37.22 & 47.60 & \better{+21.80\%}\\
+Uniform random & I/VK+L+R+W & 78.57 & 88.60 & \better{+11.32\%} & 44.13 & 57.10 & \better{+22.72\%}\\
+Uniform random & I/VK+D+L+R+W & 52.28 & 83.70 & \better{+37.54\%} & 37.22 & 47.60 & \better{+21.80\%}\\
+
+\bottomrule
+\end{longtable}
+}
+
+\section{HAR Teacher/消融诊断组合表}
+{\tiny
+\begin{longtable}{llrrrr}
+\toprule
+模型/设置 & 组合 & Acc & X-Fi Acc & Imp & Macro-F1\\
+\midrule
+\endfirsthead
+\toprule
+模型/设置 & 组合 & Acc & X-Fi Acc & Imp & Macro-F1\\
+\midrule
+\endhead
+random Teacher & D & 83.71 & 48.10 & \better{+74.03\%} & 82.80\\
+random Teacher & L & 3.36 & 52.70 & \worse{-93.63\%} & 1.17\\
+random Teacher & R & 66.72 & 85.70 & \worse{-22.15\%} & 64.78\\
+random Teacher & I/VK & 3.40 & 26.50 & \worse{-87.15\%} & 0.45\\
+random Teacher & D+L & 83.37 & 51.60 & \better{+61.56\%} & 82.54\\
+random Teacher & D+R & 95.76 & 79.80 & \better{+19.99\%} & 95.74\\
+random Teacher & L+R & 66.69 & 88.70 & \worse{-24.81\%} & 63.96\\
+random Teacher & I/VK+D & 83.50 & 45.30 & \better{+84.33\%} & 82.60\\
+random Teacher & I/VK+L & 3.91 & 35.20 & \worse{-88.88\%} & 1.31\\
+random Teacher & I/VK+R & 66.46 & 73.40 & \worse{-9.46\%} & 63.67\\
+random Teacher & D+L+R & 95.64 & 80.50 & \better{+18.80\%} & 95.63\\
+random Teacher & I/VK+D+L & 83.66 & 48.70 & \better{+71.79\%} & 82.91\\
+random Teacher & I/VK+D+R & 95.66 & 70.70 & \better{+35.30\%} & 95.65\\
+random Teacher & I/VK+L+R & 66.39 & 77.80 & \worse{-14.66\%} & 63.36\\
+random Teacher & I/VK+D+L+R & 95.57 & 72.20 & \better{+32.37\%} & 95.56\\
+cross-scene Teacher & D & 84.86 & 48.10 & \better{+76.43\%} & 84.47\\
+cross-scene Teacher & L & 3.96 & 52.70 & \worse{-92.49\%} & 1.50\\
+cross-scene Teacher & R & 61.11 & 85.70 & \worse{-28.69\%} & 59.73\\
+cross-scene Teacher & I/VK & 4.44 & 26.50 & \worse{-83.25\%} & 0.79\\
+cross-scene Teacher & D+L & 84.33 & 51.60 & \better{+63.44\%} & 83.84\\
+cross-scene Teacher & D+R & 95.07 & 79.80 & \better{+19.14\%} & 95.10\\
+cross-scene Teacher & L+R & 60.49 & 88.70 & \worse{-31.81\%} & 58.23\\
+cross-scene Teacher & I/VK+D & 85.21 & 45.30 & \better{+88.10\%} & 84.97\\
+cross-scene Teacher & I/VK+L & 4.01 & 35.20 & \worse{-88.61\%} & 1.49\\
+cross-scene Teacher & I/VK+R & 60.86 & 73.40 & \worse{-17.09\%} & 59.44\\
+cross-scene Teacher & D+L+R & 94.83 & 80.50 & \better{+17.81\%} & 94.86\\
+cross-scene Teacher & I/VK+D+L & 84.86 & 48.70 & \better{+74.26\%} & 84.57\\
+cross-scene Teacher & I/VK+D+R & 94.96 & 70.70 & \better{+34.32\%} & 94.99\\
+cross-scene Teacher & I/VK+L+R & 61.15 & 77.80 & \worse{-21.40\%} & 59.02\\
+cross-scene Teacher & I/VK+D+L+R & 94.80 & 72.20 & \better{+31.30\%} & 94.83\\
+cross-subject Teacher & D & 81.74 & 48.10 & \better{+69.94\%} & 80.25\\
+cross-subject Teacher & L & 3.89 & 52.70 & \worse{-92.63\%} & 2.75\\
+cross-subject Teacher & R & 72.35 & 85.70 & \worse{-15.57\%} & 71.76\\
+cross-subject Teacher & I/VK & 5.15 & 26.50 & \worse{-80.56\%} & 2.00\\
+cross-subject Teacher & D+L & 82.45 & 51.60 & \better{+59.79\%} & 81.23\\
+cross-subject Teacher & D+R & 95.74 & 79.80 & \better{+19.98\%} & 95.71\\
+cross-subject Teacher & L+R & 69.75 & 88.70 & \worse{-21.37\%} & 68.99\\
+cross-subject Teacher & I/VK+D & 82.87 & 45.30 & \better{+82.94\%} & 81.39\\
+cross-subject Teacher & I/VK+L & 4.11 & 35.20 & \worse{-88.33\%} & 1.75\\
+cross-subject Teacher & I/VK+R & 69.56 & 73.40 & \worse{-5.23\%} & 68.95\\
+cross-subject Teacher & D+L+R & 95.51 & 80.50 & \better{+18.65\%} & 95.47\\
+cross-subject Teacher & I/VK+D+L & 82.85 & 48.70 & \better{+70.12\%} & 81.62\\
+cross-subject Teacher & I/VK+D+R & 95.72 & 70.70 & \better{+35.39\%} & 95.69\\
+cross-subject Teacher & I/VK+L+R & 69.26 & 77.80 & \worse{-10.97\%} & 68.44\\
+cross-subject Teacher & I/VK+D+L+R & 95.52 & 72.20 & \better{+32.30\%} & 95.48\\
+random NoKD & D & 86.85 & 48.10 & \better{+80.55\%} & 86.78\\
+random NoKD & L & 33.14 & 52.70 & \worse{-37.11\%} & 31.11\\
+random NoKD & R & 83.13 & 85.70 & \worse{-3.00\%} & 83.31\\
+random NoKD & I/VK & 60.94 & 26.50 & \better{+129.97\%} & 59.31\\
+random NoKD & D+L & 87.24 & 51.60 & \better{+69.07\%} & 87.25\\
+random NoKD & D+R & 95.57 & 79.80 & \better{+19.76\%} & 95.56\\
+random NoKD & L+R & 85.92 & 88.70 & \worse{-3.13\%} & 86.09\\
+random NoKD & I/VK+D & 88.09 & 45.30 & \better{+94.45\%} & 87.94\\
+random NoKD & I/VK+L & 63.63 & 35.20 & \better{+80.75\%} & 62.65\\
+random NoKD & I/VK+R & 91.05 & 73.40 & \better{+24.05\%} & 91.12\\
+random NoKD & D+L+R & 95.50 & 80.50 & \better{+18.64\%} & 95.50\\
+random NoKD & I/VK+D+L & 88.62 & 48.70 & \better{+81.98\%} & 88.53\\
+random NoKD & I/VK+D+R & 95.96 & 70.70 & \better{+35.73\%} & 95.95\\
+random NoKD & I/VK+L+R & 91.23 & 77.80 & \better{+17.27\%} & 91.29\\
+random NoKD & I/VK+D+L+R & 95.99 & 72.20 & \better{+32.96\%} & 95.98\\
+random Uniform & D & 85.59 & 48.10 & \better{+77.93\%} & 85.30\\
+random Uniform & L & 2.65 & 52.70 & \worse{-94.97\%} & 1.55\\
+random Uniform & R & 69.91 & 85.70 & \worse{-18.42\%} & 68.71\\
+random Uniform & I/VK & 5.52 & 26.50 & \worse{-79.16\%} & 1.32\\
+random Uniform & D+L & 86.16 & 51.60 & \better{+66.98\%} & 85.91\\
+random Uniform & D+R & 95.54 & 79.80 & \better{+19.73\%} & 95.54\\
+random Uniform & L+R & 67.80 & 88.70 & \worse{-23.56\%} & 66.56\\
+random Uniform & I/VK+D & 86.48 & 45.30 & \better{+90.90\%} & 86.24\\
+random Uniform & I/VK+L & 4.58 & 35.20 & \worse{-86.98\%} & 1.76\\
+random Uniform & I/VK+R & 67.75 & 73.40 & \worse{-7.69\%} & 66.21\\
+random Uniform & D+L+R & 95.42 & 80.50 & \better{+18.54\%} & 95.42\\
+random Uniform & I/VK+D+L & 86.43 & 48.70 & \better{+77.48\%} & 86.19\\
+random Uniform & I/VK+D+R & 95.50 & 70.70 & \better{+35.07\%} & 95.49\\
+random Uniform & I/VK+L+R & 67.09 & 77.80 & \worse{-13.76\%} & 65.08\\
+random Uniform & I/VK+D+L+R & 95.39 & 72.20 & \better{+32.12\%} & 95.39\\
+\bottomrule
+\end{longtable}
+}
+
+\section{同步结果索引}
+{\tiny
+\begin{longtable}{llrl}
+\toprule
+任务 & CSV & 行数 & 本文使用方式\\
+\midrule
+\endfirsthead
+\toprule
+任务 & CSV & 行数 & 本文使用方式\\
+\midrule
+\endhead
+HPE & ablation\_no\_distill\_all\_combinations.csv & 31 & 主文摘要或同步索引\\
+HPE & ablation\_uniform\_fusion\_all\_combinations.csv & 31 & 主文摘要或同步索引\\
+HPE & all\_combinations.csv & 31 & 主文摘要或同步索引\\
+HPE & baseline\_full\_all\_combinations.csv & 31 & 主文摘要或同步索引\\
+HPE & baseline\_full\_model\_complexity.csv & 1 & 主文摘要或同步索引\\
+HPE & baseline\_missing\_modality\_summary.csv & 5 & 主文摘要或同步索引\\
+HPE & student\_nv\_cross\_scene\_nonvisual\_combinations.csv & 15 & 附录全表 + 主文跨场景\\
+HPE & student\_nv\_missing\_modality\_summary.csv & 4 & 主文摘要或同步索引\\
+HPE & student\_nv\_model\_complexity.csv & 1 & 主文摘要或同步索引\\
+HPE & student\_nv\_nonvisual\_combinations.csv & 15 & 重复 random 非视觉表，索引记录\\
+HPE & student\_nv\_random\_nonvisual\_combinations.csv & 15 & 附录全表\\
+HPE & student\_vk\_cross\_scene\_all\_combinations.csv & 31 & 附录全表 + 主文跨场景\\
+HPE & student\_vk\_missing\_modality\_summary.csv & 5 & 主文摘要或同步索引\\
+HPE & student\_vk\_model\_complexity.csv & 1 & 主文摘要或同步索引\\
+HPE & student\_vk\_noise\_robustness.csv & 16 & 主文鲁棒性表\\
+HPE & student\_vk\_random\_all\_combinations.csv & 31 & 附录全表 + 主文组合汇总\\
+HPE & teacher\_all\_combinations.csv & 31 & 主文摘要或同步索引\\
+HPE & teacher\_cross\_scene\_all\_combinations.csv & 31 & Teacher 跨场景诊断\\
+HPE & teacher\_full\_model\_complexity.csv & 1 & 主文摘要或同步索引\\
+HPE & teacher\_missing\_modality\_summary.csv & 5 & 主文摘要或同步索引\\
+HPE & teacher\_random\_all\_combinations.csv & 31 & Teacher 诊断，不作为部署结论\\
+HAR & ablation\_no\_distill\_all\_combinations.csv & 15 & 主文摘要或同步索引\\
+HAR & ablation\_uniform\_fusion\_all\_combinations.csv & 15 & 主文摘要或同步索引\\
+HAR & all\_combinations.csv & 15 & 主文摘要或同步索引\\
+HAR & student\_nv\_cross\_scene\_nonvisual\_combinations.csv & 7 & 附录全表 + 主文组合汇总\\
+HAR & student\_nv\_cross\_subject\_nonvisual\_combinations.csv & 7 & 附录全表 + 主文组合汇总\\
+HAR & student\_nv\_nonvisual\_combinations.csv & 7 & 主文摘要或同步索引\\
+HAR & student\_nv\_random\_nonvisual\_combinations.csv & 7 & 附录全表 + 主文组合汇总\\
+HAR & student\_vk\_all\_combinations.csv & 15 & 主文摘要或同步索引\\
+HAR & student\_vk\_cross\_scene\_all\_combinations.csv & 15 & 附录全表 + 主文组合汇总\\
+HAR & student\_vk\_cross\_subject\_all\_combinations.csv & 15 & 附录全表 + 主文组合汇总\\
+HAR & student\_vk\_random\_all\_combinations.csv & 15 & 附录全表 + 主文组合汇总\\
+HAR & teacher\_cross\_scene\_all\_combinations.csv & 15 & 主文摘要或同步索引\\
+HAR & teacher\_cross\_subject\_all\_combinations.csv & 15 & 主文摘要或同步索引\\
+HAR & teacher\_random\_all\_combinations.csv & 15 & 主文摘要或同步索引\\
+\bottomrule
+\end{longtable}
+}
+
+\section{缺失与 Metadata 审计}
+{\scriptsize
+\begin{longtable}{llll}
+\toprule
+任务 & 类型 & 项目 & 状态\\
+\midrule
+\endfirsthead
+\toprule
+任务 & 类型 & 项目 & 状态\\
+\midrule
+\endhead
+HPE & eval & teacher\_cross\_subject\_all\_combinations.csv & 未同步或未完成\\
+HPE & eval & student\_vk\_cross\_subject\_all\_combinations.csv & 未同步或未完成\\
+HPE & eval & student\_nv\_cross\_subject\_nonvisual\_combinations.csv & 未同步或未完成\\
+HPE & eval & baseline\_cross\_scene\_all\_combinations.csv & 未同步或未完成\\
+HPE & eval & baseline\_cross\_subject\_all\_combinations.csv & 未同步或未完成\\
+HPE & eval & ablation\_reliability\_attention\_all\_combinations.csv & 未同步或未完成\\
+HPE & eval & ablation\_reliability\_uncertainty\_all\_combinations.csv & 未同步或未完成\\
+HPE & eval & ablation\_encoder\_mlp\_vk\_all\_combinations.csv & 未同步或未完成\\
+HPE & eval & ablation\_encoder\_skeleton\_prompt\_all\_combinations.csv & 未同步或未完成\\
+HAR & metadata & student\_vk\_missing\_cross\_scene/final\_eval.csv & 目录为 cross-scene，但 CSV split=cross\_subject\_split\\
+HAR & metadata & teacher\_full\_cross\_subject/final\_eval.csv & 文件名为 Teacher，但 method=VK-RCD-HAR-Student-VK-Missing\\
+HAR & model & student\_vk\_missing\_cross\_subject/best.pth & 缺少 best.pth，但 final/eval CSV 已同步\\
+\bottomrule
+\end{longtable}
+}
+
+\end{document}

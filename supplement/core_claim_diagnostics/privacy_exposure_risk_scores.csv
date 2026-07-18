@@ -1,0 +1,6 @@
+representation,visual_exposure_score_1_low_5_high,residual_identity_behavior_risk_1_low_5_high,formal_privacy_guarantee,safe_claim,paper_policy
+RGB,5.0,5.0,No,Training privileged source only; not used by deployable student.,Claim reduced visual exposure only; do not claim anonymity or privacy guarantee.
+VK,1.0,4.0,No,"Reduced visual exposure structural bridge, not anonymity.",Claim reduced visual exposure only; do not claim anonymity or privacy guarantee.
+Depth,2.5,4.0,No,Non-RGB sensing modality.,Claim reduced visual exposure only; do not claim anonymity or privacy guarantee.
+LiDAR/mmWave,1.5,3.0,No,Non-RGB sensing modality.,Claim reduced visual exposure only; do not claim anonymity or privacy guarantee.
+WiFi-CSI,1.0,2.5,No,Non-visual sensing modality.,Claim reduced visual exposure only; do not claim anonymity or privacy guarantee.

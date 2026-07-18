@@ -1,0 +1,5 @@
+# VK-RCD-Ablation final evaluation
+
+|method|split|protocol|modality_set|mse|mpjpe|pa_mpjpe|params|fps|peak_memory|
+|---|---|---|---|---|---|---|---|---|---|
+|VK-RCD-Ablation|random_split|protocol3|vk+depth+lidar+mmwave+wifi-csi|0.0014083639070882228|0.0487568740536576|0.03323942096552198|8895208|NA|NA|

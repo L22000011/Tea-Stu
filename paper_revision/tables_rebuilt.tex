@@ -1,0 +1,289 @@
+﻿\begin{table}[H]
+\centering
+\caption{模态符号与在 VK-RMD 中的角色。本文所有组合表均使用缩写：V=VK，D=Depth，L=LiDAR，R=mmWave，W=WiFi-CSI。}
+\label{tab:notation_cn}
+\scriptsize
+\begin{adjustbox}{width=\linewidth}
+\begin{tabular}{llll}
+\toprule
+符号 & 表示 & 外观暴露 & 在 VK-RMD 中的角色 \\
+\midrule
+V & VK & 低 & 低外观关节结构输入，替代下游 RGB \\
+D & Depth & 低/中 & 关键几何证据，HPE 中最敏感 \\
+L & LiDAR & 低 & 稀疏三维几何补充 \\
+R & mmWave & 低 & 动态与动作线索，HAR 中最敏感 \\
+W & WiFi-CSI & 很低 & 非视觉无线感知补充，仅用于 HPE \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+
+\begin{table}[H]
+\centering
+\caption{Action-holdout 主体身份泄露探针。ID Acc. 越低表示身份可恢复风险越低；随机水平为 2.50\%。该实验不构成形式化隐私证明。}
+\label{tab:leakage_probe_rebuilt}
+\scriptsize
+\begin{adjustbox}{width=\linewidth}
+\begin{tabular}{lccc}
+\toprule
+输入表示 & ID Acc.$\downarrow$ & 随机倍数 & 相对脱敏 RGB 降低 \\
+\midrule
+脱敏 RGB & 67.53\% & 27.01$\times$ & 0.00\% \\
+V & 15.43\% & 6.17$\times$ & 77.15\% \\
+D & 43.80\% & 17.52$\times$ & 35.14\% \\
+L & 36.57\% & 14.63$\times$ & 45.84\% \\
+R & 9.72\% & 3.89$\times$ & 85.60\% \\
+W & 8.65\% & 3.46$\times$ & 87.19\% \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+
+\begin{table*}[t]
+\centering
+\caption{\cnHpeDirectCaption}
+\label{tab:xfi_hpe_direct}
+\scriptsize
+\begin{adjustbox}{width=\textwidth}
+\begin{tabular}{lcccccc}
+\toprule
+\multirow{2}{*}{\cnModalitySetShort} & \multicolumn{3}{c}{MPJPE$\downarrow$} & \multicolumn{3}{c}{PA-MPJPE$\downarrow$} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+ & X-Fi & VK-RMD & $\Delta$ & X-Fi & VK-RMD & $\Delta$ \\
+\midrule
+V & 93.9 & \cellcolor{gray!12}92.7 & \gain{$\downarrow$ 1.2} & 60.3 & \cellcolor{gray!12}42.6 & \gain{$\downarrow$ 17.7} \\
+D & 101.8 & \cellcolor{gray!12}53.9 & \gain{$\downarrow$ 47.9} & 48.4 & \cellcolor{gray!12}35.6 & \gain{$\downarrow$ 12.8} \\
+L & 167.1 & \cellcolor{gray!12}140.1 & \gain{$\downarrow$ 27.0} & 103.2 & \cellcolor{gray!12}93.5 & \gain{$\downarrow$ 9.7} \\
+R & 127.4 & \cellcolor{gray!12}115.0 & \gain{$\downarrow$ 12.4} & 69.8 & \cellcolor{gray!12}58.1 & \gain{$\downarrow$ 11.7} \\
+W & 225.6 & \cellcolor{gray!12}222.1 & \gain{$\downarrow$ 3.5} & 105.3 & \cellcolor{gray!12}110.2 & \loss{$\uparrow$ 4.9} \\
+\midrule
+V+D & 86.1 & \cellcolor{gray!12}51.7 & \gain{$\downarrow$ 34.4} & 48.1 & \cellcolor{gray!12}34.3 & \gain{$\downarrow$ 13.8} \\
+V+L & 93.0 & \cellcolor{gray!12}73.2 & \gain{$\downarrow$ 19.8} & 59.7 & \cellcolor{gray!12}41.9 & \gain{$\downarrow$ 17.8} \\
+V+R & 88.8 & \cellcolor{gray!12}68.9 & \gain{$\downarrow$ 19.9} & 57.3 & \cellcolor{gray!12}38.9 & \gain{$\downarrow$ 18.4} \\
+V+W & 93.0 & \cellcolor{gray!12}88.1 & \gain{$\downarrow$ 4.9} & 59.5 & \cellcolor{gray!12}42.3 & \gain{$\downarrow$ 17.2} \\
+D+L & 102.5 & \cellcolor{gray!12}53.0 & \gain{$\downarrow$ 49.5} & 48.4 & \cellcolor{gray!12}35.4 & \gain{$\downarrow$ 13.0} \\
+D+R & 98.0 & \cellcolor{gray!12}52.3 & \gain{$\downarrow$ 45.7} & 47.3 & \cellcolor{gray!12}34.6 & \gain{$\downarrow$ 12.7} \\
+D+W & 101.8 & \cellcolor{gray!12}53.5 & \gain{$\downarrow$ 48.3} & 48.1 & \cellcolor{gray!12}35.5 & \gain{$\downarrow$ 12.6} \\
+L+R & 109.8 & \cellcolor{gray!12}97.5 & \gain{$\downarrow$ 12.3} & 63.4 & \cellcolor{gray!12}55.1 & \gain{$\downarrow$ 8.3} \\
+L+W & 159.5 & \cellcolor{gray!12}134.2 & \gain{$\downarrow$ 25.3} & 102.7 & \cellcolor{gray!12}93.2 & \gain{$\downarrow$ 9.5} \\
+R+W & 117.2 & \cellcolor{gray!12}108.5 & \gain{$\downarrow$ 8.7} & 62.7 & \cellcolor{gray!12}57.3 & \gain{$\downarrow$ 5.4} \\
+\midrule
+V+D+L & 84.8 & \cellcolor{gray!12}51.1 & \gain{$\downarrow$ 33.7} & 48.2 & \cellcolor{gray!12}34.2 & \gain{$\downarrow$ 14.0} \\
+V+D+R & 83.4 & \cellcolor{gray!12}50.5 & \gain{$\downarrow$ 32.9} & 47.3 & \cellcolor{gray!12}33.5 & \gain{$\downarrow$ 13.8} \\
+V+D+W & 85.3 & \cellcolor{gray!12}51.6 & \gain{$\downarrow$ 33.7} & 48.1 & \cellcolor{gray!12}34.3 & \gain{$\downarrow$ 13.8} \\
+V+L+R & 88.4 & \cellcolor{gray!12}66.1 & \gain{$\downarrow$ 22.3} & 57.2 & \cellcolor{gray!12}38.8 & \gain{$\downarrow$ 18.4} \\
+V+L+W & 93.0 & \cellcolor{gray!12}70.7 & \gain{$\downarrow$ 22.3} & 59.7 & \cellcolor{gray!12}41.8 & \gain{$\downarrow$ 17.9} \\
+V+R+W & 88.5 & \cellcolor{gray!12}66.7 & \gain{$\downarrow$ 21.8} & 57.1 & \cellcolor{gray!12}38.8 & \gain{$\downarrow$ 18.3} \\
+D+L+R & 96.0 & \cellcolor{gray!12}51.9 & \gain{$\downarrow$ 44.1} & 47.3 & \cellcolor{gray!12}34.5 & \gain{$\downarrow$ 12.8} \\
+D+L+W & 102.0 & \cellcolor{gray!12}52.9 & \gain{$\downarrow$ 49.1} & 48.1 & \cellcolor{gray!12}35.4 & \gain{$\downarrow$ 12.7} \\
+D+R+W & 97.0 & \cellcolor{gray!12}52.1 & \gain{$\downarrow$ 44.9} & 47.1 & \cellcolor{gray!12}34.6 & \gain{$\downarrow$ 12.5} \\
+L+R+W & 107.4 & \cellcolor{gray!12}94.2 & \gain{$\downarrow$ 13.2} & 63.1 & \cellcolor{gray!12}55.1 & \gain{$\downarrow$ 8.0} \\
+\midrule
+V+D+L+R & 83.5 & \cellcolor{gray!12}50.2 & \gain{$\downarrow$ 33.3} & 47.6 & \cellcolor{gray!12}33.4 & \gain{$\downarrow$ 14.2} \\
+V+D+L+W & 86.0 & \cellcolor{gray!12}51.0 & \gain{$\downarrow$ 35.0} & 48.2 & \cellcolor{gray!12}34.2 & \gain{$\downarrow$ 14.0} \\
+V+D+R+W & 84.0 & \cellcolor{gray!12}50.4 & \gain{$\downarrow$ 33.6} & 47.6 & \cellcolor{gray!12}33.5 & \gain{$\downarrow$ 14.1} \\
+V+L+R+W & 88.6 & \cellcolor{gray!12}64.2 & \gain{$\downarrow$ 24.4} & 57.1 & \cellcolor{gray!12}38.8 & \gain{$\downarrow$ 18.3} \\
+D+L+R+W & 97.6 & \cellcolor{gray!12}51.8 & \gain{$\downarrow$ 45.8} & 47.4 & \cellcolor{gray!12}34.5 & \gain{$\downarrow$ 12.9} \\
+\midrule
+V+D+L+R+W & 83.7 & \cellcolor{gray!12}50.2 & \gain{$\downarrow$ 33.5} & 47.6 & \cellcolor{gray!12}33.5 & \gain{$\downarrow$ 14.1} \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table*}
+
+
+\begin{table*}[t]
+\centering
+\caption{\cnHarDirectCaption}
+\label{tab:xfi_har_direct}
+\scriptsize
+\begin{adjustbox}{width=0.82\textwidth}
+\begin{tabular}{lccc}
+\toprule
+\cnModalitySetShort & X-Fi Acc.$\uparrow$ & VK-RMD Acc.$\uparrow$ & $\Delta$ Acc. \\
+\midrule
+V & 26.5 & \cellcolor{gray!12}65.3 & \gain{$\uparrow$ 38.8} \\
+D & 48.1 & \cellcolor{gray!12}88.0 & \gain{$\uparrow$ 39.9} \\
+L & 52.7 & \cellcolor{gray!12}40.8 & \loss{$\downarrow$ 11.9} \\
+R & 85.7 & \cellcolor{gray!12}85.9 & \gain{$\uparrow$ 0.2} \\
+\midrule
+V+D & 45.3 & \cellcolor{gray!12}89.5 & \gain{$\uparrow$ 44.2} \\
+V+L & 35.2 & \cellcolor{gray!12}68.5 & \gain{$\uparrow$ 33.3} \\
+V+R & 73.4 & \cellcolor{gray!12}92.7 & \gain{$\uparrow$ 19.3} \\
+D+L & 51.6 & \cellcolor{gray!12}88.5 & \gain{$\uparrow$ 36.9} \\
+D+R & 79.8 & \cellcolor{gray!12}96.4 & \gain{$\uparrow$ 16.6} \\
+L+R & 88.7 & \cellcolor{gray!12}89.5 & \gain{$\uparrow$ 0.8} \\
+\midrule
+V+D+L & 48.7 & \cellcolor{gray!12}89.6 & \gain{$\uparrow$ 40.9} \\
+V+D+R & 70.7 & \cellcolor{gray!12}96.6 & \gain{$\uparrow$ 25.9} \\
+V+L+R & 77.8 & \cellcolor{gray!12}92.7 & \gain{$\uparrow$ 14.9} \\
+D+L+R & 80.5 & \cellcolor{gray!12}96.4 & \gain{$\uparrow$ 15.9} \\
+\midrule
+V+D+L+R & 72.2 & \cellcolor{gray!12}96.6 & \gain{$\uparrow$ 24.4} \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table*}
+
+
+\begin{table*}[t]
+\centering
+\caption{FSG 缺失强度核心结果。HPE 为 MPJPE/PA-MPJPE，越低越好；HAR 为 Acc./F1，越高越好。}
+\label{tab:severity_cn}
+\scriptsize
+\begin{adjustbox}{width=\textwidth}
+\begin{tabular}{lcccccccc}
+\toprule
+\multirow{2}{*}{缺失数} & \multicolumn{4}{c}{HPE$\downarrow$} & \multicolumn{4}{c}{HAR$\uparrow$} \\
+\cmidrule(lr){2-5}\cmidrule(lr){6-9}
+ & VK MPJPE & VK PA & NV MPJPE & NV PA & VK Acc. & VK F1 & NV Acc. & NV F1 \\
+\midrule
+0 & 50.2 & 33.5 & 51.0 & 35.7 & 96.6 & 96.5 & 96.1 & 96.1 \\
+1 & 53.5 & 34.9 & 61.3 & 40.5 & 93.8 & 93.8 & 90.1 & 90.0 \\
+2 & 60.8 & 38.1 & 79.4 & 50.7 & 87.5 & 87.6 & 66.0 & 65.7 \\
+3 & 78.1 & 46.8 & 124.3 & 71.2 & 70.0 & 69.9 & -- & -- \\
+4 & 124.8 & 68.0 & -- & -- & -- & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table*}
+
+
+\begin{table}[H]
+\centering
+\caption{Leave-one-out 关键模态分析。HPE 数值为移除该模态后的误差增加量；HAR 数值为移除该模态后的准确率/F1 下降量。}
+\label{tab:loo_cn}
+\scriptsize
+\begin{adjustbox}{width=\linewidth}
+\begin{tabular}{lcccc}
+\toprule
+Removed & HPE $\Delta$MPJPE & HPE $\Delta$PA & HAR $\Delta$Acc. & HAR $\Delta$F1 \\
+\midrule
+V & 1.6 & 1.1 & 0.1 & 0.1 \\
+D & 14.1 & 5.3 & 3.8 & 3.7 \\
+L & 0.2 & 0.1 & 0.0 & 0.0 \\
+R & 0.9 & 0.7 & 6.9 & 7.1 \\
+W & 0.1 & -0.0 & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+
+\begin{table*}[t]
+\centering
+\caption{跨协议泛化核心结果。HPE 为平均/全模态 MPJPE，HAR 为平均/全模态 Accuracy。}
+\label{tab:protocol_cn}
+\scriptsize
+\begin{adjustbox}{width=\textwidth}
+\begin{tabular}{llcccc}
+\toprule
+Protocol & Model & HPE Avg.$\downarrow$ & HPE Full$\downarrow$ & HAR Avg.$\uparrow$ & HAR Full$\uparrow$ \\
+\midrule
+random split & VK-RMD VK & 75.18 & 50.17 & 85.15 & 96.56 \\
+random split & VK-RMD NV & 84.68 & 51.03 & 80.62 & 96.12 \\
+\midrule
+cross-subject & VK-RMD VK & 78.57 & 49.88 & 85.30 & 96.12 \\
+cross-subject & VK-RMD NV & 90.74 & 52.45 & 81.26 & 95.70 \\
+\midrule
+cross-scene & VK-RMD VK & 142.02 & 71.71 & 80.61 & 95.25 \\
+cross-scene & VK-RMD NV & 153.89 & 78.96 & 76.70 & 95.41 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table*}
+
+\begin{table}[H]
+\centering
+\caption{核心消融结果。HPE 数值为 MPJPE，HAR 数值为 Accuracy。}
+\label{tab:ablation_cn}
+\scriptsize
+\begin{adjustbox}{width=\linewidth}
+\begin{tabular}{llcc}
+\toprule
+Task & Setting & Avg. & Full \\
+\midrule
+HPE & VK-RMD & 75.18 mm MPJPE & 50.17 mm MPJPE \\
+HPE & w/o distillation & 72.68 mm MPJPE & 48.83 mm MPJPE \\
+HPE & uniform fusion & 82.77 mm MPJPE & 52.28 mm MPJPE \\
+HAR & VK-RMD & 85.15\% accuracy & 96.56\% accuracy \\
+HAR & w/o distillation & 82.86\% accuracy & 95.99\% accuracy \\
+HAR & uniform fusion & 67.46\% accuracy & 95.39\% accuracy \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+
+\begin{table*}[!htbp]
+\centering
+\caption{合成模态腐蚀下的性能与学习贡献代理变化。HPE 使用 MPJPE，越低越好；HAR 使用 Accuracy，越高越好。$\Delta$Metric 表示相对 clean 的变化，$\Delta$Weight 表示被腐蚀模态自身权重变化。该表用于说明 learned contribution proxy 的响应边界，而不是物理传感器健康度校准。}
+\label{tab:reliability_corruption_cn}
+\scriptsize
+\begin{adjustbox}{width=\textwidth}
+\begin{tabular}{llcccc}
+\toprule
+Task & Corrupted modality & Metric & $\Delta$Metric & Clean weight & $\Delta$Weight \\
+\midrule
+HAR & V & 99.63\% Acc. & -0.13 pp & 0.238 & +0.003 \\
+HAR & D & 97.00\% Acc. & -2.75 pp & 0.249 & +0.006 \\
+HAR & L & 99.88\% Acc. & +0.13 pp & 0.244 & -0.002 \\
+HAR & R & 90.19\% Acc. & -9.56 pp & 0.269 & -0.009 \\
+\midrule
+HPE & V & 48.73 mm & +3.67 mm & 0.189 & -0.003 \\
+HPE & D & 332.67 mm & +287.62 mm & 0.270 & +0.068 \\
+HPE & L & 52.91 mm & +7.86 mm & 0.178 & -0.038 \\
+HPE & R & 46.56 mm & +1.51 mm & 0.183 & -0.004 \\
+HPE & W & 44.55 mm & -0.50 mm & 0.179 & +0.002 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table*}
+
+
+
+\begin{table*}[!htbp]
+\centering
+\caption{Body-latent token 对应性检查。Same 和 Shuffled 为同一样本与打乱样本的平均余弦相似度，Top-1 为同样本检索准确率，Random 为随机水平。结果显示 token 空间存在轻微高于随机的对应性，但差距有限，因此本文将其作为任务监督诱导表示的一部分，而不是严格几何配准证明。}
+\label{tab:body_latent_cn}
+\scriptsize
+\begin{adjustbox}{width=\textwidth}
+\begin{tabular}{llccccc}
+\toprule
+Task & Target modality & Same & Shuffled & Gap & Top-1 & Random \\
+\midrule
+HAR & D & 0.7851 & 0.7841 & 0.0010 & 0.0869 & 0.0625 \\
+HAR & L & 0.8826 & 0.8821 & 0.0004 & 0.1006 & 0.0625 \\
+HAR & R & 0.7466 & 0.7456 & 0.0009 & 0.0744 & 0.0625 \\
+\midrule
+HPE & D & 0.9296 & 0.9291 & 0.0005 & 0.0806 & 0.0625 \\
+HPE & L & 0.8784 & 0.8782 & 0.0001 & 0.0650 & 0.0625 \\
+HPE & R & 0.8492 & 0.8486 & 0.0006 & 0.0700 & 0.0625 \\
+HPE & W & 0.8945 & 0.8943 & 0.0002 & 0.0675 & 0.0625 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table*}
+
+
+
+\begin{table}[H]
+\centering
+\caption{SuperTeacher 探索性结果。该实验检验单一跨任务 teacher 是否可同时服务 HPE 和 HAR。结果进入正文作为探索边界：SuperTeacher 自身 full-modality 端点可用，但缺失组合不稳定，因此不替代本文主线的 Student-VK/Student-NV。}
+\label{tab:superteacher_cn}
+\scriptsize
+\begin{adjustbox}{width=\linewidth}
+\begin{tabular}{lcc}
+\toprule
+Model & HPE MPJPE$\downarrow$ & HAR Acc.$\uparrow$ \\
+\midrule
+SuperTeacher final & 59.78 mm & 90.56\% \\
+Super-HPE Student-VK final & 59.71 mm & -- \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+

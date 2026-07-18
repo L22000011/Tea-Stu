@@ -1,0 +1,3 @@
+index,name,status,reason,returncode,seconds,outputs
+1,dgcnn_mmwave_vk_generator_cross_scene,dry_run,,0,0.000,E:\Deskbook\Tea\RGB-Subset-Fairness\outputs_mmwave_vk_v2\generators_dgcnn\cross_scene\best.pth;E:\Deskbook\Tea\RGB-Subset-Fairness\outputs_mmwave_vk_v2\generators_dgcnn\cross_scene\export_complete.json
+2,dgcnn_mmwave_vk_generator_cross_subject,dry_run,,0,0.000,E:\Deskbook\Tea\RGB-Subset-Fairness\outputs_mmwave_vk_v2\generators_dgcnn\cross_subject\best.pth;E:\Deskbook\Tea\RGB-Subset-Fairness\outputs_mmwave_vk_v2\generators_dgcnn\cross_subject\export_complete.json

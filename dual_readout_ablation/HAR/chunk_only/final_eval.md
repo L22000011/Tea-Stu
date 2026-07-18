@@ -1,0 +1,5 @@
+# VK-RMD-HAR-Readout-chunk_only final evaluation
+
+|method|split|protocol|modality_set|loss|acc|macro_f1|params|fps|peak_memory|
+|---|---|---|---|---|---|---|---|---|---|
+|VK-RMD-HAR-Readout-chunk_only|random_split|protocol3|vk+depth+lidar+mmwave|0.014575606252110447|0.995625|0.5443783068268392|8606392|NA|NA|

@@ -1,0 +1,3 @@
+index,name,status,reason,returncode,seconds,outputs
+1,depth_vk_generator_cross_scene,done,,0,6720.194,/apps/users/icps_intelligence/data/lyg/X-Fi/RGB-Subset-Fairness/outputs_depth_vk/generators/cross_scene/best.pth;/apps/users/icps_intelligence/data/lyg/X-Fi/RGB-Subset-Fairness/outputs_depth_vk/generators/cross_scene/export_complete.json
+2,depth_vk_generator_cross_subject,done,,0,5695.707,/apps/users/icps_intelligence/data/lyg/X-Fi/RGB-Subset-Fairness/outputs_depth_vk/generators/cross_subject/best.pth;/apps/users/icps_intelligence/data/lyg/X-Fi/RGB-Subset-Fairness/outputs_depth_vk/generators/cross_subject/export_complete.json

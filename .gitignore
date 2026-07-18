@@ -1,5 +1,112 @@
+﻿# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Virtual environments and local env files
+.venv/
+venv/
+env/
+ENV/
+*.env
+.env
+.env.*
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+
+# Datasets and local data mounts
+/MMFi_DATA/
+/data/
+/datasets/
+/Dataset/
+/DATA/
+
+# Training outputs, checkpoints, and experiment artifacts
+outputs/
+**/outputs/
+runs/
+wandb/
+tensorboard/
+checkpoints/
+pre-trained_weights/
+pretrained_weights/
+pretrained/
 *.pt
 *.pth
-__pycache__/
-*.pyc
-*.log
+*.pkl
+*.ckpt
+*.onnx
+*.engine
+*.npy
+*.npz
+*.bin
+
+# Large generated media / reports
+*.pdf
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+*.mp4
+*.avi
+*.mov
+
+# Local archived upstream copies
+origin-XFI/
+origin-XRF55/
+legacy_code_archive/
+old_code_archive/
+
+# Project-local raw or reproducible source data
+.workbuddy/
+Raw-RGB/
+Ori-RGB-HPE/
+Ori-RGB-HAR/
+XRF55/
+作业/
+
+# Per-sample/generated data and oversized publication intermediates
+*.tif
+*.tiff
+*.synctex
+*.synctex.gz
+*.synctex(busy)
+*.aux
+*.blg
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+
+# Keep lightweight experiment results under outputs while weights/logs stay ignored
+!outputs/
+!outputs/**/
+!**/outputs/
+!**/outputs/**/
+
+# Keep manuscript/report PDFs, but not third-party or root reference PDFs
+!Paper/**/*.pdf
+!Writing/**/*.pdf
+!reports/**/*.pdf
+!tables/**/*.pdf
+!supplement/**/*.pdf
+!paper_vkrcd_cn/**/*.pdf

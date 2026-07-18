@@ -1,0 +1,107 @@
+\section{HPE Results}
+The HPE comparison contains 62 comparable rows. MPJPE improves in 34 rows, and PA-MPJPE improves in 33 rows. All HPE errors are reported in millimeters, and lower is better.
+\paragraph{Important note on the Teacher.} The full-modality Teacher is not a missing-modality model. It is trained as a full-modality oracle with all modalities available, so evaluating it under single-modality or arbitrary missing-modality settings creates a distribution shift. Therefore, the Teacher may look very poor in many partial-modality rows, while its full-modality row is strong. The Student-VK and Student-NV models are the models intended for missing-modality robustness.
+\begin{table}[htbp]\centering\caption{HPE full-modality comparison against official X-Fi}\begin{tabular}{llrrrr}\toprule
+Method & Source & Ours MPJPE & X-Fi MPJPE & $\Delta$ MPJPE & $\Delta$ PA-MPJPE\\\midrule
+VK-RCD-Teacher & teacher\_all\_combinations.csv & 48.45 & 83.70 & \textcolor{blue}{-35.25} & \textcolor{blue}{-14.54}\\
+VK-RCD-Student-VK & all\_combinations.csv & 50.17 & 83.70 & \textcolor{blue}{-33.53} & \textcolor{blue}{-14.12}\\
+\bottomrule\end{tabular}\end{table}
+\begin{longtable}{p{0.20\linewidth}p{0.13\linewidth}p{0.19\linewidth}rrrr}
+\caption{HPE per-modality comparison against official X-Fi}\\
+\toprule
+Method & Split & Modality & Ours MPJPE & X-Fi MPJPE & $\Delta$ MPJPE & $\Delta$ PA\\\midrule
+\endfirsthead
+\toprule
+Method & Split & Modality & Ours MPJPE & X-Fi MPJPE & $\Delta$ MPJPE & $\Delta$ PA\\\midrule
+\endhead
+VK-RCD-Teacher & random\_split & vk & 487.99 & 93.90 & \textcolor{red}{+394.09} & \textcolor{red}{+79.05}\\
+VK-RCD-Teacher & random\_split & depth & 234.48 & 101.80 & \textcolor{red}{+132.68} & \textcolor{red}{+36.20}\\
+VK-RCD-Teacher & random\_split & lidar & 1615.42 & 167.10 & \textcolor{red}{+1448.32} & \textcolor{red}{+284.13}\\
+VK-RCD-Teacher & random\_split & mmwave & 4196.64 & 127.40 & \textcolor{red}{+4069.24} & \textcolor{red}{+228.92}\\
+VK-RCD-Teacher & random\_split & wifi-csi & 4173.33 & 225.60 & \textcolor{red}{+3947.73} & \textcolor{red}{+272.92}\\
+VK-RCD-Teacher & random\_split & vk+depth & 369.12 & 86.10 & \textcolor{red}{+283.02} & \textcolor{red}{+49.21}\\
+VK-RCD-Teacher & random\_split & vk+lidar & 1072.74 & 93.00 & \textcolor{red}{+979.74} & \textcolor{red}{+153.37}\\
+VK-RCD-Teacher & random\_split & vk+mmwave & 814.71 & 88.80 & \textcolor{red}{+725.91} & \textcolor{red}{+116.75}\\
+VK-RCD-Teacher & random\_split & vk+wifi-csi & 2491.83 & 93.00 & \textcolor{red}{+2398.83} & \textcolor{red}{+275.70}\\
+VK-RCD-Teacher & random\_split & depth+lidar & 285.80 & 102.50 & \textcolor{red}{+183.30} & \textcolor{red}{+39.07}\\
+VK-RCD-Teacher & random\_split & depth+mmwave & 178.87 & 98.00 & \textcolor{red}{+80.87} & \textcolor{red}{+18.26}\\
+VK-RCD-Teacher & random\_split & depth+wifi-csi & 197.61 & 101.80 & \textcolor{red}{+95.81} & \textcolor{red}{+25.97}\\
+VK-RCD-Teacher & random\_split & lidar+mmwave & 2157.14 & 109.80 & \textcolor{red}{+2047.34} & \textcolor{red}{+324.25}\\
+VK-RCD-Teacher & random\_split & lidar+wifi-csi & 4007.08 & 159.50 & \textcolor{red}{+3847.58} & \textcolor{red}{+281.43}\\
+VK-RCD-Teacher & random\_split & mmwave+wifi-csi & 4675.91 & 117.20 & \textcolor{red}{+4558.71} & \textcolor{red}{+210.45}\\
+VK-RCD-Teacher & random\_split & vk+depth+lidar & 634.60 & 84.80 & \textcolor{red}{+549.80} & \textcolor{red}{+64.07}\\
+VK-RCD-Teacher & random\_split & vk+depth+mmwave & 465.16 & 83.40 & \textcolor{red}{+381.76} & \textcolor{red}{+39.15}\\
+VK-RCD-Teacher & random\_split & vk+depth+wifi-csi & 100.71 & 85.30 & \textcolor{red}{+15.41} & \textcolor{red}{+3.37}\\
+VK-RCD-Teacher & random\_split & vk+lidar+mmwave & 1035.05 & 88.40 & \textcolor{red}{+946.65} & \textcolor{red}{+180.75}\\
+VK-RCD-Teacher & random\_split & vk+lidar+wifi-csi & 4736.11 & 93.00 & \textcolor{red}{+4643.11} & \textcolor{red}{+211.53}\\
+VK-RCD-Teacher & random\_split & vk+mmwave+wifi-csi & 4769.71 & 88.50 & \textcolor{red}{+4681.21} & \textcolor{red}{+198.88}\\
+VK-RCD-Teacher & random\_split & depth+lidar+mmwave & 310.49 & 96.00 & \textcolor{red}{+214.49} & \textcolor{red}{+28.62}\\
+VK-RCD-Teacher & random\_split & depth+lidar+wifi-csi & 177.40 & 102.00 & \textcolor{red}{+75.40} & \textcolor{red}{+18.88}\\
+VK-RCD-Teacher & random\_split & depth+mmwave+wifi-csi & 121.88 & 97.00 & \textcolor{red}{+24.88} & \textcolor{red}{+7.73}\\
+VK-RCD-Teacher & random\_split & lidar+mmwave+wifi-csi & 4360.45 & 107.40 & \textcolor{red}{+4253.05} & \textcolor{red}{+259.17}\\
+VK-RCD-Teacher & random\_split & vk+depth+lidar+mmwave & 593.34 & 83.50 & \textcolor{red}{+509.84} & \textcolor{red}{+45.64}\\
+VK-RCD-Teacher & random\_split & vk+depth+lidar+wifi-csi & 67.89 & 86.00 & \textcolor{blue}{-18.11} & \textcolor{blue}{-7.67}\\
+VK-RCD-Teacher & random\_split & vk+depth+mmwave+wifi-csi & 71.27 & 84.00 & \textcolor{blue}{-12.73} & \textcolor{blue}{-8.69}\\
+VK-RCD-Teacher & random\_split & vk+lidar+mmwave+wifi-csi & 4876.08 & 88.60 & \textcolor{red}{+4787.48} & \textcolor{red}{+182.08}\\
+VK-RCD-Teacher & random\_split & depth+lidar+mmwave+wifi-csi & 112.99 & 97.60 & \textcolor{red}{+15.39} & \textcolor{red}{+3.32}\\
+VK-RCD-Teacher & random\_split & vk+depth+lidar+mmwave+wifi-csi & 48.45 & 83.70 & \textcolor{blue}{-35.25} & \textcolor{blue}{-14.54}\\
+VK-RCD-Student-VK & random\_split & vk & 92.66 & 93.90 & \textcolor{blue}{-1.24} & \textcolor{blue}{-17.70}\\
+VK-RCD-Student-VK & random\_split & depth & 53.88 & 101.80 & \textcolor{blue}{-47.92} & \textcolor{blue}{-12.79}\\
+VK-RCD-Student-VK & random\_split & lidar & 139.90 & 167.10 & \textcolor{blue}{-27.20} & \textcolor{blue}{-9.76}\\
+VK-RCD-Student-VK & random\_split & mmwave & 114.98 & 127.40 & \textcolor{blue}{-12.42} & \textcolor{blue}{-11.67}\\
+VK-RCD-Student-VK & random\_split & wifi-csi & 222.14 & 225.60 & \textcolor{blue}{-3.46} & \textcolor{red}{+4.89}\\
+VK-RCD-Student-VK & random\_split & vk+depth & 51.65 & 86.10 & \textcolor{blue}{-34.45} & \textcolor{blue}{-13.81}\\
+VK-RCD-Student-VK & random\_split & vk+lidar & 73.18 & 93.00 & \textcolor{blue}{-19.82} & \textcolor{blue}{-17.78}\\
+VK-RCD-Student-VK & random\_split & vk+mmwave & 68.93 & 88.80 & \textcolor{blue}{-19.87} & \textcolor{blue}{-18.40}\\
+VK-RCD-Student-VK & random\_split & vk+wifi-csi & 88.11 & 93.00 & \textcolor{blue}{-4.89} & \textcolor{blue}{-17.20}\\
+VK-RCD-Student-VK & random\_split & depth+lidar & 53.00 & 102.50 & \textcolor{blue}{-49.50} & \textcolor{blue}{-13.05}\\
+VK-RCD-Student-VK & random\_split & depth+mmwave & 52.32 & 98.00 & \textcolor{blue}{-45.68} & \textcolor{blue}{-12.66}\\
+VK-RCD-Student-VK & random\_split & depth+wifi-csi & 53.54 & 101.80 & \textcolor{blue}{-48.26} & \textcolor{blue}{-12.58}\\
+VK-RCD-Student-VK & random\_split & lidar+mmwave & 97.54 & 109.80 & \textcolor{blue}{-12.26} & \textcolor{blue}{-8.31}\\
+VK-RCD-Student-VK & random\_split & lidar+wifi-csi & 134.11 & 159.50 & \textcolor{blue}{-25.39} & \textcolor{blue}{-9.48}\\
+VK-RCD-Student-VK & random\_split & mmwave+wifi-csi & 108.54 & 117.20 & \textcolor{blue}{-8.66} & \textcolor{blue}{-5.43}\\
+VK-RCD-Student-VK & random\_split & vk+depth+lidar & 51.10 & 84.80 & \textcolor{blue}{-33.70} & \textcolor{blue}{-14.04}\\
+VK-RCD-Student-VK & random\_split & vk+depth+mmwave & 50.50 & 83.40 & \textcolor{blue}{-32.90} & \textcolor{blue}{-13.78}\\
+VK-RCD-Student-VK & random\_split & vk+depth+wifi-csi & 51.63 & 85.30 & \textcolor{blue}{-33.67} & \textcolor{blue}{-13.81}\\
+VK-RCD-Student-VK & random\_split & vk+lidar+mmwave & 66.08 & 88.40 & \textcolor{blue}{-22.32} & \textcolor{blue}{-18.43}\\
+VK-RCD-Student-VK & random\_split & vk+lidar+wifi-csi & 70.68 & 93.00 & \textcolor{blue}{-22.32} & \textcolor{blue}{-17.94}\\
+VK-RCD-Student-VK & random\_split & vk+mmwave+wifi-csi & 66.69 & 88.50 & \textcolor{blue}{-21.81} & \textcolor{blue}{-18.30}\\
+VK-RCD-Student-VK & random\_split & depth+lidar+mmwave & 51.92 & 96.00 & \textcolor{blue}{-44.08} & \textcolor{blue}{-12.80}\\
+VK-RCD-Student-VK & random\_split & depth+lidar+wifi-csi & 52.86 & 102.00 & \textcolor{blue}{-49.14} & \textcolor{blue}{-12.72}\\
+VK-RCD-Student-VK & random\_split & depth+mmwave+wifi-csi & 52.13 & 97.00 & \textcolor{blue}{-44.87} & \textcolor{blue}{-12.48}\\
+VK-RCD-Student-VK & random\_split & lidar+mmwave+wifi-csi & 94.20 & 107.40 & \textcolor{blue}{-13.20} & \textcolor{blue}{-8.00}\\
+VK-RCD-Student-VK & random\_split & vk+depth+lidar+mmwave & 50.25 & 83.50 & \textcolor{blue}{-33.25} & \textcolor{blue}{-14.15}\\
+VK-RCD-Student-VK & random\_split & vk+depth+lidar+wifi-csi & 51.05 & 86.00 & \textcolor{blue}{-34.95} & \textcolor{blue}{-14.02}\\
+VK-RCD-Student-VK & random\_split & vk+depth+mmwave+wifi-csi & 50.41 & 84.00 & \textcolor{blue}{-33.59} & \textcolor{blue}{-14.06}\\
+VK-RCD-Student-VK & random\_split & vk+lidar+mmwave+wifi-csi & 64.22 & 88.60 & \textcolor{blue}{-24.38} & \textcolor{blue}{-18.35}\\
+VK-RCD-Student-VK & random\_split & depth+lidar+mmwave+wifi-csi & 51.78 & 97.60 & \textcolor{blue}{-45.82} & \textcolor{blue}{-12.86}\\
+VK-RCD-Student-VK & random\_split & vk+depth+lidar+mmwave+wifi-csi & 50.17 & 83.70 & \textcolor{blue}{-33.53} & \textcolor{blue}{-14.12}\\
+\bottomrule
+\end{longtable}
+\subsection{VK Noise and Dropped-Joint Robustness}
+\begin{longtable}{p{0.22\linewidth}p{0.12\linewidth}p{0.12\linewidth}rrrr}
+\caption{HPE Student-VK robustness under VK noise and joint dropping}\\
+\toprule
+Source & Noise Std & Drop Prob & MPJPE & PA-MPJPE & MSE & Method\\\midrule
+\endfirsthead
+\toprule
+Source & Noise Std & Drop Prob & MPJPE & PA-MPJPE & MSE & Method\\\midrule
+\endhead
+student\_vk\_noise\_robustness.csv & 0.0 &  & 50.18 & 33.48 & 0.0014590788163282586 & VK-RCD-Student-VK\\
+student\_vk\_noise\_robustness.csv & 0.0 &  & 52.64 & 34.57 & 0.0015710848316534925 & VK-RCD-Student-VK\\
+student\_vk\_noise\_robustness.csv & 0.0 &  & 54.10 & 35.19 & 0.0016379341990311823 & VK-RCD-Student-VK\\
+student\_vk\_noise\_robustness.csv & 0.0 &  & 54.75 & 35.50 & 0.0016690452336497448 & VK-RCD-Student-VK\\
+student\_vk\_noise\_robustness.csv & 5.0 &  & 50.88 & 33.92 & 0.001488102523395341 & VK-RCD-Student-VK\\
+student\_vk\_noise\_robustness.csv & 5.0 &  & 52.88 & 34.71 & 0.001581960488836217 & VK-RCD-Student-VK\\
+student\_vk\_noise\_robustness.csv & 5.0 &  & 54.12 & 35.19 & 0.0016401267167432682 & VK-RCD-Student-VK\\
+student\_vk\_noise\_robustness.csv & 5.0 &  & 54.76 & 35.50 & 0.0016697228733739478 & VK-RCD-Student-VK\\
+student\_vk\_noise\_robustness.csv & 10.0 &  & 52.08 & 34.57 & 0.001539294305564543 & VK-RCD-Student-VK\\
+student\_vk\_noise\_robustness.csv & 10.0 &  & 53.26 & 34.93 & 0.0015987949889641724 & VK-RCD-Student-VK\\
+student\_vk\_noise\_robustness.csv & 10.0 &  & 54.12 & 35.20 & 0.001638386860237358 & VK-RCD-Student-VK\\
+student\_vk\_noise\_robustness.csv & 10.0 &  & 54.74 & 35.52 & 0.0016693329612529602 & VK-RCD-Student-VK\\
+student\_vk\_noise\_robustness.csv & 20.0 &  & 53.63 & 35.20 & 0.001611003164998953 & VK-RCD-Student-VK\\
+student\_vk\_noise\_robustness.csv & 20.0 &  & 53.85 & 35.15 & 0.001621275579426224 & VK-RCD-Student-VK\\
+student\_vk\_noise\_robustness.csv & 20.0 &  & 54.21 & 35.25 & 0.0016435792571283744 & VK-RCD-Student-VK\\
+student\_vk\_noise\_robustness.csv & 20.0 &  & 54.78 & 35.54 & 0.0016701842608368845 & VK-RCD-Student-VK\\
+\bottomrule
+\end{longtable}

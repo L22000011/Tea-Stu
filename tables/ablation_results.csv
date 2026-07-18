@@ -1,0 +1,9 @@
+task,setting,avg_metric,full_metric,interpretation,main_text_policy
+HPE,VK-RMD Student-VK,75.18 mm MPJPE,50.17 mm MPJPE,main model,main text
+HPE,w/o distillation,72.68 mm MPJPE,48.83 mm MPJPE,HPE distillation claim must be cautious,discussion/ablation
+HPE,uniform fusion,82.77 mm MPJPE,52.28 mm MPJPE,reliability fusion improves robustness,main ablation
+HPE,simple MLP VK encoder,503.74 mm MPJPE,77.69 mm MPJPE,encoder design matters but extreme degradation should not dominate,appendix or concise ablation
+HPE,skeleton prompt encoder,1000.80 mm MPJPE,55.07 mm MPJPE,encoder ablation contains severe missing-combination failure,appendix or concise ablation
+HAR,VK-RMD Student-VK,85.15% accuracy,96.56% accuracy,main model,main text
+HAR,w/o distillation,82.86% accuracy,95.99% accuracy,distillation modestly improves average robustness,main ablation
+HAR,uniform fusion,67.46% accuracy,95.39% accuracy,reliability fusion is critical under missing modalities,main ablation

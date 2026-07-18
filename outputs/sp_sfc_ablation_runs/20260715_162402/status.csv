@@ -1,0 +1,9 @@
+task,profile,status,seconds,returncode
+HPE,task_only,dry-run,0.0,0
+HPE,output,dry-run,0.0,0
+HPE,output_token,dry-run,0.0,0
+HPE,full,dry-run,0.0,0
+HAR,task_only,dry-run,0.0,0
+HAR,output,dry-run,0.0,0
+HAR,output_token,dry-run,0.0,0
+HAR,full,dry-run,0.0,0

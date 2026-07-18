@@ -1,0 +1,4 @@
+task,anchor_modality,target_modality,same_sample_cosine,shuffled_cosine,cosine_gap,retrieval_top1,random_top1,num_samples,num_batches,checkpoint
+HAR,vk,depth,0.785098,0.784052,0.001046,0.086875,0.062500,1600,100,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HAR/outputs/student_vk_missing/best.pth
+HAR,vk,lidar,0.882560,0.882119,0.000441,0.100625,0.062500,1600,100,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HAR/outputs/student_vk_missing/best.pth
+HAR,vk,mmwave,0.746583,0.745650,0.000933,0.074375,0.062500,1600,100,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HAR/outputs/student_vk_missing/best.pth

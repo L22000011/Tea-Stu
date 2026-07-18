@@ -1,0 +1,25 @@
+task,method,pattern,rank,modality_set,metric,metric_name
+HAR,Student-NV,best,1,depth+mmwave,96.18,Accuracy %
+HAR,Student-NV,best,2,depth+lidar+mmwave,96.12,Accuracy %
+HAR,Student-NV,best,3,depth+lidar,88.68,Accuracy %
+HAR,Student-NV,worst,1,lidar,26.12,Accuracy %
+HAR,Student-NV,worst,2,mmwave,83.37,Accuracy %
+HAR,Student-NV,worst,3,lidar+mmwave,85.30,Accuracy %
+HAR,Student-VK,best,1,vk+depth+lidar+mmwave,96.56,Accuracy %
+HAR,Student-VK,best,2,vk+depth+mmwave,96.56,Accuracy %
+HAR,Student-VK,best,3,depth+mmwave,96.45,Accuracy %
+HAR,Student-VK,worst,1,lidar,40.80,Accuracy %
+HAR,Student-VK,worst,2,vk,65.31,Accuracy %
+HAR,Student-VK,worst,3,vk+lidar,68.54,Accuracy %
+HPE,Student-NV,best,1,depth+lidar+mmwave+wifi-csi,51.03,MPJPE mm
+HPE,Student-NV,best,2,depth+lidar+mmwave,51.11,MPJPE mm
+HPE,Student-NV,best,3,depth+mmwave+wifi-csi,51.22,MPJPE mm
+HPE,Student-NV,worst,1,wifi-csi,212.40,MPJPE mm
+HPE,Student-NV,worst,2,lidar+wifi-csi,123.65,MPJPE mm
+HPE,Student-NV,worst,3,lidar,123.10,MPJPE mm
+HPE,Student-VK,best,1,vk+depth+lidar+mmwave+wifi-csi,50.17,MPJPE mm
+HPE,Student-VK,best,2,vk+depth+lidar+mmwave,50.25,MPJPE mm
+HPE,Student-VK,best,3,vk+depth+mmwave+wifi-csi,50.41,MPJPE mm
+HPE,Student-VK,worst,1,wifi-csi,222.14,MPJPE mm
+HPE,Student-VK,worst,2,lidar,140.14,MPJPE mm
+HPE,Student-VK,worst,3,lidar+wifi-csi,134.16,MPJPE mm

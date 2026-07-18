@@ -1,0 +1,8 @@
+method,role,inference_modalities,inference_rgb,protocol,combination_count,avg_mpjpe_mm,full_mpjpe_mm,main_text_note
+Official X-Fi/VK table,baseline,VK+Depth+LiDAR+mmWave+WiFi-CSI,no,random split,31,103.70,83.70,official table baseline only; not our contribution
+VK-RMD Student-VK,ours,VK+Depth+LiDAR+mmWave+WiFi-CSI,no,random split,31,75.18,50.17,main HPE result
+VK-RMD Student-NV,ours,Depth+LiDAR+mmWave+WiFi-CSI,no,random split,15,84.68,51.03,non-RGB deployment result
+VK-RMD Student-VK,ours,VK+Depth+LiDAR+mmWave+WiFi-CSI,no,cross-scene,31,142.02,71.71,generalization result
+VK-RMD Student-NV,ours,Depth+LiDAR+mmWave+WiFi-CSI,no,cross-scene,15,153.89,78.96,generalization non-RGB result
+VK-RMD Student-VK,ours,VK+Depth+LiDAR+mmWave+WiFi-CSI,no,cross-subject,31,78.57,49.88,generalization result
+VK-RMD Student-NV,ours,Depth+LiDAR+mmWave+WiFi-CSI,no,cross-subject,15,90.74,52.45,generalization non-RGB result

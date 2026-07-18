@@ -1,0 +1,3 @@
+index,name,status,reason,returncode,seconds,outputs
+1,xfi_rgb_hpe_cross_scene_train,dry_run,,0,0.000,E:\Deskbook\Tea\Ori-RGB-HPE\outputs_rgb_subset\cross_scene\pre-trained_weights\best.pth
+2,xfi_rgb_hpe_cross_scene_eval31,skipped,missing_required=E:\Deskbook\Tea\Ori-RGB-HPE\outputs_rgb_subset\cross_scene\pre-trained_weights\best.pth,0,0.000,E:\Deskbook\Tea\Ori-RGB-HPE\outputs_rgb_subset\cross_scene\eval\main_eval_latest.csv

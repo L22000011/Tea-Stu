@@ -1,0 +1,16 @@
+modality_set,loss,acc,macro_f1,params,fps,peak_memory,method,split,protocol,readout_mode
+vk,2.151463785469532,0.461875,0.17812802589949536,8606392,NA,NA,VK-RMD-HAR-Readout-dual,random_split,protocol3,dual
+depth,0.09979181932863866,0.966875,0.49195520899553874,8606392,NA,NA,VK-RMD-HAR-Readout-dual,random_split,protocol3,dual
+lidar,3.7590021324157714,0.0075,0.005235602094240837,8606392,NA,NA,VK-RMD-HAR-Readout-dual,random_split,protocol3,dual
+mmwave,0.33246302201272554,0.90875,0.26564095667161897,8606392,NA,NA,VK-RMD-HAR-Readout-dual,random_split,protocol3,dual
+vk+depth,0.10648792948453774,0.96375,0.4913251307868578,8606392,NA,NA,VK-RMD-HAR-Readout-dual,random_split,protocol3,dual
+vk+lidar,2.1195995023846628,0.389375,0.16987311992567924,8606392,NA,NA,VK-RMD-HAR-Readout-dual,random_split,protocol3,dual
+vk+mmwave,0.2370811505167876,0.933125,0.33514954758770954,8606392,NA,NA,VK-RMD-HAR-Readout-dual,random_split,protocol3,dual
+depth+lidar,0.09183567264111843,0.969375,0.4925886429094253,8606392,NA,NA,VK-RMD-HAR-Readout-dual,random_split,protocol3,dual
+depth+mmwave,0.022502737370014073,0.993125,0.7476546257796257,8606392,NA,NA,VK-RMD-HAR-Readout-dual,random_split,protocol3,dual
+lidar+mmwave,0.3504219515700788,0.895,0.2634695047952084,8606392,NA,NA,VK-RMD-HAR-Readout-dual,random_split,protocol3,dual
+vk+depth+lidar,0.09988554555118753,0.965,0.4915082611422521,8606392,NA,NA,VK-RMD-HAR-Readout-dual,random_split,protocol3,dual
+vk+depth+mmwave,0.024719762156255456,0.9925,0.7474424053104256,8606392,NA,NA,VK-RMD-HAR-Readout-dual,random_split,protocol3,dual
+vk+lidar+mmwave,0.22713152423733846,0.9325,0.3348262879414815,8606392,NA,NA,VK-RMD-HAR-Readout-dual,random_split,protocol3,dual
+depth+lidar+mmwave,0.02218769841027097,0.993125,0.7476546257796257,8606392,NA,NA,VK-RMD-HAR-Readout-dual,random_split,protocol3,dual
+vk+depth+lidar+mmwave,0.024047800179632758,0.993125,0.7476546257796257,8606392,NA,NA,VK-RMD-HAR-Readout-dual,random_split,protocol3,dual

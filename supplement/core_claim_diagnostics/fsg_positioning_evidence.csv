@@ -1,0 +1,3 @@
+task,metric_name,full_method_avg,no_kd_avg,full_minus_no_kd,fsg_interpretation,uniform_fusion_avg,full_minus_uniform,fusion_interpretation,paper_policy
+HPE,MPJPE mm lower-better,75.18,72.68,2.5000,No-KD is competitive or stronger; present FSG as auxiliary.,82.77,-7.5900,Learned fusion improves over uniform.,Do not overclaim FSG as sole source of gains; use as full-to-subset behavior regularization.
+HAR,Accuracy % higher-better,85.15,82.86,2.2900,FSG/KD improves over no-KD.,67.46,17.6900,Learned fusion improves over uniform.,Do not overclaim FSG as sole source of gains; use as full-to-subset behavior regularization.

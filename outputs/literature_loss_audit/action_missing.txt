@@ -1,0 +1,722 @@
+                                 The Thirty-Seventh AAAI Conference on Artificial Intelligence (AAAI-23)
+
+
+
+
+       Towards Good Practices for Missing Modality Robust Action Recognition
+
+           Sangmin Woo, Sumin Lee, Yeonju Park, Muhammad Adi Nugroho, Changick Kim
+                                   Korea Advanced Institue of Science and Technology (KAIST)
+                                 {smwoo95, suminlee94, yeonju29, madin, changick}@kaist.ac.kr
+
+
+
+
+                           Abstract
+  Standard multi-modal models assume the use of the same
+  modalities in training and inference stages. However, in prac-
+  tice, the environment in which multi-modal models operate                                      Fusion                             Fusion
+  may not satisfy such assumption. As such, their performances                                      &                                  &
+  degrade drastically if any modality is missing in the infer-                                   Predict                            Predict
+  ence stage. We ask: how can we train a model that is robust
+                                                                                                   𝓛𝓛𝒄𝒄𝒄𝒄𝒄𝒄
+  to missing modalities? This paper seeks a set of good prac-
+  tices for multi-modal action recognition, with a particular
+  interest in circumstances where some modalities are not avail-
+  able at an inference time. First, we study how to effectively               (a) Multi-modal Training           (b) Multi-modal Inference
+  regularize the model during training (e.g., data augmenta-
+  tion). Second, we investigate on fusion methods for robustness
+  to missing modalities: we find that transformer-based fusion
+  shows better robustness for missing modality than summation                                                   RGB Missing
+  or concatenation. Third, we propose a simple modular net-
+  work, ActionMAE, which learns missing modality predictive
+  coding by randomly dropping modality features and tries to                                     Predict                            Predict
+  reconstruct them with the remaining modality features. Cou-
+  pling these good practices, we build a model that is not only
+                                                                            Depth Missing
+  effective in multi-modal action recognition but also robust to
+  modality missing. Our model achieves the state-of-the-arts on
+  multiple benchmarks and maintains competitive performances
+  even in missing modality scenarios.                                                        (c) Missing-modality Inference
+
+                                                                           Figure 1: Action recognition with missing modality. Standard
+                       Introduction                                        multi-modal action recognition assumes that the modalities
+This study aims to answer the underlying question about                    used in the training stage are complete at inference time: (a)
+multi-modal learning for action recognition in practical sit-              → (b). This paper addresses the action recognition problem
+uations: How can we train a model that is robust to miss-                  in situations where such assumption is not established, i.e.,
+ing modalities? Typical multi-modal models assume com-                     when modalities are incomplete at inference time: (a) → (c).
+plete modalities in both training and inference phases (Bruce,             Our goal is to maintain performance in the absence of any
+Liu, and Chan 2021; Bruce et al. 2022). In reality, however,               input modality. ^ indicates the weight-frozen.
+the multi-modal system may be unable to access particular
+modalities during the inference phase, despite being able
+                                                                           such as inclement weather would be life-threatening. As such,
+to access all modalities reliably during the training phase
+                                                                           the missing modality problem is critical when multi-modal
+(see Figure 1). There are a number of potential causes for
+                                                                           models are employed in practice.
+such circumstances, including malfunctioning sensors, high
+                                                                              To address the missing modality scenarios, we require a
+data acquisition costs, inaccessibility due to security or pri-
+                                                                           robust model that operates reliably even when certain modal-
+vacy concerns, self-deficiencies, etc. This situation affects the
+                                                                           ities are unavailable in multi-modal systems. However, con-
+reliability, accuracy, and safety of the model in real-world ap-
+                                                                           ventional multi-modal models are learnt under the premise
+plications. Considering the autonomous driving situation, an
+                                                                           that all modalities exist, so that they cannot achieve sufficient
+error caused by insufficient use of the sensors due to factors
+                                                                           performances when directly applied to missing modality set-
+Copyright © 2023, Association for the Advancement of Artificial            tings. Table 1 shows how much the conventional multi-modal
+Intelligence (www.aaai.org). All rights reserved.                          models suffer from missing modality. Our goal is to achieve
+
+
+                                                                    2776
+Dataset         Train modal∗ Test modal Acc.† △ (%p)                      ing training. We can plug-and-play ActionMAE on top of stan-
+                    R+D+I           R+D+I      93.3%      -               dard space-time encoders. Despite its simplicity, ActionMAE
+NTU-RGB+D 60        R+D+I            R+I       59.4% −33.9                achieves a win-win situation: it not only regularizes the multi-
+                    R+D+I             R        15.6% −77.7                modal model to achieve better accuracy in complete modality
+                      R+D            R+D       91.9%      -               cases, but also maintains accuracy in missing modality cases.
+NW-UCLA               R+D             R        53.6% −38.3                   We report our results on four challenging action recogni-
+                      R+D             D        70.3% −21.6                tion benchmarks: NTU RGB+D 60 (Shahroudy et al. 2016),
+*R: RGB, D: depth, I: infrared. † Results based on sum fusion.            NTU RGB+D 120 (Liu et al. 2019), NW-UCLA (Wang et al.
+                                                                          2014), and UWA3D (Rahmani et al. 2016). We set new state-
+Table 1: Multi-modal models suffer severely in missing                    of-the-art results in both complete and missing modality set-
+modality scenarios. We observe significant performance drop               tings. Furthermore, we observe some intriguing properties
+when the modality is removed one by one from the complete                 of ActionMAE from experiments, including the following:
+modality setup in inference stage.                                        (i) Missing modality reconstruction yields a nontrivial and
+                                                                          meaningful self-supervision. As such, the results with re-
+                          Train modalities: R+D+I                         constructed features are superior than those with the origi-
+                                                                          nal features extracted directly from space-time encoder. (ii)
+          90 -                                                            ActionMAE effectively regularizes the multi-modal model,
+          80 -                                                            hence the model equipped with ActionMAE achieves per-
+                                                                          formance gain over the vanilla model when using complete
+          70 -                                                            modalities. (iii) Moreover, ActionMAE alleviates the bias of
+                                                                          the multi-modal model toward the dominant modality (i.e.,
+          60 -
+                                                                          the most contributing modality to the learning objective). (iv)
+  Acc@1
+
+
+
+
+          50 -                                                            The robustness of ActionMAE is agnostic to the type or the
+                                                                          number of missing modalities. This suggests that it can pre-
+          40 -                                                            serve accuracy even in real-world environments where we do
+          30 -                                                            not know which modality might be missing.
+                     Sum
+          20 -       Transformer                                            Preliminary: Multi-modal Action Classifier
+                     w/ ActionMAE
+          10 -                                                            We first study how to design a strong multi-modal action
+                                                                          recognition model with several design choices.
+                 -
+
+
+                      -
+
+
+                             -
+
+
+                                    -
+
+
+                                            -
+
+
+                                                    -
+
+
+                                                        -
+
+
+
+
+                              Test modalities                             Architecture
+                                                                          The standard architecture of multi-modal action recognition
+Figure 2: Towards missing modality robust action recogni-                 is in a form of space-time encoder followed by a fusion
+tion. (i) Transformer fusion is robust than sum fusion. (ii)              unit. We seek the optimal space and time encoders for multi-
+In contrast to conventional approaches, our ActionMAE well                modal action recognition with the fusion unit set to a simple
+preserves the multi-modal performance even with incomplete                summation by default. Table 2 compares the accuracies of
+modalities. All models are trained with R+D+I modalities                  the simplest combinations among the numerous candidates:
+and tested on NTU RGB+D 60 (Shahroudy et al. 2016).                       R(2+1)D (Tran et al. 2018), ViT (Dosovitskiy et al. 2020),
+                                                                          ResNet (He et al. 2016), Transformer (Vaswani et al. 2017).
+on-par results as when all modalities are available, even if any                                                        Train → Test
+                                                                          Space encoder∗    Time encoder   Fusion
+of the input modality is missing. We achieve this by design-                                                      RD → RD RD → R
+ing a set of good practices for missing modality scenarios in                        R(2+1)D                         89.2%      41.2%
+multi-modal action recognition (see Figure 2): (i) As a prelim-            ViT-tiny/16†    Transformer               81.4%      35.7%
+inary step, we first demonstrate a recipe of how to effectively            ViT-small/16†   Transformer     Sum       83.0%      36.3%
+build a multi-modal model with several training ingredients                  ResNet18      Transformer               91.9%      41.9%
+such as architecture, data augmentation, and regularization.                 ResNet34      Transformer              92.6%       42.5%
+(ii) We observe that the fusion method matters for robustness                        *Space encoders are Imagenet initialized.
+to missing modality. We compare the three most widely used                         † Re-implementations from (Wightman 2019).
+methods in the literature among the numerous methods for
+multi-modal fusion: summation, concatenation, and trans-                  Table 2: ResNet34 + Transformer achieves the best accuracy
+former. Among them, we find that transformer-based fusion                 in both full (RD → RD) and missing modality (RD → R)
+method is the most robust against missing modality. (iii) We              cases. Experiments are conducted on NTU-RGB+D 60.
+propose Action Masked Auto Encoder (ActionMAE), a sim-
+ple modular network that learns missing modality predictive                  We choose ResNet34 and Transformer as our space and
+coding. The model with ActionMAE is optimized under the                   time encoders, respectively. The procedure of space-time
+two objectives. It jointly learns to reconstruct the missing              encoding is formalized as follows. We sample a sequence of
+modality features and to predict the correct action label dur-            frames [fim ]Ti=1 (fim ∈ RC0 ×H×W ) from a video V m , where
+
+
+                                                                   2777
+                                              Train→Test                       Fusion        Train modal     Test modal ↑ △(%p) ↑       ¯ ↓
+                                                                                                                                       |△|
+Variant
+                                       RDI → RDI       RD → R                                              R+D+I (93.3%)        -
+Center crop, horizontal flip                   85.9        34.8                                              R+D (89.0%)     −4.3
++ Imagenet initialization               89.2 (+3.3) 39.5 (+4.7)                                               R+I (59.4%)   −33.9
++ Shifted center crop                   90.5 (+1.3) 40.3 (+0.8)                Sum              R+D+I         D+I (89.2%)    −4.1       34.8
++ Temporal random sampling              91.0 (+0.5) 41.4 (+1.1)                                                R (15.6%)    −77.7
++ Color jitter (RGB)                    92.2 (+1.2) 42.0 (+0.6)                                                D (85.9%)     −7.4
++ Label smoothing (α = 0.1)             93.3 (+1.1) 42.5 (+0.5)                                                 I (12.1%)   −81.2
+- Color jitter (Depth)                  91.5 (−1.8)           -                                            R+D+I (93.2%)        -
+- Dropout (p = 0.1)                     92.6 (−0.7)        42.5                                              R+D (91.4%)     −1.8
+                                                                                                              R+I (75.4%)   −17.8
+Table 3: Progressively adding regularizations helps much                       Concat           R+D+I         D+I (18.6%)   −74.6       33.5
+in both full and missing modality cases. However, applying                                                     R (53.1%)    −40.1
+color jittering on depth maps and using dropout rather re-                                                     D (88.2%)     −5.0
+duced the performance in full modality case. Experiments are                                                    I (31.7%)   −61.5
+conducted on NTU RGB+D 60 with the sum fusion model.                                                       R+D+I (92.6%)        -
+                                                                                                             R+D (91.6%)     −1.0
+                                                                                                              R+I (66.6%)   −26.0
+i indicates the frame index and m indicates the modality. In                   Transformer      R+D+I         D+I (90.4%)    −2.2       21.0
+practice, we set T = 16, C0 = 3, H = W = 224, and                                                              R (56.6%)    −36.0
+m ∈ {R, D, I}. A frame of modality m is processed with a                                                       D (88.9%)     −3.7
+modality-specific space encoder E m followed by an average                                                      I (35.4%)   −57.2
+pooling:
+                 xm                m m
+                  i = avgpool(E (fi )) .                 (1)                   Table 4: Transformer is a missing modality robust fusion
+                                                                               unit. Experiments are conducted on NTU RGB+D 60. △ is
+   The output feature is xm          C
+                             i ∈ R , where C = 512. The                        defined as accuracy discrepancy between missing modality
+space encoder operates on every frame and we obtain a se-                      and full modality cases (△ = Accmiss − Accf ull ). While all
+quence of features [xm    T
+                       i ]i=1 . Before feeding them to the time                three fusion methods show comparable performance when
+encoder, which is a transformer encoder, a learnable class                     test modalities are complete, they show different aspects in
+token cls is prepended to the sequence. Its representation                     missing modality inference. ↑/↓: The higher/lower the better.
+at the last layer of the encoder serves as the final represen-
+tation used by the classification layer (Devlin et al. 2018;
+Dosovitskiy et al. 2020; Arnab et al. 2021).
+                                                                               tricks to train our models effectively. In order to see the ef-
+              m
+             X(0) = [clsm , xm         m
+                             1 , ..., xT ] + pos ,               (2)           fect of augmentations and regularizations, we ablate several
+                                                                               strategies in Table 3. By default, we employ center crop and
+where, pos is a fixed absolute embedding which represent
+                                                                               horizontal flip for all modality data, and progressively add
+the temporal positions 1 . A sequence of tokens is then fed
+                                                                               more strategies: Imagenet initialization on space encoder is
+to a transformer encoder with L layers (we set L = 2),
+                                                                               highly beneficial, implying that it eases the subsequent opti-
+where each layer l is composed of Multi-Head Self Atten-
+                                                                               mization of time encoder. It has relatively large impact in the
+tion (MHSA), Layer Normalization (LN), and Feed Forward
+                                                                               missing modality case compared to the full modality case,
+Network (FFN) 2 :
+                                                                               i.e., the strong inductive bias provided by ImageNet initializa-
+               m              m         m
+              Y(l) = MHSA(LN(X(l) )) + X(l) ,                    (3)           tion can have a particularly positive effect in the absence of
+               m               m         m
+                                                                               depth information. Instead of the vanilla center crop, we cen-
+              X(l+1) = FFN(LN(Y(l) )) + Y(l) .                   (4)           ter crop the larger region (×1.2) and then random crop (×1)
+                                m                                              within it. Instead of uniformly sampling frames from video,
+The output at the final layer X(L)  ∈ R(T +1)×C holds the                      we randomly sample frames and arrange them in temporal
+                                      m
+same dimension as that of the input X(0) . At last, we use the                 order. Color jitter increases divergence of RGB distribution,
+                              m     C                                          which has a beneficial effect. label smoothing (Szegedy et al.
+final classification token clsL ∈ R to classify the action
+classes with the fully-connected (FC) layer.                                   2016) adjusts the label distribution of the ground truth to
+                                                                               encourage the model to produce less confident predictions.
+Tips and Tricks for Training                                                   Generally, regularizing the model or increasing the data diver-
+In our preliminary experiments, we noticed that our models                     sity were beneficial in both full and missing modality cases.
+are prone to overfit, highlighting the necessity for a bag of                  However, some methods were detrimental in full modality
+                                                                               case: Color jitter on depth map rather harms the consistency
+    1
+      It is added to the tokens to maintain positional information             of 3D structural information. Dropout (Srivastava et al. 2014)
+since the subsequent self-attention operations in the transformers             makes optimization rather difficult. In missing modality case,
+are permutation-invariant.                                                     Dropout did not have a detrimental effect, but it also did
+    2                                                                          not help regularize the model. Overall, we achieve a sub-
+      We leave an original paper as a reference (Vaswani et al. 2017)
+for further details on transformer building blocks.                            stantial improvement of 7.4%p (7.7%p for missing modality
+
+
+                                                                        2778
+ RGB+Depth+IR Training                   Memory                    Class                           RGB-only Inference           Memory               Class
+                                          Token                    Token                                                         Token               Token
+                                                                                                                                                                       Action
+
+
+
+
+                                               mem
+
+
+
+
+                                                                   cls
+
+
+
+
+                                                                                                                                                     cls
+                                                                                                                                 mem
+                                                                                     Action                                                                           Predictor
+                          Modality
+                                                                                    Predictor
+                          Tokens
+
+                                                                                      rock                                                                            take a
+RGB
+
+
+
+
+                                                                                                   RGB
+                      RGB                                                                                               RGB
+                    Encoder                                                         scissors                          Encoder                                         photo
+                                                                                     paper
+
+
+
+
+                                 Random Drop
+                                                     ActionMAE             Fusion                                                        ActionMAE           Fusion
+                                                                                       𝓛𝓛𝒄𝒄𝒄𝒄𝒄𝒄
+Depth
+
+
+
+
+                     Depth
+                    Encoder                                                                                 Depth Missing
+
+                                                     Reconstruct                      𝓛𝓛𝒓𝒓𝒓𝒓𝒓𝒓
+                      IR
+                                                                                                              IR Missing
+IR
+
+
+
+
+                    Encoder
+
+
+
+
+Figure 3: ActionMAE framework. (i) Multi-modal training: We first obtain modality-specific features via their respective encoding
+stream. Then, we randomly drop K (here, K = 1) input tokens from N (=3) modality tokens, where K (0 ≤ K < N ) varies at
+every iteration. ActionMAE learns to reconstruct missing modality tokens using the remaining N − K modality tokens. During
+autoencoding, the memory token, which is also provided as an input, serves as global memory across varying inputs. The original
+and reconstructed tokens are reorganized as an input sequence to the fusion unit. The succeeding processes follow the standard
+fusion-and-predict procedure. The overall training objective is defined in Equation (6). (ii) Missing modality inference: We drop
+K (=2) tokens (here, Depth, IR) and predict the action class by reconstructing K tokens with remaining N − K (=1) token
+(RGB). We note that ActionMAE is agnostic to the types or the number of missing modalities.
+
+
+case) on NTU RGB+D 60. Note that no spatial or temporal                                                            Method: ActionMAE
+augmentations are used in testing.                                                                To address the missing modality scenario in action recog-
+                                                                                                  nition problem, we propose ActionMAE that learns missing
+Fusion                                                                                            modality predictive coding as illustrated in Figure 3.
+In Table 4, we examine exemplary fusion methods in terms                                             Our ActionMAE is a simple modular autoencoder that re-
+of multi-modal inference and missing modality inference.                                          constructs the missing modalities based on partial observation
+We take three simple yet effective fusion methods that are                                        of the remaining modalities. Like generic autoencoders, our
+commonly used in various multi-modal models: summation,                                           solution is made up of an encoder that maps the observed
+concatenation, and transformer.                                                                   modalities to a latent representation and a decoder that recon-
+ • Sum. Each modality passes throughP its respective FC                                           structs the missing modalities from the latent representation.
+   layer and then is all summed up: FCm (clsm   L).                                               The encoder and decoder adopted in our ActionMAE are sim-
+                                                     m
+                                                                                                  ple transformer encoders (Vaswani et al. 2017). By design,
+ • Concat. Modalities are channel-wise concatenated (∥)                                           it can be plugged into a typical multi-modal action classifier
+   and passed through a single FC layer: FC( ∥ clsm
+                                                  L).
+                                                      3
+                                                                                                  with a fusion unit. We plug-and-play ActionMAE on top of
+                                                               m
+                                                                                                  the model explored in preliminary experiments: ResNet34
+ • Transformer. Extra class token is prepended to a se-
+                                                                                                  + Transformer. During training, the model equipped with
+    quence of modality tokens [cls, clsR              D      I
+                                               L , clsL , clsL ],                                 ActionMAE simultaneously learns missing modality informa-
+    which is then passed through the transformer (Eqs. (3)
+                                                                                                  tion and predicts the correct action class based on these.
+    and (4)). The class token of the final transformer layer is
+    subsequently passed through the FC layer.                                                     Missing Modality Predictive Coding
+   The test accuracies with complete modalities (rows makred
+in gray ) are not much different between three fusion meth-                                       We define a missing modality scenario as a case in which N
+                                                                                                  modalities are accessible during training, but K modalities
+ods. Among them, the transformer-based fusion method is
+                                                                                                  are missing during inference, i.e., only N − K modalities
+the most inferior (lags behind sum by 0.7%p). To our sur-
+                                                                                                  are accessible, where 1 ≤ K < N . We use three modal-
+prise, however, we observe the opposite tendency in a missing
+                                                                                                  ities in practice, RGB, Depth, and IR (as such, N = 3),
+modality situation. The transformer-based fusion is the most
+                                                                                                  but the number or type of modalities are not limited to
+robust to the missing modalities: it reduces the mean accuracy
+               ¯ by 13.8%p compared to sum fusion. Nev-                                           these. From N modality tokens [z m ]N     m=1 (equivalent to
+discrepancy (|△|)
+                                                                                                  [clsm    N
+                                                                                                        L ]m=1 of Eq. (4)), we randomly drop K tokens, i.e.,
+ertheless, we notice the bias in all three fusion methods. They
+                                                                                                  only leaving N − K tokens, where 0 ≤ K < N (if K = 0,
+specifically works well with a certain modality (e.g., depth),
+                                                                                                  we do not drop any of modality tokens). In addition to re-
+but poorly with other modalities (e.g., RGB, IR) under the
+                                                                                                  maining N − K tokens, the ActionMAE encoder takes extra
+situation of missing modality.
+                                                                                                  learnable token, i.e., memory token, that acts as global mem-
+    3
+    In the case of concatenation, uni-modal predictions are approx-                               ory across varying inputs. It is worth noting that the input
+imated by splitting the weight matrix of FC layer into sub-matrices                               sequence to ActionMAE encoder continues to vary with each
+and dividing the bias by the number of modalities.                                                iteration. We first obtain a sequence of latent representations
+
+
+                                                                                      2779
+                                                                           Model           Train modal     Test modal ↑ △(%p) ↑        ¯ ↓
+                                                                                                                                      |△|
+via the encoder. Then, the K dummy tokens are inserted into
+the sequence at the position where the modality tokens are                 Sum                           R+D+I (93.3%)        -        34.8
+missing, and the resulting sequence is fed to the decoder. As              Concat             R+D+I      R+D+I (93.2%)        -        33.5
+the dummy tokens pass through the decoder, they are forced                 Transformer                   R+D+I (92.6%)        -        21.0
+to mimic the dropped tokens. The original modality tokens                                                R+D+I (93.0%)        -
+are reorganized with the reconstructed tokens and passed                                                  R+D (92.6%)      −0.4
+to the subsequent fusion unit and prediction layer in turns.                                               R+I (87.6%)     −5.4
+                                                                            Transformer
+Notice that the memory token is used only for encoding-                                       R+D+I        D+I (91.9%)     −1.1        8.3
+                                                                           w/ ActionMAE
+decoding process, not for prediction.                                                                        R (83.4%)     −9.6
+                                                                                                             D (89.7%)     −3.3
+Training & Inference                                                                                          I (81.7%)   −11.3
+
+Overall training of the model with ActionMAE is governed                   Table 5: ActionMAE is a missing modality robust learner.
+by the two loss functions: standard classification loss (i.e.,             Experiments are conducted on NTU RGB+D 60. ↑/↓: The
+cross-entropy loss) Lcls and reconstruction loss Lrec . The                higher/lower the better.
+decoder aims to convert dummy tokens into original modality
+tokens. We define the indices of missing tokens as j1 , ..., jK .
+The reconstruction loss computes the mean squared error                    Settings. We used AdamW optimizer (Loshchilov and Hut-
+(MSE) between the reconstructed [ẑ j1 , ..., ẑ jK ] and missing          ter 2017) with an initial learning rate of 10−4 and weight de-
+tokens [z j1 , ..., z jK ] in the feature space:                           cay of 10−4 for a batch size of 32. The learning rate is linearly
+                                                                           decayed by a factor of 10 every 30 epochs. We used cross-
+                              K
+                          1 X ji                                           entropy loss with label smoothing of factor 0.1 (Szegedy
+                 Lrec =         (z − ẑ ji )2 .              (5)           et al. 2016). All space encoders are initialized with imagenet
+                          K i=1
+                                                                           pre-trained weights (Deng et al. 2009). ActionMAE features
+Note that only memory token and dummy tokens are affected                  a symmetrical design with two encoder and decoder layers.
+by the reconstruction loss (i.e., reconstruction loss is not
+computed for the remaining tokens) during training.                        Datasets
+   Our training objective is jointly optimized upon the two                We used NTU RGB+D 60 (NTU60) (Shahroudy et al.
+loss functions:                                                            2016), NTU RGB+D 120 (NTU120) (Liu et al. 2019), NW-
+                                                                           UCLA (Wang et al. 2014), and UWA3DII (Rahmani et al.
+                  L = λcls Lcls + λrec Lrec .                (6)           2016) for experiments. Following the convention (Liu et al.
+In our experiments, we empirically find that balancing hyper-              2019), we evaluate our model using the cross-subject pro-
+parameters λcls = λrec = 1 works well.                                     tocol in both NTU60 and NTU 120. For NW-UCLA, we
+   At inference time, K modalities are dropped from the in-                followed the cross-view protocol suggested in (Wang et al.
+put stage, and remaining N − K modalities are encoded                      2014), using two views (V1, V2) for training and the remain-
+by their respective modality encoders. ActionMAE takes                     ing (V3) for testing. For UWA3DII, we used the top and right
+only the memory token and N − K encoded modality to-                       views for training and front and left views for testing.
+kens, and reconstructs the missing tokens. We progressively
+drop the modalities to see whether ActionMAE is robust un-
+                                                                           ActionMAE
+der all circumstances, regardless of which modality or how                 In Table 5, we examined the effect of ActionMAE by compar-
+many modalities are lost. Experiments demonstrate that our                 ing the model with and without ActionMAE. In preliminary
+ActionMAE is quite robust to any cases of modality missing.                experiments, we observed that complete modality perfor-
+                                                                           mance was rather lower when using transformer than much
+                                                                           simpler methods such as sum or concatenation. We hypothe-
+                                                                           size that this is due to the lack of inductive bias in transformer,
+                       Experiments                                         which makes it susceptible to overfitting. When we attach
+Implementation                                                             ActionMAE on a transformer-fusion model, the random drop
+                                                                           operation yields nontrivial self-supervisory task, which ef-
+Inputs. The input of each modality network is a 16 frame                   fectively regularizes the model. This results in 0.4%p perfor-
+clip of the corresponding modality, and their input size is                mance improvement under complete modality setting. Gener-
+224×224 pixels. In the spatial domain, random horizontal                   ally, ActionMAE shows good robustness to any combination
+flip and shifted center crop are performed on all modality                 of missing modalities. More importantly, the missing modal-
+inputs. RGB frames are applied with color jittering, and the 1-            ity performances, which were particularly poor in accuracy,
+channel depth frames are converted into 3-channels based on                are significantly improved upon vanilla transformer baseline
+a JET color map with 256 scales. In the temporal domain, we                (e.g., IR: 35.4% → 81.7%). This implies that ActionMAE
+randomly sampled 16 frames from the raw video, and arrange                 also has a debiasing effect on the dominant modality (e.g.,
+them in temporal order. At test time, each clip consists of 16             depth). Overall, ActionMAE reduces the mean accuracy dis-
+frames that are uniformly sampled, center cropped, and no                  crepancy by ∼ 2.5× compared to the transformer-fusion
+data augmentation techniques are applied.                                  baseline, and by ∼ 4× compared to the sum-fusion baseline.
+
+
+                                                                    2780
+            Model                                   Train modal∗   Test modal    Universal†    NTU60       NTU120     NWUCLA        UWA3D
+                                                          R             R            ✗         86.6%        84.2%      85.0%         73.1%
+ Baseline
+
+            Uni-modal (/w Transformer-fusion)             D             D            ✗         92.0%        88.2%      92.7%         81.2%
+                                                          I             I            ✗         85.5%        85.4%         -             -
+                                                        R+D           R+D            ✗         92.3%        91.7%      90.9%         82.5%
+            Multi-modal (/w Transformer-fusion)
+                                                       R+D+I         R+D+I           ✗         92.6%        92.1%         -             -
+            3DFCNN (Sanchez-Caballero et al. 2022)        D             D            ✗         78.1%           -       83.6%         66.6%
+ Complete
+
+
+
+
+            Ren et al. (2021)                           R+D           R+D            ✗         89.7%           -          -             -
+            Deep Bilinear (Hu et al. 2018)             R+D+S        R+D+S            ✗         85.4%           -          -             -
+            DMCL-complete (Garcia et al. 2019)         R+D+F        R+D+F            ✗         87.3%        89.7%      93.9%         89.8%
+            Hoffman et al. (2016)                       R+D             R            ✗            -            -       83.2%         66.7%
+            Garcia et al. (2018)                        R+D             R            ✗         73.1%           -       86.7%         73.2%
+ Missing
+
+
+
+
+            ADMD (Garcia, Morerio, and Murino 2019)     R+D             R            ✗         73.4%          -        93.6%         78.4%
+                                                                        R            ✗         89.5%           -           -            -
+            Luo et al. (2018)                        R+D+F+S
+                                                                        D            ✗         87.5%           -           -            -
+                                                                       R             ✗         83.6%        84.3%       93.6%        78.4%
+            DMCL (Garcia et al. 2019)                 R+D+F
+                                                                       D             ✗         80.6%        82.2%       83.3%        81.9%
+                                                                     R+D+I           ✓         93.0%        92.3%          -            -
+                                                                      R+D            ✓         92.6%        91.7%          -            -
+                                                                      R+I            ✓         87.6%        84.8%          -            -
+            ActionMAE (R+D+I)                          R+D+I          D+I            ✓         91.9%        91.2%          -            -
+ Ours
+
+
+
+
+                                                                       R             ✓         83.4%        83.1%          -            -
+                                                                       D             ✓         90.1%        86.0%          -            -
+                                                                       I             ✓         81.7%        81.6%          -            -
+                                                                         R+D            ✓        92.5%        91.5%     91.0%         79.8%
+            ActionMAE (R+D)                             R+D                R            ✓        84.5%        84.7%     84.2%         70.4%
+                                                                           D            ✓        90.5%        87.0%     88.2%         77.6%
+   *R: RGB, D: depth, I: infrared, F: optical flow, S: skeleton. † preserves accuracy no matter what kind and how many modalities are missing.
+
+Table 6: Comparative study on multiple action recognition benchmarks: NTU60 (Shahroudy et al. 2016), NTU120 (Liu et al.
+2019), NWUCLA (Wang et al. 2014), and UWA3D (Rahmani et al. 2016). Here, we report top-1 accuracy. By design, our
+ActionMAE is robust to missing modalities of any type and number.
+
+
+Comparative Study                                                           better performance in missing modality situations. In both
+In Table 6, we benchmark our approach against competitive                   R+D+I and R+D cases, the accuracy of ActionMAE decreases
+baselines on multiple action recognition datasets.                          as more modalities are dropped, albeit shows competitive
+                                                                            performance. When we follow the most common setup in
+Vs. uni-/multi-modal baselines. We begin by comparing                       the literature (train: R+D, test: R or D), ActionMAE sets new
+ActionMAE with transformer-fusion baselines. With com-                      state-of-the-art results.
+plete modalities, ActionMAE mostly improves performance
+upon multi-modal baselines as randomized drop of modali-                    ActionMAE (R+D+I vs. R+D). In the case of R+D+I, if
+ties during training gives a regularization effect on the over-             just one modality is missing at test time (e.g., R+D), there is a
+all network analogous to dropout (Srivastava et al. 2014).                  minimal loss of accuracy (−0.4%p). However, in the absence
+While our model is also fairly robust to missing modalities in              of two modalities (e.g., R), mapping from latent representa-
+both R+D+I and R+D cases, uni-modal models outperform                       tion becomes more complex as the number of values to be
+ActionMAE when tested with a single modality. However,                      restored increases, thus drops more (−9.6%p). On the other
+in the missing modality situation evaluated with R+D, our                   hand, even evaluated with the same modality (e.g., D), R+D
+model (92.6%) slightly improves accuracy compared to the                    performs better than R+D+I since the mapping is simpler.
+multi-modal baseline (92.3%).
+                                                                            Ablative Study
+Vs. complete modality counterparts. We compare our ap-
+proach with recent action recognition methods. These meth-                  From Table 7, we observed several intriguing properties of
+ods do not drop any modality at the test time (i.e., complete               ActionMAE by ablating it.
+modality inference), yet our method significantly outperforms
+                                                                            Memory token. Memory token contributes significantly to
+all listed methods even in missing modality scenarios.
+                                                                            performance improvement, especially for the missing modal-
+Vs. missing modality counterparts. Next, we compare                         ity cases: 9.7%p gain for R-only case and 7.3%p gain for
+our approach with missing modality counterparts. Generally,                 D-only case. We understand this as memory token learns
+as more modalities are used in the training stage, they show                meaningful correlation between varying inputs and models
+
+
+                                                                     2781
+   case    RD R       D              Lrec :Lcls RD R           D           case    RD R       D              case        RD R       D
+   w/o mem 87.3 74.8 83.2            1:10        91.9 83.0 90.0            w/o pos 87.2 76.3 84.7            No PT      92.5 84.5 90.5
+   w/ mem 92.5 84.5 90.5             1:1         92.5 84.5 90.5            w/ pos 92.5 84.5 90.5             PT (S)     89.1 82.0 86.4
+                                     10:1        91.0 81.6 88.7                                              PT (S+T) 88.5 81.9 86.6
+      (a) Memory token.                 (b) Loss coefficients.              (c) Position embedding.               (d) Pre-training.
+
+                          Table 7: Ablation experiments on NTU RGB+D 60 with ActionMAE (R+D).
+
+pair-wise relationships between itself and modality tokens.                rio, and Murino 2018, 2019; Garcia et al. 2019; Stroud et al.
+                                                                           2020), all of which follow transfer learning scheme via knowl-
+Loss hyperparameters. We investigated a good balance be-
+                                                                           edge distillation (Hinton et al. 2015). We rather take inspira-
+tween reconstruction Lrec and classification loss Lcls . From
+                                                                           tion from recent successes of masked autoencoders (Devlin
+an exploration-exploitation perspective, when the overall ob-
+                                                                           et al. 2018; He et al. 2022; Feichtenhofer et al. 2022; Bach-
+jective is leaned to classification (i.e., Lrec : Lcls = 1 : 10),
+                                                                           mann et al. 2022), whose core idea is to remove a portion of
+ActionMAE underutilizes the features extracted from the
+                                                                           the data and learn to predict the removed data, and show that
+space-time encoder, resulting in poor ‘exploitation’ of learned
+                                                                           masked autoencoding works better than the knowledge distil-
+information. On the other hand, if the objective is leaned to
+                                                                           lation approaches. In addition to accuracy, there are several
+reconstruction (i.e., 10:1), ActionMAE loses the chance of
+                                                                           advantages of ActionMAE over the knowledge distillation ap-
+‘exploration’ to generate more class-discriminative features.
+                                                                           proaches: (i) A separate teacher network training, which is a
+We found a ratio of 1:1 properly balances the two losses.
+                                                                           prerequisite for knowledge distillation, is unnecessary. There-
+Position embedding. We observed a significant perfor-                      fore, the training can be completed in an end-to-end manner
+mance improvements with position embedding (pos). From                     with only a single step. (ii) We do not need method-specific
+the results, we hypothesize that position embedding serves as              architecture. ActionMAE can be plugged into any type of pre-
+a reference for determining which modalities needs to be re-               existing space-time encoders. (iii) By design, ActionMAE is
+constructed in ActionMAE, i.e., position embedding provides                universal to the type or the number of missing modalities.
+guidance on what to reconstruct.
+Pre-training. We examined whether pre-training the space-
+                                                                                                   Discussion
+time encoder would ease the optimization or rather nega-                   In this paper, we have answered the following questions re-
+tively impact the training of ActionMAE. Here, PT (S) in-                  garding the missing modality scenarios in multi-modal action
+dicates space encoder pre-training, and PT (S+T) indicates                 recognition problem: (i) How to train a strong multi-modal
+pre-training both space and time encoders. Contrary to our                 model? We sought the good practices from three perspectives
+expectations, pre-training any encoders ahead of ActionMAE                 (see Tables 2 and 3): architecture, data augmentation, and
+diminishes accuracy. Even, the performance degraded when                   regularization. (ii) Which fusion should we choose for missing
+more layers were pre-trained. This suggests that ActionMAE                 modality action recognition? Of the three popular choices for
+can be effectively learned through self-supervisory recon-                 fusion (e.g., sum, concatenation, transformer), transformer
+struction of diverse inputs. However, if the space-time en-                worked the best (see Table 4), albeit still far from enough.
+coder is pre-trained, the input will remain almost constant;               (iii) Is there more effective way to solve missing modality
+hence, ActionMAE will likely to find a trivial solution. There-            problem? We showed that ActionMAE is an effective strat-
+fore, we only performed imagenet initialization on the space               egy for missing modality action recognition via extensive
+encoder and trained all networks from scratch.                             experiments (see Tables 5 to 7). In addition, it relieves bias
+                                                                           against dominant modality, as well as effectively regularizes
+                      Related Work                                         multi-modal model. We hope that our findings will provide
+                                                                           insights into broader missing modality scenarios.
+Multi-modality generally yields reliable results since differ-
+ent modalities provide complementary information (Huang                    Limitations & future work. There still remain unresolved
+et al. 2021). For example, RGB provides rich appearance                    issues: (i) The uni-modal baselines perform better than the
+information, depth provides 3D geometrical structure, and                  model equipped with ActionMAE when evaluated with a sin-
+IR is robust to illumination variation. The missing modality               gle modality in missing modality situations. (ii) Even with
+setup assumes certain modalities available during training are             the same test modality (e.g., R or D), the model with fewer
+unavailable at test time. As the typical multi-modal models                training modalities (R+D) outperforms the model with more
+suffer in such scenarios, there was a large body of studies to             training modalities (R+D+I). We posit these challenges occur
+address the missing modality problem (Vapnik and Vashist                   due to the difficulty of mapping from latent representation of
+2009; Pechyony and Vapnik 2010; Vapnik, Izmailov et al.                    ActionMAE. As the number of outputs exceeds the number of
+2015; Lopez-Paz et al. 2015; Ma et al. 2022; Zhao, Li, and                 inputs, it yields a sub-optimal solution. We mitigate this prob-
+Jin 2021; Alayrac et al. 2020; Ma et al. 2021)                             lem using memory token, yet more investigation is needed to
+   In the context of action recognition (Tran et al. 2015; Wang            find a more effective way. Despite the limitations, our idea
+et al. 2016; Carreira and Zisserman 2017; Feichtenhofer et al.             is simple and can be naturally extended to other modalities,
+2019), there are handful of studies towards this end (Hoff-                such as vision, language, audio, etc. We leave this intriguing
+man, Gupta, and Darrell 2016; Luo et al. 2018; Garcia, More-               challenge to future work.
+
+
+                                                                    2782
+                   Acknowledgments                                       Garcia, N. C.; Morerio, P.; and Murino, V. 2019. Learning
+This work was supported by the Agency For Defense Devel-                 with privileged information via adversarial discriminative
+opment by the Korean Government (UD190031RD).                            modality distillation. IEEE transactions on pattern analysis
+                                                                         and machine intelligence, 42(10): 2581–2593.
+                        References                                       He, K.; Chen, X.; Xie, S.; Li, Y.; Dollár, P.; and Girshick,
+Alayrac, J.-B.; Recasens, A.; Schneider, R.; Arandjelović,              R. 2022. Masked autoencoders are scalable vision learners.
+R.; Ramapuram, J.; De Fauw, J.; Smaira, L.; Dieleman, S.;                In Proceedings of the IEEE/CVF Conference on Computer
+and Zisserman, A. 2020. Self-supervised multimodal versa-                Vision and Pattern Recognition, 16000–16009.
+tile networks. Advances in Neural Information Processing                 He, K.; Zhang, X.; Ren, S.; and Sun, J. 2016. Deep residual
+Systems, 33: 25–37.                                                      learning for image recognition. In Proceedings of the IEEE
+Arnab, A.; Dehghani, M.; Heigold, G.; Sun, C.; Lučić, M.;              conference on computer vision and pattern recognition, 770–
+and Schmid, C. 2021. Vivit: A video vision transformer. In               778.
+Proceedings of the IEEE/CVF International Conference on                  Hinton, G.; Vinyals, O.; Dean, J.; et al. 2015. Distill-
+Computer Vision, 6836–6846.                                              ing the knowledge in a neural network. arXiv preprint
+Bachmann, R.; Mizrahi, D.; Atanov, A.; and Zamir, A. 2022.               arXiv:1503.02531, 2(7).
+MultiMAE: Multi-modal Multi-task Masked Autoencoders.                    Hoffman, J.; Gupta, S.; and Darrell, T. 2016. Learning with
+arXiv preprint arXiv:2204.01678.                                         side information through modality hallucination. In Proceed-
+Bruce, X.; Liu, Y.; and Chan, K. C. 2021. Multimodal fusion              ings of the IEEE conference on computer vision and pattern
+via teacher-student network for indoor action recognition. In            recognition, 826–834.
+Proceedings of the AAAI Conference on Artificial Intelligence,           Hu, J.-F.; Zheng, W.-S.; Pan, J.; Lai, J.; and Zhang, J. 2018.
+volume 35, 3199–3207.                                                    Deep bilinear learning for rgb-d action recognition. In Pro-
+Bruce, X.; Liu, Y.; Zhang, X.; Zhong, S.-h.; and Chan, K. C.             ceedings of the European conference on computer vision
+2022. MMNet: A Model-based Multimodal Network for                        (ECCV), 335–351.
+Human Action Recognition in RGB-D Videos. IEEE Trans-                    Huang, Y.; Du, C.; Xue, Z.; Chen, X.; Zhao, H.; and Huang,
+actions on Pattern Analysis and Machine Intelligence.                    L. 2021. What makes multi-modal learning better than sin-
+Carreira, J.; and Zisserman, A. 2017. Quo vadis, action recog-           gle (provably). Advances in Neural Information Processing
+nition? a new model and the kinetics dataset. In proceedings             Systems, 34: 10944–10956.
+of the IEEE Conference on Computer Vision and Pattern                    Liu, J.; Shahroudy, A.; Perez, M.; Wang, G.; Duan, L.-Y.; and
+Recognition, 6299–6308.                                                  Kot, A. C. 2019. Ntu rgb+ d 120: A large-scale benchmark
+Deng, J.; Dong, W.; Socher, R.; Li, L.-J.; Li, K.; and Fei-              for 3d human activity understanding. IEEE transactions
+Fei, L. 2009. Imagenet: A large-scale hierarchical image                 on pattern analysis and machine intelligence, 42(10): 2684–
+database. In 2009 IEEE conference on computer vision and                 2701.
+pattern recognition, 248–255. Ieee.                                      Lopez-Paz, D.; Bottou, L.; Schölkopf, B.; and Vapnik, V.
+Devlin, J.; Chang, M.-W.; Lee, K.; and Toutanova, K. 2018.               2015. Unifying distillation and privileged information. arXiv
+Bert: Pre-training of deep bidirectional transformers for lan-           preprint arXiv:1511.03643.
+guage understanding. arXiv preprint arXiv:1810.04805.                    Loshchilov, I.; and Hutter, F. 2017. Decoupled weight decay
+Dosovitskiy, A.; Beyer, L.; Kolesnikov, A.; Weissenborn,                 regularization. arXiv preprint arXiv:1711.05101.
+D.; Zhai, X.; Unterthiner, T.; Dehghani, M.; Minderer, M.;               Luo, Z.; Hsieh, J.-T.; Jiang, L.; Niebles, J. C.; and Fei-Fei, L.
+Heigold, G.; Gelly, S.; et al. 2020. An image is worth 16x16             2018. Graph distillation for action detection with privileged
+words: Transformers for image recognition at scale. arXiv                modalities. In Proceedings of the European Conference on
+preprint arXiv:2010.11929.                                               Computer Vision (ECCV), 166–183.
+Feichtenhofer, C.; Fan, H.; Li, Y.; and He, K. 2022. Masked              Ma, M.; Ren, J.; Zhao, L.; Testuggine, D.; and Peng, X. 2022.
+Autoencoders As Spatiotemporal Learners. arXiv preprint                  Are Multimodal Transformers Robust to Missing Modality?
+arXiv:2205.09113.                                                        In Proceedings of the IEEE/CVF Conference on Computer
+Feichtenhofer, C.; Fan, H.; Malik, J.; and He, K. 2019. Slow-            Vision and Pattern Recognition, 18177–18186.
+fast networks for video recognition. In Proceedings of                   Ma, M.; Ren, J.; Zhao, L.; Tulyakov, S.; Wu, C.; and Peng,
+the IEEE/CVF international conference on computer vision,                X. 2021. SMIL: Multimodal learning with severely missing
+6202–6211.                                                               modality. In Proceedings of the AAAI Conference on Artificial
+Garcia, N. C.; Bargal, S. A.; Ablavsky, V.; Morerio, P.;                 Intelligence, volume 35, 2302–2310.
+Murino, V.; and Sclaroff, S. 2019. Dmcl: Distillation multi-             Pechyony, D.; and Vapnik, V. 2010. On the theory of learnin-
+ple choice learning for multimodal action recognition. arXiv             ing with privileged information. Advances in neural informa-
+preprint arXiv:1912.10982.                                               tion processing systems, 23.
+Garcia, N. C.; Morerio, P.; and Murino, V. 2018. Modality dis-           Rahmani, H.; Mahmood, A.; Huynh, D.; and Mian, A. 2016.
+tillation with multiple stream networks for action recognition.          Histogram of oriented principal components for cross-view
+In Proceedings of the European Conference on Computer                    action recognition. IEEE transactions on pattern analysis
+Vision (ECCV), 103–118.                                                  and machine intelligence, 38(12): 2430–2443.
+
+
+                                                                  2783
+Ren, Z.; Zhang, Q.; Gao, X.; Hao, P.; and Cheng, J. 2021.                Association for Computational Linguistics and the 11th Inter-
+Multi-modality learning for human action recognition. Multi-             national Joint Conference on Natural Language Processing
+media Tools and Applications, 80(11): 16185–16203.                       (Volume 1: Long Papers), 2608–2618.
+Sanchez-Caballero, A.; de López-Diz, S.; Fuentes-Jimenez,
+D.; Losada-Gutiérrez, C.; Marrón-Romera, M.; Casillas-
+Perez, D.; and Sarker, M. I. 2022. 3dfcnn: Real-time action
+recognition using 3d deep neural networks with raw depth
+information. Multimedia Tools and Applications, 1–25.
+Shahroudy, A.; Liu, J.; Ng, T.-T.; and Wang, G. 2016. Ntu
+rgb+ d: A large scale dataset for 3d human activity analysis.
+In Proceedings of the IEEE conference on computer vision
+and pattern recognition, 1010–1019.
+Srivastava, N.; Hinton, G.; Krizhevsky, A.; Sutskever, I.; and
+Salakhutdinov, R. 2014. Dropout: a simple way to prevent
+neural networks from overfitting. The journal of machine
+learning research, 15(1): 1929–1958.
+Stroud, J.; Ross, D.; Sun, C.; Deng, J.; and Sukthankar, R.
+2020. D3d: Distilled 3d networks for video action recogni-
+tion. In Proceedings of the IEEE/CVF Winter Conference on
+Applications of Computer Vision, 625–634.
+Szegedy, C.; Vanhoucke, V.; Ioffe, S.; Shlens, J.; and Wojna,
+Z. 2016. Rethinking the inception architecture for computer
+vision. In Proceedings of the IEEE conference on computer
+vision and pattern recognition, 2818–2826.
+Tran, D.; Bourdev, L.; Fergus, R.; Torresani, L.; and Paluri,
+M. 2015. Learning spatiotemporal features with 3d convo-
+lutional networks. In Proceedings of the IEEE international
+conference on computer vision, 4489–4497.
+Tran, D.; Wang, H.; Torresani, L.; Ray, J.; LeCun, Y.; and
+Paluri, M. 2018. A closer look at spatiotemporal convolutions
+for action recognition. In Proceedings of the IEEE conference
+on Computer Vision and Pattern Recognition, 6450–6459.
+Vapnik, V.; Izmailov, R.; et al. 2015. Learning using privi-
+leged information: similarity control and knowledge transfer.
+J. Mach. Learn. Res., 16(1): 2023–2049.
+Vapnik, V.; and Vashist, A. 2009. A new learning paradigm:
+Learning using privileged information. Neural networks,
+22(5-6): 544–557.
+Vaswani, A.; Shazeer, N.; Parmar, N.; Uszkoreit, J.; Jones, L.;
+Gomez, A. N.; Kaiser, Ł.; and Polosukhin, I. 2017. Attention
+is all you need. Advances in neural information processing
+systems, 30.
+Wang, J.; Nie, X.; Xia, Y.; Wu, Y.; and Zhu, S.-C. 2014.
+Cross-view action modeling, learning and recognition. In
+Proceedings of the IEEE conference on computer vision and
+pattern recognition, 2649–2656.
+Wang, L.; Xiong, Y.; Wang, Z.; Qiao, Y.; Lin, D.; Tang, X.;
+and Gool, L. V. 2016. Temporal segment networks: Towards
+good practices for deep action recognition. In European
+conference on computer vision, 20–36. Springer.
+Wightman, R. 2019. PyTorch Image Models. https://github.
+com/rwightman/pytorch-image-models. Accessed: 2022-08-
+16.
+Zhao, J.; Li, R.; and Jin, Q. 2021. Missing modality imagina-
+tion network for emotion recognition with uncertain missing
+modalities. In Proceedings of the 59th Annual Meeting of the
+
+
+                                                                  2784
+

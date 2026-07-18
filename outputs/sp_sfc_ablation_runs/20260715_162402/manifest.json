@@ -1,0 +1,21 @@
+{
+  "repo_root": "E:\\Deskbook\\Tea",
+  "dataset": "C:\\dummy",
+  "device": "cuda:0",
+  "tasks": [
+    "HPE",
+    "HAR"
+  ],
+  "profiles": [
+    "task_only",
+    "output",
+    "output_token",
+    "full"
+  ],
+  "epochs": 10,
+  "max_train_batches": 2,
+  "max_eval_batches": 2,
+  "output_root": null,
+  "force": false,
+  "dry_run": true
+}

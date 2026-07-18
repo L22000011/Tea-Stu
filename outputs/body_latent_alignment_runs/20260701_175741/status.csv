@@ -1,0 +1,3 @@
+task,status,seconds,output,reason
+HPE,dry_run,0.000,E:\Deskbook\Tea\tables\body_latent_alignment_hpe.csv,
+HAR,dry_run,0.000,E:\Deskbook\Tea\tables\body_latent_alignment_har.csv,

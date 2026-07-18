@@ -1,0 +1,5 @@
+index,name,status,reason,seconds,outputs
+1,fair_missing_modality_baseline,done,,0.291,/apps/users/icps_intelligence/data/lyg/X-Fi/tables/fair_missing_modality_baseline.csv
+2,subset_complementarity_analysis,done,,7.498,/apps/users/icps_intelligence/data/lyg/X-Fi/tables/subset_severity_summary.csv;/apps/users/icps_intelligence/data/lyg/X-Fi/tables/leave_one_modality_delta.csv;/apps/users/icps_intelligence/data/lyg/X-Fi/tables/subset_best_worst_patterns.csv;/apps/users/icps_intelligence/data/lyg/X-Fi/figures/subset_severity_curve.png
+3,reliability_performance_correlation,done,,13.199,/apps/users/icps_intelligence/data/lyg/X-Fi/tables/reliability_weight_by_subset.csv;/apps/users/icps_intelligence/data/lyg/X-Fi/tables/reliability_performance_correlation.csv;/apps/users/icps_intelligence/data/lyg/X-Fi/figures/reliability_weight_heatmap.png
+4,privacy_exposure_table,done,,0.000,/apps/users/icps_intelligence/data/lyg/X-Fi/tables/privacy_exposure_residual_risk.csv

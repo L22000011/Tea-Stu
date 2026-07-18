@@ -1,0 +1,7 @@
+task,method,role,avg_result,full_result,caption_note
+HPE,Official X-Fi/VK table,baseline,103.70 mm MPJPE,83.70 mm MPJPE,official table baseline only
+HPE,VK-RMD Student-VK,ours,75.18 mm MPJPE,50.17 mm MPJPE,main method
+HPE,VK-RMD Student-NV,ours,84.68 mm MPJPE,51.03 mm MPJPE,non-RGB deployment
+HAR,Reproduced X-Fi/VK baseline,baseline,69.63% accuracy,77.70% accuracy,reproduced baseline only
+HAR,VK-RMD Student-VK,ours,85.15% accuracy,96.56% accuracy,main method
+HAR,VK-RMD Student-NV,ours,80.62% accuracy,96.12% accuracy,non-RGB deployment

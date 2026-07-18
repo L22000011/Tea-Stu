@@ -1,0 +1,95 @@
+\section{HAR Results}
+The HAR comparison contains 75 comparable rows. Accuracy improves over official X-Fi in 50 rows. Accuracy and Macro-F1 are reported as percentages, and higher accuracy is better.
+\begin{table}[htbp]\centering\caption{HAR full-modality comparison against official X-Fi}\begin{tabular}{llrrrr}\toprule
+Method & Source & Ours Acc. & X-Fi Acc. & $\Delta$ Acc. & Macro-F1\\\midrule
+VK-RCD-HAR-Teacher & teacher\_random\_all\_combinations.csv & 95.57 & 72.20 & \textcolor{blue}{+23.37} & 95.56\\
+VK-RCD-HAR-Student-VK-Missing & student\_vk\_random\_all\_combinations.csv & 96.56 & 72.20 & \textcolor{blue}{+24.36} & 96.55\\
+VK-RCD-HAR-Teacher & all\_combinations.csv & 95.59 & 72.20 & \textcolor{blue}{+23.39} & 95.58\\
+VK-RCD-HAR-Ablation-NoKD & ablation\_no\_distill\_all\_combinations.csv & 95.99 & 72.20 & \textcolor{blue}{+23.79} & 95.98\\
+VK-RCD-HAR-Ablation-UniformFusion & ablation\_uniform\_fusion\_all\_combinations.csv & 95.39 & 72.20 & \textcolor{blue}{+23.19} & 95.39\\
+\bottomrule\end{tabular}\end{table}
+\begin{longtable}{p{0.22\linewidth}p{0.13\linewidth}p{0.19\linewidth}rrrr}
+\caption{HAR per-modality comparison against official X-Fi}\\
+\toprule
+Method & Split & Modality & Ours Acc. & X-Fi Acc. & $\Delta$ Acc. & Macro-F1\\\midrule
+\endfirsthead
+\toprule
+Method & Split & Modality & Ours Acc. & X-Fi Acc. & $\Delta$ Acc. & Macro-F1\\\midrule
+\endhead
+VK-RCD-HAR-Teacher & random\_split & vk & 3.40 & 26.50 & \textcolor{red}{-23.10} & 0.45\\
+VK-RCD-HAR-Teacher & random\_split & depth & 83.71 & 48.10 & \textcolor{blue}{+35.61} & 82.80\\
+VK-RCD-HAR-Teacher & random\_split & lidar & 3.36 & 52.70 & \textcolor{red}{-49.34} & 1.17\\
+VK-RCD-HAR-Teacher & random\_split & mmwave & 66.72 & 85.70 & \textcolor{red}{-18.98} & 64.78\\
+VK-RCD-HAR-Teacher & random\_split & vk+depth & 83.50 & 45.30 & \textcolor{blue}{+38.20} & 82.60\\
+VK-RCD-HAR-Teacher & random\_split & vk+lidar & 3.91 & 35.20 & \textcolor{red}{-31.29} & 1.31\\
+VK-RCD-HAR-Teacher & random\_split & vk+mmwave & 66.46 & 73.40 & \textcolor{red}{-6.94} & 63.67\\
+VK-RCD-HAR-Teacher & random\_split & depth+lidar & 83.37 & 51.60 & \textcolor{blue}{+31.77} & 82.54\\
+VK-RCD-HAR-Teacher & random\_split & depth+mmwave & 95.76 & 79.80 & \textcolor{blue}{+15.96} & 95.74\\
+VK-RCD-HAR-Teacher & random\_split & lidar+mmwave & 66.69 & 88.70 & \textcolor{red}{-22.01} & 63.96\\
+VK-RCD-HAR-Teacher & random\_split & vk+depth+lidar & 83.66 & 48.70 & \textcolor{blue}{+34.96} & 82.91\\
+VK-RCD-HAR-Teacher & random\_split & vk+depth+mmwave & 95.66 & 70.70 & \textcolor{blue}{+24.96} & 95.65\\
+VK-RCD-HAR-Teacher & random\_split & vk+lidar+mmwave & 66.39 & 77.80 & \textcolor{red}{-11.41} & 63.36\\
+VK-RCD-HAR-Teacher & random\_split & depth+lidar+mmwave & 95.64 & 80.50 & \textcolor{blue}{+15.14} & 95.63\\
+VK-RCD-HAR-Teacher & random\_split & vk+depth+lidar+mmwave & 95.57 & 72.20 & \textcolor{blue}{+23.37} & 95.56\\
+VK-RCD-HAR-Student-VK-Missing & random\_split & vk & 65.31 & 26.50 & \textcolor{blue}{+38.81} & 65.70\\
+VK-RCD-HAR-Student-VK-Missing & random\_split & depth & 88.02 & 48.10 & \textcolor{blue}{+39.92} & 87.86\\
+VK-RCD-HAR-Student-VK-Missing & random\_split & lidar & 40.80 & 52.70 & \textcolor{red}{-11.90} & 40.10\\
+VK-RCD-HAR-Student-VK-Missing & random\_split & mmwave & 85.88 & 85.70 & \textcolor{blue}{+0.18} & 86.06\\
+VK-RCD-HAR-Student-VK-Missing & random\_split & vk+depth & 89.51 & 45.30 & \textcolor{blue}{+44.21} & 89.36\\
+VK-RCD-HAR-Student-VK-Missing & random\_split & vk+lidar & 68.54 & 35.20 & \textcolor{blue}{+33.34} & 69.05\\
+VK-RCD-HAR-Student-VK-Missing & random\_split & vk+mmwave & 92.75 & 73.40 & \textcolor{blue}{+19.35} & 92.82\\
+VK-RCD-HAR-Student-VK-Missing & random\_split & depth+lidar & 88.52 & 51.60 & \textcolor{blue}{+36.92} & 88.39\\
+VK-RCD-HAR-Student-VK-Missing & random\_split & depth+mmwave & 96.45 & 79.80 & \textcolor{blue}{+16.65} & 96.44\\
+VK-RCD-HAR-Student-VK-Missing & random\_split & lidar+mmwave & 89.51 & 88.70 & \textcolor{blue}{+0.81} & 89.57\\
+VK-RCD-HAR-Student-VK-Missing & random\_split & vk+depth+lidar & 89.62 & 48.70 & \textcolor{blue}{+40.92} & 89.49\\
+VK-RCD-HAR-Student-VK-Missing & random\_split & vk+depth+mmwave & 96.56 & 70.70 & \textcolor{blue}{+25.86} & 96.55\\
+VK-RCD-HAR-Student-VK-Missing & random\_split & vk+lidar+mmwave & 92.73 & 77.80 & \textcolor{blue}{+14.93} & 92.81\\
+VK-RCD-HAR-Student-VK-Missing & random\_split & depth+lidar+mmwave & 96.44 & 80.50 & \textcolor{blue}{+15.94} & 96.43\\
+VK-RCD-HAR-Student-VK-Missing & random\_split & vk+depth+lidar+mmwave & 96.56 & 72.20 & \textcolor{blue}{+24.36} & 96.55\\
+VK-RCD-HAR-Teacher & random\_split & vk & 3.40 & 26.50 & \textcolor{red}{-23.10} & 0.45\\
+VK-RCD-HAR-Teacher & random\_split & depth & 83.71 & 48.10 & \textcolor{blue}{+35.61} & 82.80\\
+VK-RCD-HAR-Teacher & random\_split & lidar & 3.45 & 52.70 & \textcolor{red}{-49.25} & 1.22\\
+VK-RCD-HAR-Teacher & random\_split & mmwave & 66.72 & 85.70 & \textcolor{red}{-18.98} & 64.78\\
+VK-RCD-HAR-Teacher & random\_split & vk+depth & 83.50 & 45.30 & \textcolor{blue}{+38.20} & 82.60\\
+VK-RCD-HAR-Teacher & random\_split & vk+lidar & 3.85 & 35.20 & \textcolor{red}{-31.35} & 1.26\\
+VK-RCD-HAR-Teacher & random\_split & vk+mmwave & 66.46 & 73.40 & \textcolor{red}{-6.94} & 63.67\\
+VK-RCD-HAR-Teacher & random\_split & depth+lidar & 83.39 & 51.60 & \textcolor{blue}{+31.79} & 82.57\\
+VK-RCD-HAR-Teacher & random\_split & depth+mmwave & 95.76 & 79.80 & \textcolor{blue}{+15.96} & 95.74\\
+VK-RCD-HAR-Teacher & random\_split & lidar+mmwave & 66.64 & 88.70 & \textcolor{red}{-22.06} & 63.92\\
+VK-RCD-HAR-Teacher & random\_split & vk+depth+lidar & 83.70 & 48.70 & \textcolor{blue}{+35.00} & 82.97\\
+VK-RCD-HAR-Teacher & random\_split & vk+depth+mmwave & 95.66 & 70.70 & \textcolor{blue}{+24.96} & 95.65\\
+VK-RCD-HAR-Teacher & random\_split & vk+lidar+mmwave & 66.33 & 77.80 & \textcolor{red}{-11.47} & 63.31\\
+VK-RCD-HAR-Teacher & random\_split & depth+lidar+mmwave & 95.62 & 80.50 & \textcolor{blue}{+15.12} & 95.61\\
+VK-RCD-HAR-Teacher & random\_split & vk+depth+lidar+mmwave & 95.59 & 72.20 & \textcolor{blue}{+23.39} & 95.58\\
+VK-RCD-HAR-Ablation-NoKD & random\_split & vk & 60.94 & 26.50 & \textcolor{blue}{+34.44} & 59.31\\
+VK-RCD-HAR-Ablation-NoKD & random\_split & depth & 86.85 & 48.10 & \textcolor{blue}{+38.75} & 86.78\\
+VK-RCD-HAR-Ablation-NoKD & random\_split & lidar & 33.14 & 52.70 & \textcolor{red}{-19.56} & 31.11\\
+VK-RCD-HAR-Ablation-NoKD & random\_split & mmwave & 83.13 & 85.70 & \textcolor{red}{-2.57} & 83.31\\
+VK-RCD-HAR-Ablation-NoKD & random\_split & vk+depth & 88.09 & 45.30 & \textcolor{blue}{+42.79} & 87.94\\
+VK-RCD-HAR-Ablation-NoKD & random\_split & vk+lidar & 63.63 & 35.20 & \textcolor{blue}{+28.43} & 62.65\\
+VK-RCD-HAR-Ablation-NoKD & random\_split & vk+mmwave & 91.05 & 73.40 & \textcolor{blue}{+17.65} & 91.12\\
+VK-RCD-HAR-Ablation-NoKD & random\_split & depth+lidar & 87.24 & 51.60 & \textcolor{blue}{+35.64} & 87.25\\
+VK-RCD-HAR-Ablation-NoKD & random\_split & depth+mmwave & 95.57 & 79.80 & \textcolor{blue}{+15.77} & 95.56\\
+VK-RCD-HAR-Ablation-NoKD & random\_split & lidar+mmwave & 85.92 & 88.70 & \textcolor{red}{-2.78} & 86.09\\
+VK-RCD-HAR-Ablation-NoKD & random\_split & vk+depth+lidar & 88.62 & 48.70 & \textcolor{blue}{+39.92} & 88.53\\
+VK-RCD-HAR-Ablation-NoKD & random\_split & vk+depth+mmwave & 95.96 & 70.70 & \textcolor{blue}{+25.26} & 95.95\\
+VK-RCD-HAR-Ablation-NoKD & random\_split & vk+lidar+mmwave & 91.23 & 77.80 & \textcolor{blue}{+13.43} & 91.29\\
+VK-RCD-HAR-Ablation-NoKD & random\_split & depth+lidar+mmwave & 95.50 & 80.50 & \textcolor{blue}{+15.00} & 95.50\\
+VK-RCD-HAR-Ablation-NoKD & random\_split & vk+depth+lidar+mmwave & 95.99 & 72.20 & \textcolor{blue}{+23.79} & 95.98\\
+VK-RCD-HAR-Ablation-UniformFusion & random\_split & vk & 5.52 & 26.50 & \textcolor{red}{-20.98} & 1.32\\
+VK-RCD-HAR-Ablation-UniformFusion & random\_split & depth & 85.59 & 48.10 & \textcolor{blue}{+37.49} & 85.30\\
+VK-RCD-HAR-Ablation-UniformFusion & random\_split & lidar & 2.65 & 52.70 & \textcolor{red}{-50.05} & 1.55\\
+VK-RCD-HAR-Ablation-UniformFusion & random\_split & mmwave & 69.91 & 85.70 & \textcolor{red}{-15.79} & 68.71\\
+VK-RCD-HAR-Ablation-UniformFusion & random\_split & vk+depth & 86.48 & 45.30 & \textcolor{blue}{+41.18} & 86.24\\
+VK-RCD-HAR-Ablation-UniformFusion & random\_split & vk+lidar & 4.58 & 35.20 & \textcolor{red}{-30.62} & 1.76\\
+VK-RCD-HAR-Ablation-UniformFusion & random\_split & vk+mmwave & 67.75 & 73.40 & \textcolor{red}{-5.65} & 66.21\\
+VK-RCD-HAR-Ablation-UniformFusion & random\_split & depth+lidar & 86.16 & 51.60 & \textcolor{blue}{+34.56} & 85.91\\
+VK-RCD-HAR-Ablation-UniformFusion & random\_split & depth+mmwave & 95.54 & 79.80 & \textcolor{blue}{+15.74} & 95.54\\
+VK-RCD-HAR-Ablation-UniformFusion & random\_split & lidar+mmwave & 67.80 & 88.70 & \textcolor{red}{-20.90} & 66.56\\
+VK-RCD-HAR-Ablation-UniformFusion & random\_split & vk+depth+lidar & 86.43 & 48.70 & \textcolor{blue}{+37.73} & 86.19\\
+VK-RCD-HAR-Ablation-UniformFusion & random\_split & vk+depth+mmwave & 95.50 & 70.70 & \textcolor{blue}{+24.80} & 95.49\\
+VK-RCD-HAR-Ablation-UniformFusion & random\_split & vk+lidar+mmwave & 67.09 & 77.80 & \textcolor{red}{-10.71} & 65.08\\
+VK-RCD-HAR-Ablation-UniformFusion & random\_split & depth+lidar+mmwave & 95.42 & 80.50 & \textcolor{blue}{+14.92} & 95.42\\
+VK-RCD-HAR-Ablation-UniformFusion & random\_split & vk+depth+lidar+mmwave & 95.39 & 72.20 & \textcolor{blue}{+23.19} & 95.39\\
+\bottomrule
+\end{longtable}

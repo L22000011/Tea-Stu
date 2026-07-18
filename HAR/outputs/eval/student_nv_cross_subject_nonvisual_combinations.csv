@@ -1,0 +1,8 @@
+modality_set,loss,acc,macro_f1,params,fps,peak_memory,method,split,protocol
+depth,1.0042735858360679,0.9029960094774909,0.9021375485054907,8606392,NA,NA,VK-RCD-HAR-Student-NV-Missing,cross_subject_split,protocol3
+lidar,3.435617314337513,0.2530084798603317,0.22234317379026627,8606392,NA,NA,VK-RCD-HAR-Student-NV-Missing,cross_subject_split,protocol3
+mmwave,1.0003198994875258,0.8457413642598828,0.8474933521091544,8606392,NA,NA,VK-RCD-HAR-Student-NV-Missing,cross_subject_split,protocol3
+depth+lidar,0.9620236587260682,0.904320987654321,0.9034431352876131,8606392,NA,NA,VK-RCD-HAR-Student-NV-Missing,cross_subject_split,protocol3
+depth+mmwave,0.39146842235792073,0.9576162863199901,0.9573508531703927,8606392,NA,NA,VK-RCD-HAR-Student-NV-Missing,cross_subject_split,protocol3
+lidar+mmwave,0.787835282461072,0.8674398304027934,0.8675854564595511,8606392,NA,NA,VK-RCD-HAR-Student-NV-Missing,cross_subject_split,protocol3
+depth+lidar+mmwave,0.3925867510688837,0.9569771791994014,0.9567169641147649,8606392,NA,NA,VK-RCD-HAR-Student-NV-Missing,cross_subject_split,protocol3

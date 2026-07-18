@@ -1,0 +1,2 @@
+method,modality_set,params,fps,peak_memory
+VK-XFi-Baseline-Full,vk+depth+lidar+mmwave+wifi-csi,5740264,52.044669677879064,4942571008

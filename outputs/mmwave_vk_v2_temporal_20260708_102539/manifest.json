@@ -1,0 +1,23 @@
+{
+  "pipeline": "temporal_global_local_mmwave_generated_vk",
+  "rgb_root": "/apps/users/icps_intelligence/data/lyg/code/MMFi_RGB_SUBSET/MMFi_Defaced_RGB",
+  "mmfi_root": "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+  "mmwave_root": "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+  "output_root": "/apps/users/icps_intelligence/data/lyg/X-Fi/RGB-Subset-Fairness/outputs_mmwave_vk_v2_temporal",
+  "manifest": "/apps/users/icps_intelligence/data/lyg/X-Fi/outputs/rgb_subset_manifest/manifest.csv",
+  "device": "cuda:0",
+  "epochs": 10,
+  "max_train_batches": 300,
+  "max_eval_batches": 100,
+  "protocols": [
+    "cross_subject",
+    "cross_scene"
+  ],
+  "tasks": [
+    "hpe",
+    "har"
+  ],
+  "stages": [
+    "downstream"
+  ]
+}

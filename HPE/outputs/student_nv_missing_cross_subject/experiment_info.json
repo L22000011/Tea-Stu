@@ -1,0 +1,13 @@
+{
+  "method": "VK-RCD-Student-NV",
+  "stage": "student",
+  "device": "cuda:0",
+  "python": "3.10.20",
+  "torch": "2.1.1+cu118",
+  "cuda_available": true,
+  "parameter_count": 8895208,
+  "output_dir": "outputs/student_nv_missing_cross_subject",
+  "dataset_root": "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+  "split": "cross_subject_split",
+  "protocol": "protocol3"
+}

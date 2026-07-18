@@ -1,0 +1,25 @@
+\begin{table*}[!htbp]
+\centering
+\caption{合成模态腐蚀下的性能与学习贡献代理变化。HPE 使用 MPJPE，越低越好；HAR 使用 Accuracy，越高越好。$\Delta$Metric 表示相对 clean 的变化，$\Delta$Weight 表示被腐蚀模态自身权重变化。该表用于说明 learned contribution proxy 的响应边界，而不是物理传感器健康度校准。}
+\label{tab:reliability_corruption_cn}
+\scriptsize
+\begin{adjustbox}{width=\textwidth}
+\begin{tabular}{llcccc}
+\toprule
+Task & Corrupted modality & Metric & $\Delta$Metric & Clean weight & $\Delta$Weight \\
+\midrule
+HAR & V & 99.63\% Acc. & -0.13 pp & 0.238 & +0.003 \\
+HAR & D & 97.00\% Acc. & -2.75 pp & 0.249 & +0.006 \\
+HAR & L & 99.88\% Acc. & +0.13 pp & 0.244 & -0.002 \\
+HAR & R & 90.19\% Acc. & -9.56 pp & 0.269 & -0.009 \\
+\midrule
+HPE & V & 48.73 mm & +3.67 mm & 0.189 & -0.003 \\
+HPE & D & 332.67 mm & +287.62 mm & 0.270 & +0.068 \\
+HPE & L & 52.91 mm & +7.86 mm & 0.178 & -0.038 \\
+HPE & R & 46.56 mm & +1.51 mm & 0.183 & -0.004 \\
+HPE & W & 44.55 mm & -0.50 mm & 0.179 & +0.002 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table*}
+

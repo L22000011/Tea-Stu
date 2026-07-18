@@ -1,0 +1,3 @@
+task,method,visual_input,protocol,combination_count,avg_mpjpe_mm,full_mpjpe_mm,best_subset,best_mpjpe_mm,worst_subset,worst_mpjpe_mm,note
+HPE,RGB-XFi,RGB,cross_scene,31,319.29,317.40,RGB+Depth,309.90,Lidar+WiFi-CSI,335.92,"RGB-available subset, fixed-budget 10 epoch/300 train batches/100 eval batches per combination"
+HPE,VK-RMD,VK,cross_scene,31,162.01,104.92,vk+depth,88.00,lidar,551.19,"RGB-available subset, fixed-budget 10 epoch/300 train batches/100 eval batches per combination"

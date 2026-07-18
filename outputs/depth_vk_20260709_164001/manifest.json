@@ -1,0 +1,15 @@
+{
+  "pipeline": "depth_vk_feasibility",
+  "rgb_root": "/apps/users/icps_intelligence/data/lyg/code/MMFi_RGB_SUBSET/MMFi_Defaced_RGB",
+  "mmfi_root": "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+  "manifest": "/apps/users/icps_intelligence/data/lyg/X-Fi/RGB-Subset-Fairness/outputs/rgb_subset_manifest/manifest.csv",
+  "output_root": "/apps/users/icps_intelligence/data/lyg/X-Fi/RGB-Subset-Fairness/outputs_depth_vk",
+  "protocols": [
+    "cross_scene",
+    "cross_subject"
+  ],
+  "epochs": 10,
+  "max_train_batches": 300,
+  "max_eval_batches": 100,
+  "device": "cuda:0"
+}

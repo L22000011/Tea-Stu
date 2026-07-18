@@ -1,0 +1,17 @@
+method,modality_set,noise_std,drop_joint_ratio,mse,mpjpe,pa_mpjpe,project,file,mpjpe_mm,pa_mpjpe_mm
+VK-RCD-Student-VK,vk+depth+lidar+mmwave+wifi-csi,0.0,0.0,0.0014590788163282586,0.050176355177133605,0.033479746515280594,HPE,student_vk_noise_robustness.csv,50.18,33.48
+VK-RCD-Student-VK,vk+depth+lidar+mmwave+wifi-csi,0.0,0.1,0.0015710848316534925,0.052643491697829475,0.03456873216758951,HPE,student_vk_noise_robustness.csv,52.64,34.57
+VK-RCD-Student-VK,vk+depth+lidar+mmwave+wifi-csi,0.0,0.3,0.0016379341990311823,0.05410481593208667,0.03519283280854068,HPE,student_vk_noise_robustness.csv,54.10,35.19
+VK-RCD-Student-VK,vk+depth+lidar+mmwave+wifi-csi,0.0,0.5,0.0016690452336497448,0.054745267666453566,0.03550166017187446,HPE,student_vk_noise_robustness.csv,54.75,35.50
+VK-RCD-Student-VK,vk+depth+lidar+mmwave+wifi-csi,5.0,0.0,0.001488102523395341,0.050876897283215254,0.03392482274936885,HPE,student_vk_noise_robustness.csv,50.88,33.92
+VK-RCD-Student-VK,vk+depth+lidar+mmwave+wifi-csi,5.0,0.1,0.001581960488836217,0.05287696207682009,0.034708920889684136,HPE,student_vk_noise_robustness.csv,52.88,34.71
+VK-RCD-Student-VK,vk+depth+lidar+mmwave+wifi-csi,5.0,0.3,0.0016401267167432682,0.05411605369975582,0.03518595285083631,HPE,student_vk_noise_robustness.csv,54.12,35.19
+VK-RCD-Student-VK,vk+depth+lidar+mmwave+wifi-csi,5.0,0.5,0.0016697228733739478,0.05476401183042968,0.03550198284092972,HPE,student_vk_noise_robustness.csv,54.76,35.50
+VK-RCD-Student-VK,vk+depth+lidar+mmwave+wifi-csi,10.0,0.0,0.001539294305564543,0.0520777138787893,0.034568920084689536,HPE,student_vk_noise_robustness.csv,52.08,34.57
+VK-RCD-Student-VK,vk+depth+lidar+mmwave+wifi-csi,10.0,0.1,0.0015987949889641724,0.053262907062582965,0.03492692394499929,HPE,student_vk_noise_robustness.csv,53.26,34.93
+VK-RCD-Student-VK,vk+depth+lidar+mmwave+wifi-csi,10.0,0.3,0.001638386860237358,0.05411954180905759,0.035202758531772425,HPE,student_vk_noise_robustness.csv,54.12,35.20
+VK-RCD-Student-VK,vk+depth+lidar+mmwave+wifi-csi,10.0,0.5,0.0016693329612529602,0.05474203289361618,0.03551971450513935,HPE,student_vk_noise_robustness.csv,54.74,35.52
+VK-RCD-Student-VK,vk+depth+lidar+mmwave+wifi-csi,20.0,0.0,0.001611003164998953,0.053631231445210106,0.03519577929889569,HPE,student_vk_noise_robustness.csv,53.63,35.20
+VK-RCD-Student-VK,vk+depth+lidar+mmwave+wifi-csi,20.0,0.1,0.001621275579426224,0.0538456417459445,0.035148136476227554,HPE,student_vk_noise_robustness.csv,53.85,35.15
+VK-RCD-Student-VK,vk+depth+lidar+mmwave+wifi-csi,20.0,0.3,0.0016435792571283744,0.05420943935964898,0.035250653282976885,HPE,student_vk_noise_robustness.csv,54.21,35.25
+VK-RCD-Student-VK,vk+depth+lidar+mmwave+wifi-csi,20.0,0.5,0.0016701842608368845,0.054783189111549606,0.035536594473903754,HPE,student_vk_noise_robustness.csv,54.78,35.54

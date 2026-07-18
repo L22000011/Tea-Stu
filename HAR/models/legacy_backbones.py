@@ -22,6 +22,25 @@ def _resolve_weight_path(backbone_root: str | Path, relative_path: str, weights:
     return path
 
 
+def _load_matching_state_dict(model: nn.Module, weight_path: Path) -> None:
+    state = _load_torch_file(weight_path)
+    model_state = model.state_dict()
+    compatible = {}
+    skipped = []
+    for key, value in state.items():
+        if key in model_state and tuple(model_state[key].shape) == tuple(value.shape):
+            compatible[key] = value
+        else:
+            skipped.append(key)
+    model.load_state_dict(compatible, strict=False)
+    if skipped:
+        print(
+            f"[legacy_backbones] Skipped {len(skipped)} incompatible keys from {weight_path.name}: "
+            + ", ".join(skipped[:6])
+            + (" ..." if len(skipped) > 6 else "")
+        )
+
+
 class DepthFeatureExtractor(nn.Module):
     def __init__(self, backbone_root: str | Path = "backbones", weights: Optional[str | Path] = None) -> None:
         super().__init__()
@@ -29,7 +48,7 @@ class DepthFeatureExtractor(nn.Module):
 
         model = Depth_ResNet18()
         weight_path = _resolve_weight_path(backbone_root, "depth_benchmark/depth_Resnet18.pt", weights)
-        model.load_state_dict(_load_torch_file(weight_path))
+        model.load_state_dict(_load_torch_file(weight_path), strict=False)
         self.part = nn.Sequential(*list(model.children())[:-2])
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -44,7 +63,7 @@ class MMwaveFeatureExtractor(nn.Module):
 
         model = mmwave_PointTransformerReg()
         weight_path = _resolve_weight_path(backbone_root, "mmwave_benchmark/mmwave_all_random_TD.pt", weights)
-        model.load_state_dict(_load_torch_file(weight_path))
+        _load_matching_state_dict(model, weight_path)
         self.part = nn.Sequential(*list(model.children())[:-1])
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -81,4 +100,3 @@ class LidarHARFeatureExtractor(nn.Module):
             xyz, points = self.transition_downs[idx](xyz, points)
             points = self.transformers[idx](xyz, points)[0]
         return points.view(points.size(0), -1, 512)
-

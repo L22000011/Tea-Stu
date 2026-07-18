@@ -1,0 +1,6 @@
+missing_count,available_count,mse,mpjpe,pa_mpjpe,num_combinations,method,split,protocol
+0,5,0.0014151764811282696,0.04913765875605674,0.03348198584340788,1,VK-XFi-Baseline-Full,random_split,protocol3
+1,4,0.025633491750984026,0.19508006841846462,0.058426326926531866,5,VK-XFi-Baseline-Full,random_split,protocol3
+2,3,0.23800047028979407,0.5089051006270091,0.11311598252660686,10,VK-XFi-Baseline-Full,random_split,protocol3
+3,2,0.48141991956748187,0.8649108318411523,0.17550837690229176,10,VK-XFi-Baseline-Full,random_split,protocol3
+4,1,0.4608940857154815,0.8738189213482397,0.19524588021935962,5,VK-XFi-Baseline-Full,random_split,protocol3

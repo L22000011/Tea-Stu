@@ -1,0 +1,19 @@
+# HAR all modality combinations
+
+|modality_set|loss|acc|macro_f1|params|fps|peak_memory|method|split|protocol|
+|---|---|---|---|---|---|---|---|---|---|
+|vk|2.6957821424305437|0.37125|0.11785714285714287|8606392|NA|NA|VK-RMD-HAR-DepthVK-Student-random|random_split|protocol3|
+|depth|0.024002462020434906|0.9925|0.4267984135061195|8606392|NA|NA|VK-RMD-HAR-DepthVK-Student-random|random_split|protocol3|
+|lidar|2.9072737979888914|0.11|0.05345825168059931|8606392|NA|NA|VK-RMD-HAR-DepthVK-Student-random|random_split|protocol3|
+|mmwave|0.3565952905267477|0.8925|0.16459206363900028|8606392|NA|NA|VK-RMD-HAR-DepthVK-Student-random|random_split|protocol3|
+|vk+depth|0.030990672936313787|0.99375|0.42704095118520546|8606392|NA|NA|VK-RMD-HAR-DepthVK-Student-random|random_split|protocol3|
+|vk+lidar|2.5019346857070923|0.37125|0.11757719714964371|8606392|NA|NA|VK-RMD-HAR-DepthVK-Student-random|random_split|protocol3|
+|vk+mmwave|0.382764413637924|0.88|0.21011139814591256|8606392|NA|NA|VK-RMD-HAR-DepthVK-Student-random|random_split|protocol3|
+|depth+lidar|0.02319375659513753|0.99375|0.42704095118520546|8606392|NA|NA|VK-RMD-HAR-DepthVK-Student-random|random_split|protocol3|
+|depth+mmwave|0.009246454898093361|1.0|1.0|8606392|NA|NA|VK-RMD-HAR-DepthVK-Student-random|random_split|protocol3|
+|lidar+mmwave|0.32793331355031113|0.89375|0.17508031852177244|8606392|NA|NA|VK-RMD-HAR-DepthVK-Student-random|random_split|protocol3|
+|vk+depth+lidar|0.03104119102237746|0.99375|0.42704095118520546|8606392|NA|NA|VK-RMD-HAR-DepthVK-Student-random|random_split|protocol3|
+|vk+depth+mmwave|0.011749737728969194|1.0|1.0|8606392|NA|NA|VK-RMD-HAR-DepthVK-Student-random|random_split|protocol3|
+|vk+lidar+mmwave|0.36083345508377535|0.88125|0.2103708521589482|8606392|NA|NA|VK-RMD-HAR-DepthVK-Student-random|random_split|protocol3|
+|depth+lidar+mmwave|0.009673683462606277|1.0|1.0|8606392|NA|NA|VK-RMD-HAR-DepthVK-Student-random|random_split|protocol3|
+|vk+depth+lidar+mmwave|0.012092294891481288|1.0|1.0|8606392|NA|NA|VK-RMD-HAR-DepthVK-Student-random|random_split|protocol3|

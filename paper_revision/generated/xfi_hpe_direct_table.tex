@@ -1,0 +1,51 @@
+\begin{table*}[t]
+\centering
+\caption{Direct HPE comparison with the original X-Fi table entries. MPJPE and PA-MPJPE are in millimeters; lower is better. Green downward deltas indicate improvement over X-Fi, and red upward deltas indicate degradation.}
+\label{tab:xfi_hpe_direct}
+\scriptsize
+\begin{adjustbox}{width=\textwidth}
+\begin{tabular}{lcccccc}
+\toprule
+\multirow{2}{*}{Modality} & \multicolumn{3}{c}{MPJPE$\downarrow$} & \multicolumn{3}{c}{PA-MPJPE$\downarrow$} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+ & X-Fi & VK-RMD & $\Delta$ & X-Fi & VK-RMD & $\Delta$ \\
+\midrule
+V & 93.9 & \cellcolor{gray!12}92.7 & \gain{$\downarrow$ 1.2} & 60.3 & \cellcolor{gray!12}42.6 & \gain{$\downarrow$ 17.7} \\
+D & 101.8 & \cellcolor{gray!12}53.9 & \gain{$\downarrow$ 47.9} & 48.4 & \cellcolor{gray!12}35.6 & \gain{$\downarrow$ 12.8} \\
+L & 167.1 & \cellcolor{gray!12}140.1 & \gain{$\downarrow$ 27.0} & 103.2 & \cellcolor{gray!12}93.5 & \gain{$\downarrow$ 9.7} \\
+R & 127.4 & \cellcolor{gray!12}115.0 & \gain{$\downarrow$ 12.4} & 69.8 & \cellcolor{gray!12}58.1 & \gain{$\downarrow$ 11.7} \\
+W & 225.6 & \cellcolor{gray!12}222.1 & \gain{$\downarrow$ 3.5} & 105.3 & \cellcolor{gray!12}110.2 & \loss{$\uparrow$ 4.9} \\
+\midrule
+V+D & 86.1 & \cellcolor{gray!12}51.7 & \gain{$\downarrow$ 34.4} & 48.1 & \cellcolor{gray!12}34.3 & \gain{$\downarrow$ 13.8} \\
+V+L & 93.0 & \cellcolor{gray!12}73.2 & \gain{$\downarrow$ 19.8} & 59.7 & \cellcolor{gray!12}41.9 & \gain{$\downarrow$ 17.8} \\
+V+R & 88.8 & \cellcolor{gray!12}68.9 & \gain{$\downarrow$ 19.9} & 57.3 & \cellcolor{gray!12}38.9 & \gain{$\downarrow$ 18.4} \\
+V+W & 93.0 & \cellcolor{gray!12}88.1 & \gain{$\downarrow$ 4.9} & 59.5 & \cellcolor{gray!12}42.3 & \gain{$\downarrow$ 17.2} \\
+D+L & 102.5 & \cellcolor{gray!12}53.0 & \gain{$\downarrow$ 49.5} & 48.4 & \cellcolor{gray!12}35.4 & \gain{$\downarrow$ 13.0} \\
+D+R & 98.0 & \cellcolor{gray!12}52.3 & \gain{$\downarrow$ 45.7} & 47.3 & \cellcolor{gray!12}34.6 & \gain{$\downarrow$ 12.7} \\
+D+W & 101.8 & \cellcolor{gray!12}53.5 & \gain{$\downarrow$ 48.3} & 48.1 & \cellcolor{gray!12}35.5 & \gain{$\downarrow$ 12.6} \\
+L+R & 109.8 & \cellcolor{gray!12}97.5 & \gain{$\downarrow$ 12.3} & 63.4 & \cellcolor{gray!12}55.1 & \gain{$\downarrow$ 8.3} \\
+L+W & 159.5 & \cellcolor{gray!12}134.2 & \gain{$\downarrow$ 25.3} & 102.7 & \cellcolor{gray!12}93.2 & \gain{$\downarrow$ 9.5} \\
+R+W & 117.2 & \cellcolor{gray!12}108.5 & \gain{$\downarrow$ 8.7} & 62.7 & \cellcolor{gray!12}57.3 & \gain{$\downarrow$ 5.4} \\
+\midrule
+V+D+L & 84.8 & \cellcolor{gray!12}51.1 & \gain{$\downarrow$ 33.7} & 48.2 & \cellcolor{gray!12}34.2 & \gain{$\downarrow$ 14.0} \\
+V+D+R & 83.4 & \cellcolor{gray!12}50.5 & \gain{$\downarrow$ 32.9} & 47.3 & \cellcolor{gray!12}33.5 & \gain{$\downarrow$ 13.8} \\
+V+D+W & 85.3 & \cellcolor{gray!12}51.6 & \gain{$\downarrow$ 33.7} & 48.1 & \cellcolor{gray!12}34.3 & \gain{$\downarrow$ 13.8} \\
+V+L+R & 88.4 & \cellcolor{gray!12}66.1 & \gain{$\downarrow$ 22.3} & 57.2 & \cellcolor{gray!12}38.8 & \gain{$\downarrow$ 18.4} \\
+V+L+W & 93.0 & \cellcolor{gray!12}70.7 & \gain{$\downarrow$ 22.3} & 59.7 & \cellcolor{gray!12}41.8 & \gain{$\downarrow$ 17.9} \\
+V+R+W & 88.5 & \cellcolor{gray!12}66.7 & \gain{$\downarrow$ 21.8} & 57.1 & \cellcolor{gray!12}38.8 & \gain{$\downarrow$ 18.3} \\
+D+L+R & 96.0 & \cellcolor{gray!12}51.9 & \gain{$\downarrow$ 44.1} & 47.3 & \cellcolor{gray!12}34.5 & \gain{$\downarrow$ 12.8} \\
+D+L+W & 102.0 & \cellcolor{gray!12}52.9 & \gain{$\downarrow$ 49.1} & 48.1 & \cellcolor{gray!12}35.4 & \gain{$\downarrow$ 12.7} \\
+D+R+W & 97.0 & \cellcolor{gray!12}52.1 & \gain{$\downarrow$ 44.9} & 47.1 & \cellcolor{gray!12}34.6 & \gain{$\downarrow$ 12.5} \\
+L+R+W & 107.4 & \cellcolor{gray!12}94.2 & \gain{$\downarrow$ 13.2} & 63.1 & \cellcolor{gray!12}55.1 & \gain{$\downarrow$ 8.0} \\
+\midrule
+V+D+L+R & 83.5 & \cellcolor{gray!12}50.2 & \gain{$\downarrow$ 33.3} & 47.6 & \cellcolor{gray!12}33.4 & \gain{$\downarrow$ 14.2} \\
+V+D+L+W & 86.0 & \cellcolor{gray!12}51.0 & \gain{$\downarrow$ 35.0} & 48.2 & \cellcolor{gray!12}34.2 & \gain{$\downarrow$ 14.0} \\
+V+D+R+W & 84.0 & \cellcolor{gray!12}50.4 & \gain{$\downarrow$ 33.6} & 47.6 & \cellcolor{gray!12}33.5 & \gain{$\downarrow$ 14.1} \\
+V+L+R+W & 88.6 & \cellcolor{gray!12}64.2 & \gain{$\downarrow$ 24.4} & 57.1 & \cellcolor{gray!12}38.8 & \gain{$\downarrow$ 18.3} \\
+D+L+R+W & 97.6 & \cellcolor{gray!12}51.8 & \gain{$\downarrow$ 45.8} & 47.4 & \cellcolor{gray!12}34.5 & \gain{$\downarrow$ 12.9} \\
+\midrule
+V+D+L+R+W & 83.7 & \cellcolor{gray!12}50.2 & \gain{$\downarrow$ 33.5} & 47.6 & \cellcolor{gray!12}33.5 & \gain{$\downarrow$ 14.1} \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table*}

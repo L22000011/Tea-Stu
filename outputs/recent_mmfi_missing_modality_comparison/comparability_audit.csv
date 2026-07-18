@@ -1,0 +1,3 @@
+﻿dataset,comparison_level,exact_sample_manifest_verified,eligible,task,baseline,split,shared_modalities,metric,architecture_control,excluded_rows,source
+MM-Fi,published_protocol_matched,no,yes_with_protocol_caveat,HPE,PTA (2026),official X-Fi/MM-Fi random split,"D,L,W",MPJPE and PA-MPJPE (mm),X-Fi modality encoders; 512-D tokens; batch size 16,all RGB/VK-containing rows,https://arxiv.org/pdf/2604.05584
+MM-Fi,published_protocol_matched,no,yes_with_protocol_caveat,HAR,COMPASS (2026),MM-Fi S1 random split,"D,L,R",top-1 accuracy (%),X-Fi encoder families; 32x512 tokens; batch size 16,all RGB/VK-containing rows,https://arxiv.org/pdf/2604.02056

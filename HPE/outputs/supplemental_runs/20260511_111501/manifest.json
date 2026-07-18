@@ -1,0 +1,1010 @@
+{
+  "dataset": "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+  "gpu": "0",
+  "device": "cuda:0",
+  "max_train_batches": 1000,
+  "max_eval_batches": null,
+  "task_count": 39,
+  "tasks": [
+    {
+      "name": "random_teacher_eval31",
+      "title": "Random split | Teacher 31-combination evaluation",
+      "kind": "eval",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/eval_all_combinations.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/teacher_full.yaml",
+        "--checkpoint",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/teacher_full/best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/teacher_random_all_combinations.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/teacher_full.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/teacher_full/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/teacher_random_all_combinations.csv"
+      ]
+    },
+    {
+      "name": "random_student_vk_eval31",
+      "title": "Random split | Student-VK 31-combination evaluation",
+      "kind": "eval",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/eval_all_combinations.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_vk_missing.yaml",
+        "--checkpoint",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_vk_missing/best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/student_vk_random_all_combinations.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_vk_missing.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_vk_missing/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/student_vk_random_all_combinations.csv"
+      ]
+    },
+    {
+      "name": "random_student_nv_eval15",
+      "title": "Random split | Student-NV non-visual combination evaluation",
+      "kind": "eval",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/eval_nonvisual_combinations.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_nv_missing.yaml",
+        "--checkpoint",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_nv_missing/best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/student_nv_random_nonvisual_combinations.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_nv_missing.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_nv_missing/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/student_nv_random_nonvisual_combinations.csv"
+      ]
+    },
+    {
+      "name": "random_baseline_eval31",
+      "title": "Random split | Baseline 31-combination evaluation",
+      "kind": "eval",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/eval_all_combinations.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/baseline_full.yaml",
+        "--checkpoint",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/baseline_full/best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/baseline_full_all_combinations.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/baseline_full.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/baseline_full/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/baseline_full_all_combinations.csv"
+      ]
+    },
+    {
+      "name": "random_distillation_ablation_train",
+      "title": "Random split | No-distillation ablation training",
+      "kind": "train",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/ablate_distillation.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/ablation.yaml",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000",
+        "--variants",
+        "no_kd",
+        "--teacher",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/teacher_full/best.pth"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/ablation.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/teacher_full/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/ablation/no_kd/best.pth"
+      ]
+    },
+    {
+      "name": "random_ablation_no_distill_eval31",
+      "title": "Random split | No-distillation ablation 31-combination evaluation",
+      "kind": "eval",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/eval_all_combinations.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/ablation.yaml",
+        "--checkpoint",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/ablation/no_kd/best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/ablation_no_distill_all_combinations.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/ablation.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/ablation/no_kd/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/ablation_no_distill_all_combinations.csv"
+      ]
+    },
+    {
+      "name": "random_reliability_ablation_train",
+      "title": "Random split | Uniform-fusion ablation training",
+      "kind": "train",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/ablate_reliability.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/ablation.yaml",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000",
+        "--variants",
+        "uniform",
+        "--teacher",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/teacher_full/best.pth"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/ablation.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/teacher_full/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/ablation/uniform/best.pth"
+      ]
+    },
+    {
+      "name": "random_ablation_uniform_fusion_eval31",
+      "title": "Random split | Uniform-fusion ablation 31-combination evaluation",
+      "kind": "eval",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/eval_all_combinations.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/ablation.yaml",
+        "--checkpoint",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/ablation/uniform/best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/ablation_uniform_fusion_all_combinations.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/ablation.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/ablation/uniform/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/ablation_uniform_fusion_all_combinations.csv"
+      ]
+    },
+    {
+      "name": "random_teacher_missing_summary",
+      "title": "Random split | Teacher missing-modality summary",
+      "kind": "eval",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/eval_missing_modality.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/teacher_full.yaml",
+        "--checkpoint",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/teacher_full/best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/teacher_missing_modality_summary.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/teacher_full.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/teacher_full/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/teacher_missing_modality_summary.csv"
+      ]
+    },
+    {
+      "name": "random_student_vk_missing_summary",
+      "title": "Random split | Student-VK missing-modality summary",
+      "kind": "eval",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/eval_missing_modality.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_vk_missing.yaml",
+        "--checkpoint",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_vk_missing/best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/student_vk_missing_modality_summary.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_vk_missing.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_vk_missing/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/student_vk_missing_modality_summary.csv"
+      ]
+    },
+    {
+      "name": "random_student_nv_missing_summary",
+      "title": "Random split | Student-NV missing non-visual summary",
+      "kind": "eval",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/eval_missing_modality.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_nv_missing.yaml",
+        "--checkpoint",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_nv_missing/best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/student_nv_missing_modality_summary.csv",
+        "--nonvisual"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_nv_missing.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_nv_missing/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/student_nv_missing_modality_summary.csv"
+      ]
+    },
+    {
+      "name": "random_baseline_missing_summary",
+      "title": "Random split | Baseline missing-modality summary",
+      "kind": "eval",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/eval_missing_modality.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/baseline_full.yaml",
+        "--checkpoint",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/baseline_full/best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/baseline_missing_modality_summary.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/baseline_full.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/baseline_full/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/baseline_missing_modality_summary.csv"
+      ]
+    },
+    {
+      "name": "random_student_vk_vk_noise",
+      "title": "Random split | Student-VK VK noise and joint-drop robustness",
+      "kind": "eval",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/eval_robustness_vk_noise.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_vk_missing.yaml",
+        "--checkpoint",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_vk_missing/best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/student_vk_noise_robustness.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_vk_missing.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_vk_missing/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/student_vk_noise_robustness.csv"
+      ]
+    },
+    {
+      "name": "random_teacher_complexity",
+      "title": "Random split | Teacher complexity export",
+      "kind": "export",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/export_metrics.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/teacher_full.yaml",
+        "--checkpoint",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/teacher_full/best.pth",
+        "--device",
+        "cuda:0",
+        "--modality-set",
+        "vk,depth,lidar,mmwave,wifi-csi",
+        "--output-csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/teacher_full_model_complexity.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/teacher_full.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/teacher_full/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/teacher_full_model_complexity.csv"
+      ]
+    },
+    {
+      "name": "random_student_vk_complexity",
+      "title": "Random split | Student-VK complexity export",
+      "kind": "export",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/export_metrics.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_vk_missing.yaml",
+        "--checkpoint",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_vk_missing/best.pth",
+        "--device",
+        "cuda:0",
+        "--modality-set",
+        "vk,depth,lidar,mmwave,wifi-csi",
+        "--output-csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/student_vk_model_complexity.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_vk_missing.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_vk_missing/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/student_vk_model_complexity.csv"
+      ]
+    },
+    {
+      "name": "random_student_nv_complexity",
+      "title": "Random split | Student-NV complexity export",
+      "kind": "export",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/export_metrics.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_nv_missing.yaml",
+        "--checkpoint",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_nv_missing/best.pth",
+        "--device",
+        "cuda:0",
+        "--modality-set",
+        "depth,lidar,mmwave,wifi-csi",
+        "--output-csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/student_nv_model_complexity.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_nv_missing.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_nv_missing/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/student_nv_model_complexity.csv"
+      ]
+    },
+    {
+      "name": "random_baseline_complexity",
+      "title": "Random split | Baseline complexity export",
+      "kind": "export",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/export_metrics.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/baseline_full.yaml",
+        "--checkpoint",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/baseline_full/best.pth",
+        "--device",
+        "cuda:0",
+        "--modality-set",
+        "vk,depth,lidar,mmwave,wifi-csi",
+        "--output-csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/baseline_full_model_complexity.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/baseline_full.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/baseline_full/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/baseline_full_model_complexity.csv"
+      ]
+    },
+    {
+      "name": "cross_scene_teacher_train",
+      "title": "cross_scene | Teacher full-modality training",
+      "kind": "train",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/train_teacher_full.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/teacher_cross_scene.yaml",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/teacher_cross_scene.yaml"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/teacher_full_cross_scene_split/best.pth"
+      ]
+    },
+    {
+      "name": "cross_scene_teacher_eval31",
+      "title": "cross_scene | Teacher 31-combination evaluation",
+      "kind": "eval",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/eval_all_combinations.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/teacher_cross_scene.yaml",
+        "--checkpoint",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/teacher_full_cross_scene_split/best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/teacher_cross_scene_all_combinations.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/teacher_cross_scene.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/teacher_full_cross_scene_split/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/teacher_cross_scene_all_combinations.csv"
+      ]
+    },
+    {
+      "name": "cross_scene_student_vk_train",
+      "title": "cross_scene | Student-VK missing-modality training",
+      "kind": "train",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/train_student_vk_missing.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_vk_cross_scene.yaml",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000",
+        "--teacher",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/teacher_full_cross_scene_split/best.pth"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_vk_cross_scene.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/teacher_full_cross_scene_split/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_vk_missing_cross_scene_split/best.pth"
+      ]
+    },
+    {
+      "name": "cross_scene_student_vk_eval31",
+      "title": "cross_scene | Student-VK 31-combination evaluation",
+      "kind": "eval",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/eval_all_combinations.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_vk_cross_scene.yaml",
+        "--checkpoint",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_vk_missing_cross_scene_split/best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/student_vk_cross_scene_all_combinations.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_vk_cross_scene.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_vk_missing_cross_scene_split/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/student_vk_cross_scene_all_combinations.csv"
+      ]
+    },
+    {
+      "name": "cross_scene_student_nv_train",
+      "title": "cross_scene | Student-NV non-visual missing-modality training",
+      "kind": "train",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/train_student_nv_missing.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_nv_cross_scene.yaml",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000",
+        "--teacher",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/teacher_full_cross_scene_split/best.pth"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_nv_cross_scene.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/teacher_full_cross_scene_split/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_nv_missing_cross_scene/best.pth"
+      ]
+    },
+    {
+      "name": "cross_scene_student_nv_eval15",
+      "title": "cross_scene | Student-NV non-visual combination evaluation",
+      "kind": "eval",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/eval_nonvisual_combinations.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_nv_cross_scene.yaml",
+        "--checkpoint",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_nv_missing_cross_scene/best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/student_nv_cross_scene_nonvisual_combinations.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_nv_cross_scene.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_nv_missing_cross_scene/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/student_nv_cross_scene_nonvisual_combinations.csv"
+      ]
+    },
+    {
+      "name": "cross_scene_baseline_train",
+      "title": "cross_scene | Baseline full-modality training",
+      "kind": "train",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/train_baseline_full.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/baseline_cross_scene.yaml",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/baseline_cross_scene.yaml"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/baseline_full_cross_scene_split/best.pth"
+      ]
+    },
+    {
+      "name": "cross_scene_baseline_eval31",
+      "title": "cross_scene | Baseline 31-combination evaluation",
+      "kind": "eval",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/eval_all_combinations.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/baseline_cross_scene.yaml",
+        "--checkpoint",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/baseline_full_cross_scene_split/best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/baseline_cross_scene_all_combinations.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/baseline_cross_scene.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/baseline_full_cross_scene_split/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/baseline_cross_scene_all_combinations.csv"
+      ]
+    },
+    {
+      "name": "cross_subject_teacher_train",
+      "title": "cross_subject | Teacher full-modality training",
+      "kind": "train",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/train_teacher_full.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/teacher_cross_subject.yaml",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/teacher_cross_subject.yaml"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/teacher_full_cross_subject_split/best.pth"
+      ]
+    },
+    {
+      "name": "cross_subject_teacher_eval31",
+      "title": "cross_subject | Teacher 31-combination evaluation",
+      "kind": "eval",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/eval_all_combinations.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/teacher_cross_subject.yaml",
+        "--checkpoint",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/teacher_full_cross_subject_split/best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/teacher_cross_subject_all_combinations.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/teacher_cross_subject.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/teacher_full_cross_subject_split/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/teacher_cross_subject_all_combinations.csv"
+      ]
+    },
+    {
+      "name": "cross_subject_student_vk_train",
+      "title": "cross_subject | Student-VK missing-modality training",
+      "kind": "train",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/train_student_vk_missing.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_vk_cross_subject.yaml",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000",
+        "--teacher",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/teacher_full_cross_subject_split/best.pth"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_vk_cross_subject.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/teacher_full_cross_subject_split/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_vk_missing_cross_subject_split/best.pth"
+      ]
+    },
+    {
+      "name": "cross_subject_student_vk_eval31",
+      "title": "cross_subject | Student-VK 31-combination evaluation",
+      "kind": "eval",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/eval_all_combinations.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_vk_cross_subject.yaml",
+        "--checkpoint",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_vk_missing_cross_subject_split/best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/student_vk_cross_subject_all_combinations.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_vk_cross_subject.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_vk_missing_cross_subject_split/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/student_vk_cross_subject_all_combinations.csv"
+      ]
+    },
+    {
+      "name": "cross_subject_student_nv_train",
+      "title": "cross_subject | Student-NV non-visual missing-modality training",
+      "kind": "train",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/train_student_nv_missing.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_nv_cross_subject.yaml",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000",
+        "--teacher",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/teacher_full_cross_subject_split/best.pth"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_nv_cross_subject.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/teacher_full_cross_subject_split/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_nv_missing_cross_subject/best.pth"
+      ]
+    },
+    {
+      "name": "cross_subject_student_nv_eval15",
+      "title": "cross_subject | Student-NV non-visual combination evaluation",
+      "kind": "eval",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/eval_nonvisual_combinations.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_nv_cross_subject.yaml",
+        "--checkpoint",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_nv_missing_cross_subject/best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/student_nv_cross_subject_nonvisual_combinations.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/student_nv_cross_subject.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_nv_missing_cross_subject/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/student_nv_cross_subject_nonvisual_combinations.csv"
+      ]
+    },
+    {
+      "name": "cross_subject_baseline_train",
+      "title": "cross_subject | Baseline full-modality training",
+      "kind": "train",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/train_baseline_full.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/baseline_cross_subject.yaml",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/baseline_cross_subject.yaml"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/baseline_full_cross_subject_split/best.pth"
+      ]
+    },
+    {
+      "name": "cross_subject_baseline_eval31",
+      "title": "cross_subject | Baseline 31-combination evaluation",
+      "kind": "eval",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/eval_all_combinations.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/baseline_cross_subject.yaml",
+        "--checkpoint",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/baseline_full_cross_subject_split/best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/baseline_cross_subject_all_combinations.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/configs/baseline_cross_subject.yaml",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/baseline_full_cross_subject_split/best.pth"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/baseline_cross_subject_all_combinations.csv"
+      ]
+    },
+    {
+      "name": "random_teacher_xfi_report",
+      "title": "Random split | Teacher vs official X-Fi report",
+      "kind": "report",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/generate_xfi_report.py",
+        "--csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/teacher_all_combinations.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/teacher_all_combinations.csv"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/teacher_all_combinations.xfi_compare_summary.csv"
+      ]
+    },
+    {
+      "name": "random_student_vk_xfi_report",
+      "title": "Random split | Student-VK vs official X-Fi report",
+      "kind": "report",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/generate_xfi_report.py",
+        "--csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/all_combinations.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/all_combinations.csv"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/all_combinations.xfi_compare_summary.csv"
+      ]
+    },
+    {
+      "name": "random_student_nv_xfi_report",
+      "title": "Random split | Student-NV vs official X-Fi report",
+      "kind": "report",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/generate_xfi_report.py",
+        "--csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/student_nv_nonvisual_combinations.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/student_nv_nonvisual_combinations.csv"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/student_nv_nonvisual_combinations.xfi_compare_summary.csv"
+      ]
+    },
+    {
+      "name": "random_baseline_xfi_report",
+      "title": "Random split | Baseline vs official X-Fi report",
+      "kind": "report",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/generate_xfi_report.py",
+        "--csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/baseline_full_all_combinations.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/baseline_full_all_combinations.csv"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/baseline_full_all_combinations.xfi_compare_summary.csv"
+      ]
+    },
+    {
+      "name": "ablation_no_distill_xfi_report",
+      "title": "Random split | No-distillation ablation report",
+      "kind": "report",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/generate_xfi_report.py",
+        "--csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/ablation_no_distill_all_combinations.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/ablation_no_distill_all_combinations.csv"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/ablation_no_distill_all_combinations.xfi_compare_summary.csv"
+      ]
+    },
+    {
+      "name": "ablation_uniform_fusion_xfi_report",
+      "title": "Random split | Uniform-fusion ablation report",
+      "kind": "report",
+      "command": [
+        "/apps/users/icps_intelligence/.conda/envs/XFI/bin/python",
+        "-u",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/scripts/generate_xfi_report.py",
+        "--csv",
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/ablation_uniform_fusion_all_combinations.csv"
+      ],
+      "required": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/ablation_uniform_fusion_all_combinations.csv"
+      ],
+      "outputs": [
+        "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/ablation_uniform_fusion_all_combinations.xfi_compare_summary.csv"
+      ]
+    }
+  ]
+}

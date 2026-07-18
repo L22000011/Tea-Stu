@@ -1,0 +1,8 @@
+index,name,status,reason,seconds,outputs
+1,fair_missing_modality_baseline,done,,0.002,E:\Deskbook\Tea\tables\fair_missing_modality_baseline.csv
+2,subset_complementarity_analysis,done,,0.455,E:\Deskbook\Tea\tables\subset_severity_summary.csv;E:\Deskbook\Tea\tables\leave_one_modality_delta.csv;E:\Deskbook\Tea\tables\subset_best_worst_patterns.csv;E:\Deskbook\Tea\figures\subset_severity_curve.png
+3,reliability_performance_correlation,done,,0.980,E:\Deskbook\Tea\tables\reliability_weight_by_subset.csv;E:\Deskbook\Tea\tables\reliability_performance_correlation.csv;E:\Deskbook\Tea\figures\reliability_weight_heatmap.png
+4,privacy_exposure_table,done,,0.000,E:\Deskbook\Tea\tables\privacy_exposure_residual_risk.csv
+5,hpe_reliability_corruption,dry_run,,0.000,E:\Deskbook\Tea\HPE\outputs\eval\reliability_corruption_hpe.csv
+6,har_reliability_corruption,dry_run,,0.000,E:\Deskbook\Tea\HAR\outputs\eval\reliability_corruption_har.csv
+7,summary_report,done,,0.000,E:\Deskbook\Tea\reports\fast_extras_summary.md

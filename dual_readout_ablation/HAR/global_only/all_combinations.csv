@@ -1,0 +1,16 @@
+modality_set,loss,acc,macro_f1,params,fps,peak_memory,method,split,protocol,readout_mode
+vk,2.5360489463061096,0.334375,0.14554636048371655,8606392,NA,NA,VK-RMD-HAR-Readout-global_only,random_split,protocol3,global_only
+depth,0.06278116750580011,0.9825,0.49554014015295494,8606392,NA,NA,VK-RMD-HAR-Readout-global_only,random_split,protocol3,global_only
+lidar,3.5327775406837465,0.000625,0.0007457121551081282,8606392,NA,NA,VK-RMD-HAR-Readout-global_only,random_split,protocol3,global_only
+mmwave,0.30910975670754853,0.90375,0.23265689892162386,8606392,NA,NA,VK-RMD-HAR-Readout-global_only,random_split,protocol3,global_only
+vk+depth,0.05728974206169369,0.98375,0.540747177475197,8606392,NA,NA,VK-RMD-HAR-Readout-global_only,random_split,protocol3,global_only
+vk+lidar,2.683459299840033,0.330625,0.13240661044954805,8606392,NA,NA,VK-RMD-HAR-Readout-global_only,random_split,protocol3,global_only
+vk+mmwave,0.2665911347313704,0.908125,0.2780282157034494,8606392,NA,NA,VK-RMD-HAR-Readout-global_only,random_split,protocol3,global_only
+depth+lidar,0.052243256658894094,0.984375,0.4959825660515777,8606392,NA,NA,VK-RMD-HAR-Readout-global_only,random_split,protocol3,global_only
+depth+mmwave,0.009845071370182267,0.9975,0.5993243243243243,8606392,NA,NA,VK-RMD-HAR-Readout-global_only,random_split,protocol3,global_only
+lidar+mmwave,0.2919740747767719,0.903125,0.24255733237968524,8606392,NA,NA,VK-RMD-HAR-Readout-global_only,random_split,protocol3,global_only
+vk+depth+lidar,0.049908813803631345,0.985,0.5412262219432186,8606392,NA,NA,VK-RMD-HAR-Readout-global_only,random_split,protocol3,global_only
+vk+depth+mmwave,0.015510536559322646,0.995625,0.5443762140338211,8606392,NA,NA,VK-RMD-HAR-Readout-global_only,random_split,protocol3,global_only
+vk+lidar+mmwave,0.2657170760088411,0.91,0.2785188266524362,8606392,NA,NA,VK-RMD-HAR-Readout-global_only,random_split,protocol3,global_only
+depth+lidar+mmwave,0.00920922190895908,0.996875,0.5991545479489642,8606392,NA,NA,VK-RMD-HAR-Readout-global_only,random_split,protocol3,global_only
+vk+depth+lidar+mmwave,0.014450303446683393,0.995625,0.5988138354372031,8606392,NA,NA,VK-RMD-HAR-Readout-global_only,random_split,protocol3,global_only

@@ -1,0 +1,5 @@
+index,name,title,kind,status,reason,returncode,seconds,outputs
+1,random_super_teacher_train,random | Super Teacher training,train,skipped,outputs_exist,0,0.000,/apps/users/icps_intelligence/data/lyg/X-Fi/Super-Teacher/outputs/super_teacher/best_joint.pth;/apps/users/icps_intelligence/data/lyg/X-Fi/Super-Teacher/outputs/super_teacher/best_hpe.pth;/apps/users/icps_intelligence/data/lyg/X-Fi/Super-Teacher/outputs/super_teacher/best_har.pth
+2,random_super_teacher_hpe_eval31,random | Super Teacher HPE combinations,eval,done,,0,29943.954,/apps/users/icps_intelligence/data/lyg/X-Fi/Super-Teacher/outputs/eval/super_teacher_random_hpe_all_combinations.csv
+3,random_super_teacher_har_eval,random | Super Teacher HAR combinations,eval,done,,0,14605.169,/apps/users/icps_intelligence/data/lyg/X-Fi/Super-Teacher/outputs/eval/super_teacher_random_har_all_combinations.csv
+4,random_hpe_students_train,random | HPE students from Super Teacher,train,failed,,1,116280.203,/apps/users/icps_intelligence/data/lyg/X-Fi/Super-Teacher/outputs/super_hpe_student_vk/best.pth;/apps/users/icps_intelligence/data/lyg/X-Fi/Super-Teacher/outputs/super_hpe_student_nv/best.pth

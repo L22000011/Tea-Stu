@@ -1,0 +1,3 @@
+task,num_modalities,pearson_weight_vs_score,spearman_weight_vs_score,interpretation
+HPE,5,0.9396,0.9000,Positive means higher learned weight tends to align with better task-level subset performance.
+HAR,4,0.8833,0.8000,Positive means higher learned weight tends to align with better task-level subset performance.

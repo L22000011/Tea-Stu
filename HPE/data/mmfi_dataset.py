@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 import os
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Tuple
@@ -41,6 +42,20 @@ PROTOCOL_ACTIONS = {
 }
 
 SANITIZE_COUNTS: Dict[str, int] = {}
+
+
+def _load_manifest_keys(manifest_path: str | Path | None) -> set[tuple[str, str, str, int]] | None:
+    if not manifest_path:
+        return None
+    path = Path(manifest_path)
+    if not path.exists():
+        raise FileNotFoundError(f"Manifest file does not exist: {path}")
+    keys: set[tuple[str, str, str, int]] = set()
+    with path.open("r", newline="", encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            keys.add((row["scene"], row["subject"], row["action"], int(row["idx"])))
+    print(f"[MMFiDataset] Loaded manifest filter | path={path} | samples={len(keys)}")
+    return keys
 
 
 def _record_sanitize_event(name: str, path: Path | None = None) -> None:
@@ -167,11 +182,15 @@ class MMFiDataset(Dataset):
         modalities: Iterable[str],
         split: str,
         data_form: Dict[str, List[str]],
+        manifest_keys: set[tuple[str, str, str, int]] | None = None,
+        vk_override_root: str | Path | None = None,
     ) -> None:
         self.database = database
         self.modalities = canonicalize_modalities(modalities)
         self.split = split
         self.data_form = data_form
+        self.manifest_keys = manifest_keys
+        self.vk_override_root = Path(vk_override_root) if vk_override_root else None
         self.data_list = self._load_data_list()
 
     def _modality_folder(self, modality: str) -> str:
@@ -227,7 +246,16 @@ class MMFiDataset(Dataset):
                         modality_dir = action_root / folder
                         files = modality_files[modality]
                         file_index = idx if modality == "mmwave" else frame_idx
-                        item[f"{modality}_path"] = modality_dir / files[file_index]
+                        if modality == "vk" and self.vk_override_root is not None:
+                            item[f"{modality}_path"] = (
+                                self.vk_override_root / scene / subject / action / f"frame{frame_idx + 1:03d}.npy"
+                            )
+                        else:
+                            item[f"{modality}_path"] = modality_dir / files[file_index]
+                    if self.manifest_keys is not None:
+                        key = (scene, subject, action, frame_idx)
+                        if key not in self.manifest_keys:
+                            continue
                     data_info.append(item)
         print(f"[MMFiDataset] Finished {self.split} index | samples={len(data_info)}")
         return data_info
@@ -351,8 +379,12 @@ def collate_mmfi_batch(batch: List[Dict[str, Any]]) -> Dict[str, Any]:
 def build_datasets(dataset_root: str | Path, config: Dict[str, Any]) -> Tuple[MMFiDataset, MMFiDataset]:
     database = MMFiDatabase(dataset_root)
     split = decode_split(config)
-    train_dataset = MMFiDataset(database, **split["train"])
-    val_dataset = MMFiDataset(database, **split["val"])
+    manifest_keys = _load_manifest_keys(config.get("manifest_path"))
+    vk_override_root = config.get("vk_override_root")
+    if vk_override_root:
+        print(f"[MMFiDataset] VK override root: {vk_override_root}")
+    train_dataset = MMFiDataset(database, manifest_keys=manifest_keys, vk_override_root=vk_override_root, **split["train"])
+    val_dataset = MMFiDataset(database, manifest_keys=manifest_keys, vk_override_root=vk_override_root, **split["val"])
     return train_dataset, val_dataset
 
 

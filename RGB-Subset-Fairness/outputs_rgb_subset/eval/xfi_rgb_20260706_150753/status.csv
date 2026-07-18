@@ -1,0 +1,3 @@
+index,name,status,reason,returncode,seconds,outputs
+1,xfi_rgb_hpe_cross_subject_train,done,,0,55528.957,/apps/users/icps_intelligence/data/lyg/X-Fi/Ori-RGB-HPE/outputs_rgb_subset/cross_subject/pre-trained_weights/best.pth
+2,xfi_rgb_hpe_cross_subject_eval31,done,,0,15736.478,/apps/users/icps_intelligence/data/lyg/X-Fi/Ori-RGB-HPE/outputs_rgb_subset/cross_subject/eval/main_eval_latest.csv

@@ -7,6 +7,7 @@ student_modalities: [depth, lidar, mmwave, wifi-csi]
 teacher_modalities: [vk, depth, lidar, mmwave, wifi-csi]
 drop_counts: [0, 1, 2, 3]
 eval_modalities: [depth, lidar, mmwave, wifi-csi]
+eval_missing_during_training: true
 
 random_split:
   ratio: 0.8

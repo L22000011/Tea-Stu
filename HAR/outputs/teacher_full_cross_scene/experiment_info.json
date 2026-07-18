@@ -1,0 +1,14 @@
+{
+  "method": "VK-RCD-HAR-Teacher",
+  "stage": "teacher",
+  "device": "cuda:0",
+  "python": "3.10.20",
+  "torch": "2.1.1+cu118",
+  "cuda_available": true,
+  "parameter_count": 8606392,
+  "output_dir": "outputs/teacher_full_cross_scene",
+  "dataset_root": "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+  "split": "cross_scene_split",
+  "protocol": "protocol3",
+  "num_classes": 27
+}

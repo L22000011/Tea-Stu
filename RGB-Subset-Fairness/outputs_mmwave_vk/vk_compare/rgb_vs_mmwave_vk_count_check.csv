@@ -1,0 +1,3 @@
+protocol,manifest_samples,generated_vk_files,count_matches_manifest,note
+cross_scene,54010,54010,True,The pipeline exports one generated VK file for each RGB-subset manifest row. Sensor-rate differences are handled by the MMFi frame-level synchronization/indexing; this script checks the resulting one-to-one frame count.
+cross_subject,54010,54010,True,The pipeline exports one generated VK file for each RGB-subset manifest row. Sensor-rate differences are handled by the MMFi frame-level synchronization/indexing; this script checks the resulting one-to-one frame count.

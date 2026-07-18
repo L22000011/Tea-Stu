@@ -1,0 +1,4 @@
+dataset: /apps/users/icps_intelligence/data/lyg/code/MMFi_DATA
+checkpoint: /apps/users/icps_intelligence/data/lyg/X-Fi/Ori-RGB-HPE/outputs_rgb_subset/cross_scene/pre-trained_weights/best.pth
+timestamp: 20260705_120852
+

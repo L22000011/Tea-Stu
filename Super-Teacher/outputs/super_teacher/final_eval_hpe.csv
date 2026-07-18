@@ -1,0 +1,2 @@
+method,split,modality_set,mse,mpjpe,pa_mpjpe,params
+Super-Teacher,random_split,vk+depth+lidar+mmwave+wifi-csi,0.0019134342368325565,0.05978134061250622,0.03115829325565856,11774160

@@ -1,0 +1,5 @@
+# VK-RCD-Student-NV final evaluation
+
+|method|split|protocol|modality_set|mse|mpjpe|pa_mpjpe|params|fps|peak_memory|
+|---|---|---|---|---|---|---|---|---|---|
+|VK-RCD-Student-NV|random_split|protocol3|depth+lidar+mmwave+wifi-csi|0.001492933899674691|0.051028348584007274|0.03569465755627706|8895208|NA|NA|

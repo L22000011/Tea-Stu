@@ -1,0 +1,7 @@
+{
+  "project": "HAR",
+  "mode": "global_only",
+  "checkpoint": "/apps/users/icps_intelligence/data/lyg/X-Fi/outputs/dual_readout_ablation/HAR/global_only/best.pth",
+  "max_eval_batches": 100,
+  "combination_count": 15
+}

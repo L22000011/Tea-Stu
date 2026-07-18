@@ -1,0 +1,16 @@
+modality_set,xfi_acc_pct,source
+vk,26.5,X-Fi ICLR 2025 Table 2 MM-Fi HAR
+depth,48.1,X-Fi ICLR 2025 Table 2 MM-Fi HAR
+lidar,52.7,X-Fi ICLR 2025 Table 2 MM-Fi HAR
+mmwave,85.7,X-Fi ICLR 2025 Table 2 MM-Fi HAR
+vk+depth,45.3,X-Fi ICLR 2025 Table 2 MM-Fi HAR
+vk+lidar,35.2,X-Fi ICLR 2025 Table 2 MM-Fi HAR
+vk+mmwave,73.4,X-Fi ICLR 2025 Table 2 MM-Fi HAR
+depth+lidar,51.6,X-Fi ICLR 2025 Table 2 MM-Fi HAR
+depth+mmwave,79.8,X-Fi ICLR 2025 Table 2 MM-Fi HAR
+lidar+mmwave,88.7,X-Fi ICLR 2025 Table 2 MM-Fi HAR
+vk+depth+lidar,48.7,X-Fi ICLR 2025 Table 2 MM-Fi HAR
+vk+depth+mmwave,70.7,X-Fi ICLR 2025 Table 2 MM-Fi HAR
+vk+lidar+mmwave,77.8,X-Fi ICLR 2025 Table 2 MM-Fi HAR
+depth+lidar+mmwave,80.5,X-Fi ICLR 2025 Table 2 MM-Fi HAR
+vk+depth+lidar+mmwave,72.2,X-Fi ICLR 2025 Table 2 MM-Fi HAR

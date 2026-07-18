@@ -1,0 +1,2 @@
+method,split,protocol,modality_set,mse,mpjpe,pa_mpjpe,params,fps,peak_memory
+VK-RCD-Ablation,random_split,protocol3,vk+depth+lidar+mmwave+wifi-csi,0.0014166301683870193,0.0493374030330035,0.033379791426487476,8895208,NA,NA

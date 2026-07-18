@@ -1,0 +1,8 @@
+index,name,status,reason,seconds,outputs
+1,fair_missing_modality_baseline,done,,0.003,/apps/users/icps_intelligence/data/lyg/X-Fi/tables/fair_missing_modality_baseline.csv
+2,subset_complementarity_analysis,done,,3.293,/apps/users/icps_intelligence/data/lyg/X-Fi/tables/subset_severity_summary.csv;/apps/users/icps_intelligence/data/lyg/X-Fi/tables/leave_one_modality_delta.csv;/apps/users/icps_intelligence/data/lyg/X-Fi/tables/subset_best_worst_patterns.csv;/apps/users/icps_intelligence/data/lyg/X-Fi/figures/subset_severity_curve.png
+3,reliability_performance_correlation,done,,7.389,/apps/users/icps_intelligence/data/lyg/X-Fi/tables/reliability_weight_by_subset.csv;/apps/users/icps_intelligence/data/lyg/X-Fi/tables/reliability_performance_correlation.csv;/apps/users/icps_intelligence/data/lyg/X-Fi/figures/reliability_weight_heatmap.png
+4,privacy_exposure_table,done,,0.000,/apps/users/icps_intelligence/data/lyg/X-Fi/tables/privacy_exposure_residual_risk.csv
+5,hpe_reliability_corruption,done,,3984.477,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/eval/reliability_corruption_hpe.csv
+6,har_reliability_corruption,done,,3142.407,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HAR/outputs/eval/reliability_corruption_har.csv
+7,summary_report,done,,0.000,/apps/users/icps_intelligence/data/lyg/X-Fi/reports/fast_extras_summary.md

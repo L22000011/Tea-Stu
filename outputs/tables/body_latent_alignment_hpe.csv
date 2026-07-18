@@ -1,0 +1,5 @@
+task,anchor_modality,target_modality,same_sample_cosine,shuffled_cosine,cosine_gap,retrieval_top1,random_top1,num_samples,num_batches,checkpoint
+HPE,vk,depth,0.929589,0.929063,0.000525,0.080625,0.062500,1600,100,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_vk_missing/best.pth
+HPE,vk,lidar,0.878363,0.878236,0.000127,0.065000,0.062500,1600,100,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_vk_missing/best.pth
+HPE,vk,mmwave,0.849208,0.848628,0.000581,0.070000,0.062500,1600,100,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_vk_missing/best.pth
+HPE,vk,wifi-csi,0.894507,0.894327,0.000180,0.067500,0.062500,1600,100,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs/student_vk_missing/best.pth

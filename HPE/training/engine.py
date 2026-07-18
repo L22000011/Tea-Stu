@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import platform
 import random
+from itertools import combinations
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Sequence
 
@@ -200,6 +201,44 @@ def evaluate_combinations(
     return rows
 
 
+def missing_modality_eval_sets(
+    available_modalities: Sequence[str],
+    drop_counts: Sequence[int],
+) -> List[List[str]]:
+    eval_sets: List[List[str]] = []
+    seen = set()
+    num_modalities = len(available_modalities)
+    for drop_count in drop_counts:
+        keep_count = num_modalities - int(drop_count)
+        if keep_count <= 0 or keep_count > num_modalities:
+            continue
+        for combo in combinations(available_modalities, keep_count):
+            key = tuple(combo)
+            if key in seen:
+                continue
+            seen.add(key)
+            eval_sets.append(list(combo))
+    if not eval_sets:
+        eval_sets.append(list(available_modalities))
+    return eval_sets
+
+
+def evaluate_modality_set_average(
+    model: nn.Module,
+    dataloader: Iterable[Dict[str, Any]],
+    device: torch.device,
+    modality_sets: Sequence[Sequence[str]],
+    max_batches: int | None = None,
+) -> Dict[str, float]:
+    collected = []
+    for modality_set in modality_sets:
+        collected.append(evaluate_model(model, dataloader, device, modality_set, max_batches=max_batches))
+    return {
+        key: sum(metrics[key] for metrics in collected) / max(len(collected), 1)
+        for key in ["mse", "mpjpe", "pa_mpjpe"]
+    }
+
+
 def write_csv(path: str | Path, rows: List[Dict[str, Any]]) -> None:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -375,12 +414,25 @@ def train_student(
 
             val_metrics: Dict[str, float] | None = None
             if (epoch + 1) % eval_every == 0 or epoch == epochs - 1:
-                eval_modalities = config.get("eval_modalities", available_modalities)
-                val_metrics = evaluate_model(student, val_loader, device, eval_modalities, max_batches=config.get("max_eval_batches"))
+                if bool(config.get("eval_missing_during_training", True)):
+                    eval_sets = config.get("eval_missing_sets") or missing_modality_eval_sets(available_modalities, drop_counts)
+                    val_metrics = evaluate_modality_set_average(
+                        student,
+                        val_loader,
+                        device,
+                        eval_sets,
+                        max_batches=config.get("max_eval_batches"),
+                    )
+                    eval_label = "avg(" + ",".join("+".join(item) for item in eval_sets) + ")"
+                else:
+                    eval_modalities = config.get("eval_modalities", available_modalities)
+                    val_metrics = evaluate_model(student, val_loader, device, eval_modalities, max_batches=config.get("max_eval_batches"))
+                    eval_label = "+".join(eval_modalities)
                 if val_metrics["mpjpe"] < best_mpjpe:
                     best_mpjpe = val_metrics["mpjpe"]
                     save_checkpoint(output_dir / "best.pth", student, optimizer, epoch, best_mpjpe, config)
                     print(f"Saved new best model: {output_dir / 'best.pth'} | best_mpjpe={best_mpjpe:.6f}")
+                print(f"Student validation policy | modality_set={eval_label} | mpjpe={val_metrics['mpjpe']:.6f}")
 
             save_checkpoint(output_dir / "last.pth", student, optimizer, epoch, best_mpjpe, config)
             if (epoch + 1) % save_every == 0 or epoch == epochs - 1:
@@ -397,6 +449,7 @@ def train_student(
                 "params": params,
                 "student_modalities": "+".join(available_modalities),
                 "drop_counts": "/".join(str(item) for item in drop_counts),
+                "eval_policy": "missing_average" if bool(config.get("eval_missing_during_training", True)) else "single_set",
             }
             history_rows.append(row)
             append_csv_row(output_dir / "epoch_history.csv", row)

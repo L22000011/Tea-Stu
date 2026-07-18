@@ -1,0 +1,8 @@
+task,target_modality,same_sample_cosine,shuffled_cosine,cosine_gap,retrieval_top1,random_top1,evidence_grade,paper_policy
+HAR,depth,0.7851,0.7841,0.001,0.0869,0.0625,weak diagnostic,Use only as weak diagnostic evidence; do not claim strict semantic alignment.
+HAR,lidar,0.8826,0.8821,0.0004,0.1006,0.0625,weak diagnostic,Use only as weak diagnostic evidence; do not claim strict semantic alignment.
+HAR,mmwave,0.7466,0.7456,0.0009,0.0744,0.0625,weak diagnostic,Use only as weak diagnostic evidence; do not claim strict semantic alignment.
+HPE,depth,0.9296,0.9291,0.0005,0.0806,0.0625,weak diagnostic,Use only as weak diagnostic evidence; do not claim strict semantic alignment.
+HPE,lidar,0.8784,0.8782,0.0001,0.065,0.0625,weak diagnostic,Use only as weak diagnostic evidence; do not claim strict semantic alignment.
+HPE,mmwave,0.8492,0.8486,0.0006,0.07,0.0625,weak diagnostic,Use only as weak diagnostic evidence; do not claim strict semantic alignment.
+HPE,wifi-csi,0.8945,0.8943,0.0002,0.0675,0.0625,weak diagnostic,Use only as weak diagnostic evidence; do not claim strict semantic alignment.

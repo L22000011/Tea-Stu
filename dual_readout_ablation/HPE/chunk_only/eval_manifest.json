@@ -1,0 +1,7 @@
+{
+  "project": "HPE",
+  "mode": "chunk_only",
+  "checkpoint": "/apps/users/icps_intelligence/data/lyg/X-Fi/outputs/dual_readout_ablation/HPE/chunk_only/best.pth",
+  "max_eval_batches": 100,
+  "combination_count": 31
+}

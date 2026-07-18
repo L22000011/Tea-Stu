@@ -1,0 +1,8 @@
+﻿modality_set,baseline,pta_mpjpe_mm,vkrmd_mpjpe_mm,delta_mpjpe_ours_minus_pta,mpjpe_winner,pta_pa_mpjpe_mm,vkrmd_pa_mpjpe_mm,delta_pa_ours_minus_pta,pa_mpjpe_winner
+D,PTA,84.81,53.88,-30.93,VK-RMD,50.72,35.61,-15.11,VK-RMD
+L,PTA,68.3,140.14,71.84,PTA,44.44,93.52,49.08,PTA
+W,PTA,182.18,222.14,39.96,PTA,114.63,110.19,-4.44,VK-RMD
+D+L,PTA,64.68,53.0,-11.68,VK-RMD,42.63,35.35,-7.28,VK-RMD
+D+W,PTA,95.96,53.54,-42.42,VK-RMD,59.77,35.52,-24.25,VK-RMD
+L+W,PTA,74.74,134.16,59.42,PTA,49.49,93.18,43.69,PTA
+D+L+W,PTA,68.86,52.85,-16.01,VK-RMD,45.47,35.38,-10.09,VK-RMD

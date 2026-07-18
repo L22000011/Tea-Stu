@@ -1,0 +1,2 @@
+method,split,protocol,modality_set,mse,mpjpe,pa_mpjpe,params,fps,peak_memory
+VK-RMD-HPE-Readout-chunk_only,random_split,protocol3,vk+depth+lidar+mmwave+wifi-csi,0.002328570006066002,0.06467297278344632,0.047789630373222564,8895208,NA,NA

@@ -1,0 +1,2 @@
+method,split,modality_set,loss,acc,macro_f1,params
+Super-Teacher,random_split,vk+depth+lidar+mmwave,0.5777572793720887,0.9055992018954981,0.9056643675660354,11774160

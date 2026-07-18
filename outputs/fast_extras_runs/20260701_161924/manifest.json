@@ -1,0 +1,9 @@
+{
+  "created_at": "20260701_161924",
+  "dataset": "",
+  "device": "cuda:0",
+  "max_eval_batches": 200,
+  "hpe_root": "E:\\Deskbook\\Tea\\HPE",
+  "har_root": "E:\\Deskbook\\Tea\\HAR",
+  "description": "Fast non-training extras for VK-RMD paper submission."
+}

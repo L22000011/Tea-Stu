@@ -1,0 +1,13 @@
+task,mode,stage,status,seconds,returncode
+HPE,chunk_only,train,dry-run,0.0,0
+HPE,chunk_only,eval,dry-run,0.0,0
+HPE,global_only,train,dry-run,0.0,0
+HPE,global_only,eval,dry-run,0.0,0
+HPE,dual,train,dry-run,0.0,0
+HPE,dual,eval,dry-run,0.0,0
+HAR,chunk_only,train,dry-run,0.0,0
+HAR,chunk_only,eval,dry-run,0.0,0
+HAR,global_only,train,dry-run,0.0,0
+HAR,global_only,eval,dry-run,0.0,0
+HAR,dual,train,dry-run,0.0,0
+HAR,dual,eval,dry-run,0.0,0

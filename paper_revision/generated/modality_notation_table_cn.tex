@@ -1,0 +1,19 @@
+\begin{table}[H]
+\centering
+\caption{模态符号与在 VK-RMD 中的角色。本文所有组合表均使用缩写：V=VK，D=Depth，L=LiDAR，R=mmWave，W=WiFi-CSI。}
+\label{tab:notation_cn}
+\scriptsize
+\begin{adjustbox}{width=\linewidth}
+\begin{tabular}{llll}
+\toprule
+符号 & 表示 & 外观暴露 & 在 VK-RMD 中的角色 \\
+\midrule
+V & VK & 低 & 低外观关节结构输入，替代下游 RGB \\
+D & Depth & 低/中 & 关键几何证据，HPE 中最敏感 \\
+L & LiDAR & 低 & 稀疏三维几何补充 \\
+R & mmWave & 低 & 动态与动作线索，HAR 中最敏感 \\
+W & WiFi-CSI & 很低 & 非视觉无线感知补充，仅用于 HPE \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}

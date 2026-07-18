@@ -1,0 +1,7 @@
+modality,subject_id_acc_percent,chance_percent,times_chance,relative_reduction_vs_defaced_rgb_percent,interpretation
+rgb,67.53,2.50,27.01,0.00,High subject leakage; only reduced visual exposure can be claimed.
+vk,15.43,2.50,6.17,77.15,Measurable subject leakage; avoid privacy guarantee claims.
+depth,43.80,2.50,17.52,35.14,High subject leakage; only reduced visual exposure can be claimed.
+lidar,36.57,2.50,14.63,45.84,High subject leakage; only reduced visual exposure can be claimed.
+mmwave,9.72,2.50,3.89,85.60,Measurable subject leakage; avoid privacy guarantee claims.
+wifi-csi,8.65,2.50,3.46,87.19,Measurable subject leakage; avoid privacy guarantee claims.

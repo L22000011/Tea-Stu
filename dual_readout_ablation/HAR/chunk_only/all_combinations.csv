@@ -1,0 +1,16 @@
+modality_set,loss,acc,macro_f1,params,fps,peak_memory,method,split,protocol,readout_mode
+vk,2.6211502089351417,0.245625,0.13073028193126018,8606392,NA,NA,VK-RMD-HAR-Readout-chunk_only,random_split,protocol3,chunk_only
+depth,0.06059109773445016,0.979375,0.4564162381569655,8606392,NA,NA,VK-RMD-HAR-Readout-chunk_only,random_split,protocol3,chunk_only
+lidar,3.535178644657135,0.0,0.0,8606392,NA,NA,VK-RMD-HAR-Readout-chunk_only,random_split,protocol3,chunk_only
+mmwave,0.27461110215584084,0.915625,0.23318070943740057,8606392,NA,NA,VK-RMD-HAR-Readout-chunk_only,random_split,protocol3,chunk_only
+vk+depth,0.057085812856930714,0.97875,0.4941616399708133,8606392,NA,NA,VK-RMD-HAR-Readout-chunk_only,random_split,protocol3,chunk_only
+vk+lidar,2.4991824276000263,0.25625,0.12361650903954137,8606392,NA,NA,VK-RMD-HAR-Readout-chunk_only,random_split,protocol3,chunk_only
+vk+mmwave,0.23164899450999654,0.92375,0.3521876788017774,8606392,NA,NA,VK-RMD-HAR-Readout-chunk_only,random_split,protocol3,chunk_only
+depth+lidar,0.056619486316230906,0.980625,0.45668762085123327,8606392,NA,NA,VK-RMD-HAR-Readout-chunk_only,random_split,protocol3,chunk_only
+depth+mmwave,0.011676555305675719,0.99625,0.5989859138848832,8606392,NA,NA,VK-RMD-HAR-Readout-chunk_only,random_split,protocol3,chunk_only
+lidar+mmwave,0.2527551076198688,0.919375,0.23438199005938365,8606392,NA,NA,VK-RMD-HAR-Readout-chunk_only,random_split,protocol3,chunk_only
+vk+depth+lidar,0.05437406176362856,0.979375,0.4564175662794142,8606392,NA,NA,VK-RMD-HAR-Readout-chunk_only,random_split,protocol3,chunk_only
+vk+depth+mmwave,0.014482762053667102,0.995,0.5442234414736601,8606392,NA,NA,VK-RMD-HAR-Readout-chunk_only,random_split,protocol3,chunk_only
+vk+lidar+mmwave,0.23015967812134477,0.92375,0.3313782577888178,8606392,NA,NA,VK-RMD-HAR-Readout-chunk_only,random_split,protocol3,chunk_only
+depth+lidar+mmwave,0.011897791591018177,0.995625,0.5443783068268392,8606392,NA,NA,VK-RMD-HAR-Readout-chunk_only,random_split,protocol3,chunk_only
+vk+depth+lidar+mmwave,0.01455338104031398,0.995625,0.5443783068268392,8606392,NA,NA,VK-RMD-HAR-Readout-chunk_only,random_split,protocol3,chunk_only

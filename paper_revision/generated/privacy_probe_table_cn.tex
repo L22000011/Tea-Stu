@@ -1,0 +1,20 @@
+\begin{table}[H]
+\centering
+\caption{Action-holdout 主体身份泄露探针。ID Acc. 越低表示身份可恢复风险越低；随机水平为 2.50\%。该实验不构成形式化隐私证明。}
+\label{tab:leakage_probe_rebuilt}
+\scriptsize
+\begin{adjustbox}{width=\linewidth}
+\begin{tabular}{lccc}
+\toprule
+输入表示 & ID Acc.$\downarrow$ & 随机倍数 & 相对脱敏 RGB 降低 \\
+\midrule
+脱敏 RGB & 67.53\% & 27.01$\times$ & 0.00\% \\
+V & 15.43\% & 6.17$\times$ & 77.15\% \\
+D & 43.80\% & 17.52$\times$ & 35.14\% \\
+L & 36.57\% & 14.63$\times$ & 45.84\% \\
+R & 9.72\% & 3.89$\times$ & 85.60\% \\
+W & 8.65\% & 3.46$\times$ & 87.19\% \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}

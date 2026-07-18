@@ -1,0 +1,6 @@
+index,name,status,reason,seconds,outputs
+1,fair_missing_modality_baseline,done,,0.005,E:\Deskbook\Tea\tables\fair_missing_modality_baseline.csv
+2,subset_complementarity_analysis,done,,0.823,E:\Deskbook\Tea\tables\subset_severity_summary.csv;E:\Deskbook\Tea\tables\leave_one_modality_delta.csv;E:\Deskbook\Tea\tables\subset_best_worst_patterns.csv;E:\Deskbook\Tea\figures\subset_severity_curve.png
+3,reliability_performance_correlation,done,,1.020,E:\Deskbook\Tea\tables\reliability_weight_by_subset.csv;E:\Deskbook\Tea\tables\reliability_performance_correlation.csv;E:\Deskbook\Tea\figures\reliability_weight_heatmap.png
+4,privacy_exposure_table,done,,0.000,E:\Deskbook\Tea\tables\privacy_exposure_residual_risk.csv
+7,summary_report,done,,0.000,E:\Deskbook\Tea\reports\fast_extras_summary.md

@@ -1,0 +1,547 @@
+\documentclass[journal]{IEEEtran}
+
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage{cite}
+
+\newcommand{\ours}{VK-RMD}
+\newcommand{\mpjpe}{MPJPE}
+\newcommand{\pampjpe}{PA-MPJPE}
+
+\begin{document}
+
+\title{\ours: Reliability-Guided Missing-Modality Distillation for Privacy-Friendly Multimodal Human Pose and Activity Perception}
+
+\author{Author~Names~Omitted~for~Review%
+\thanks{This manuscript draft was generated from the project results under E:\textbackslash Deskbook\textbackslash Tea. All numerical values must be cross-checked against the released CSV files before submission.}}
+
+\markboth{IEEE Journal Draft, 2026}{}
+
+\maketitle
+
+\begin{abstract}
+Long-term human perception requires models that can infer body structure and activity semantics without depending on privacy-sensitive RGB streams at inference time. Existing multimodal human sensing systems often achieve strong performance when all modalities are available, yet they become fragile when sensors fail, are removed, or are not allowed by privacy constraints. This paper studies privacy-friendly multimodal human perception under arbitrary modality availability. We formulate RGB as privileged information used only during training and use visual keypoints (VKs) as a structured bridge that transfers human-body knowledge from visual observations to non-RGB sensing modalities. We then train a non-RGB deployable student with random modality-subset sampling and reliability-guided fusion, enabling inference with any available subset of VK, depth, LiDAR, mmWave, and WiFi-CSI for human pose estimation (HPE), and VK, depth, LiDAR, and mmWave for human activity recognition (HAR). On MMFi-based HPE and HAR protocols, the proposed student obtains 75.18 mm average \mpjpe{} over 31 HPE modality combinations and 85.15\% average HAR accuracy over 15 HAR combinations, while non-visual variants obtain 84.68 mm average \mpjpe{} and 80.62\% average accuracy without VK at inference. Cross-scene and cross-subject evaluations further show that the same design supports robust perception beyond random splits. Ablations indicate that reliability-guided fusion is important under missing modalities, improving over uniform fusion in both HPE and HAR. We position the cross-task Super-Teacher as an exploratory training mechanism rather than the main performance claim, and focus the main contribution on privacy-friendly, missing-modality robust HPE/HAR with non-RGB deployable students.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Multimodal human perception, human pose estimation, human activity recognition, missing modalities, visual keypoints, knowledge distillation, reliability fusion, privacy-friendly sensing.
+\end{IEEEkeywords}
+
+\section{Introduction}
+
+Human pose estimation (HPE) and human activity recognition (HAR) are central components of human-centered sensing. HPE estimates body geometry, while HAR recognizes action semantics. Together, the two tasks support applications such as rehabilitation monitoring, safety supervision, assistive perception, and human--environment interaction. A practical deployment, however, must satisfy more than accuracy. It should reduce exposure to identifiable RGB appearance, operate when sensors are intermittently unavailable, and remain useful across subjects and scenes.
+
+RGB images provide rich visual cues, but they also expose appearance, clothing, faces, background context, and other privacy-sensitive information. Depth, LiDAR, mmWave, and WiFi-CSI are more suitable for privacy-friendly sensing, yet they are noisier, more heterogeneous, and often unreliable in isolation. A method trained only under full-modality assumptions may perform well in controlled evaluation but degrade sharply when one or more sensors are missing. This mismatch is the central problem addressed in this paper.
+
+We do not claim that visual keypoints, knowledge distillation, or missing-modality learning are new by themselves. Instead, this work connects them into a single deployable route: RGB is used as privileged information during training; VKs compress the visual stream into a structured body representation; a teacher provides stable full-modality supervision; and a student is trained with random modality subsets and reliability-guided fusion so that it can infer HPE and HAR with arbitrary available modalities. At inference, the deployable student does not require RGB images.
+
+This positioning is important. The method is not framed around an invented deployment scenario. The real contribution is a privacy-friendly multimodal human perception framework grounded in the X-Fi/VK line of work and evaluated through HPE/HAR, modality-missing robustness, non-visual deployment, reliability fusion, distillation, and cross-protocol generalization.
+
+The main contributions are summarized as follows.
+
+\begin{itemize}
+    \item We formulate VKs as a privacy-friendly structural bridge between RGB privileged training knowledge and non-RGB multimodal student inference, rather than treating VKs as a simple RGB replacement.
+    \item We develop a missing-modality robust student training scheme that randomly samples modality subsets and uses reliability-guided fusion to dynamically combine available modality predictions.
+    \item We validate the same framework on HPE and HAR, covering random split, cross-scene, cross-subject, VK-enabled, and non-visual settings.
+    \item We provide ablations on distillation, fusion, and encoder design, and we explicitly separate reproducible X-Fi/VK baselines from our proposed method.
+\end{itemize}
+
+\section{Related Work}
+
+\subsection{Multimodal Human Pose and Activity Perception}
+Multimodal human perception combines heterogeneous sensors to compensate for the limitations of any single modality. RGB captures rich appearance, depth captures coarse 3D structure, point clouds provide geometric measurements, mmWave can be robust to lighting and occlusion, and WiFi-CSI captures signal variations related to motion. Prior systems such as X-Fi-style multimodal pipelines demonstrate that these signals can be fused for HPE and HAR, but many of them are optimized for fixed modality configurations. Our work targets the more restrictive case where arbitrary modality subsets may be available at inference.
+
+\subsection{Visual Keypoints as Privacy-Friendly Structure}
+Skeletons and visual keypoints reduce raw visual appearance into body-joint structure. This representation removes most texture and identity cues, while retaining task-relevant pose geometry. We use VK as a bridge: RGB may be useful during training, but the deployed student receives only VK or non-RGB sensors depending on the setting. We avoid claiming formal anonymity. The claim is narrower and more defensible: VKs reduce visual exposure and act as a structured supervision channel.
+
+\subsection{Knowledge Distillation and Privileged Information}
+Knowledge distillation transfers information from a stronger teacher to a student. Learning using privileged information allows the training process to exploit signals that are unavailable at inference. Our setting follows this philosophy: RGB/VK and full-modality information can supervise the student during training, while the final student is evaluated under missing and non-RGB modalities. The HPE ablation shows that distillation should be interpreted carefully: it is not a guaranteed source of improvement in every metric, but it provides a principled way to organize privileged supervision and supports HAR robustness.
+
+\subsection{Missing-Modality Learning}
+Missing-modality learning studies models that remain functional when one or more inputs are absent. Common strategies include modality dropout, reconstruction, hallucination, product-of-experts fusion, and adaptive gating. We use random modality-subset training because the target deployment requires arbitrary modality combinations, and we combine it with reliability-guided fusion so that the model can assign different decision weights under different modality availability.
+
+\subsection{Reliability-Aware Fusion}
+Simple concatenation or uniform averaging assumes that modalities contribute equally. In practice, the best modality changes with the task, scene, subject, and missing pattern. Reliability-guided fusion estimates dynamic modality weights and combines modality-wise predictions accordingly. Our ablation against uniform fusion directly tests this design choice.
+
+\section{Problem Formulation}
+
+Let $\mathcal{M}_{\mathrm{HPE}}=\{\mathrm{VK},D,L,R,W\}$ denote the HPE modality set, where $D$, $L$, $R$, and $W$ represent depth, LiDAR, mmWave radar, and WiFi-CSI, respectively. Let $\mathcal{M}_{\mathrm{HAR}}=\{\mathrm{VK},D,L,R\}$ denote the HAR modality set used in the current codebase. For each sample, the available modality subset is $\mathcal{S}\subseteq \mathcal{M}$ and may vary across training and inference.
+
+The HPE target is a 3D pose $\mathbf{Y}^{p}\in\mathbb{R}^{J\times 3}$ with $J=17$ joints. The HAR target is an action label $y^{a}\in\{1,\ldots,C\}$ with $C=27$ actions. The goal is to learn a student function
+\begin{equation}
+    f_{\theta}(\{\mathbf{x}_{m}:m\in\mathcal{S}\}, \mathcal{S})
+    \rightarrow
+    \begin{cases}
+    \hat{\mathbf{Y}}^{p}, & \mathrm{HPE},\\
+    \hat{\mathbf{p}}^{a}, & \mathrm{HAR},
+    \end{cases}
+\end{equation}
+that supports all non-empty subsets $\mathcal{S}$. RGB is used only for training-time privileged supervision and is not required by the deployable student.
+
+\section{Method}
+
+\subsection{Overview}
+
+Fig.~\ref{fig:framework} illustrates the proposed framework. During training, RGB-derived VKs provide structured human-body supervision. Full-modality teachers provide stable supervision in the complete-modality regime. The student sees randomly sampled modality subsets and learns to approach the teacher/ground-truth target under missing conditions. During inference, the model receives only the available modalities and uses reliability-guided fusion to produce the final prediction.
+
+\begin{figure}[t]
+    \centering
+    \fbox{\begin{minipage}[c][1.55in][c]{0.92\linewidth}
+    \centering
+    Framework figure placeholder. Draw: RGB privileged training stream $\rightarrow$ VK structural bridge $\rightarrow$ full-modality teacher $\rightarrow$ missing-modality student. Show two output heads: HPE pose and HAR action. Mark RGB as training-only and non-RGB/VK as inference inputs.
+    \end{minipage}}
+    \caption{Proposed privacy-friendly missing-modality distillation framework. The figure should emphasize that RGB is not used by the deployable student at inference.}
+    \label{fig:framework}
+\end{figure}
+
+\subsection{VK Structural Bridge}
+
+The VK branch converts 17 human joints into compact structural tokens. Instead of flattening all coordinates into a large mapping, each joint coordinate is independently lifted by a lightweight MLP and then projected across joints for global interaction. This design preserves joint identity, reduces parameter waste, and allows VK to act as a structured bridge between RGB-based body knowledge and non-RGB multimodal sensing.
+
+\subsection{Modality-Specific Encoding}
+
+Each modality has its own extractor or pretrained backbone inherited from the X-Fi/MMFi setting. The raw modality features are projected into a shared token dimension. Denote the projected token for modality $m$ as $\mathbf{z}_{m}$. A modality identity embedding is added so that the fusion module can distinguish, for example, depth tokens from mmWave tokens even when the input order changes:
+\begin{equation}
+    \tilde{\mathbf{z}}_{m} = \phi_{m}(\mathbf{x}_{m}) + \mathbf{e}_{m}.
+\end{equation}
+This is essential for random missing-modality training because the model must process variable subsets without confusing the semantic role of each token.
+
+\subsection{Random Modality-Subset Training}
+
+For each training batch, a subset $\mathcal{S}$ is sampled from the modality set. The sampling includes one-, two-, three-, and full-modality cases, depending on the task. This strategy exposes the student to missing patterns during training rather than only at test time:
+\begin{equation}
+    \mathcal{S}\sim q(\mathcal{S}),\quad \emptyset \neq \mathcal{S}\subseteq \mathcal{M}.
+\end{equation}
+The training objective therefore optimizes expected performance over modality availability:
+\begin{equation}
+    \min_{\theta}\ \mathbb{E}_{(\mathbf{x},y)}\mathbb{E}_{\mathcal{S}\sim q}
+    \left[\mathcal{L}(f_{\theta}(\mathbf{x}_{\mathcal{S}},\mathcal{S}),y)\right].
+\end{equation}
+
+\subsection{Reliability-Guided Fusion}
+
+Each available modality contributes a candidate feature or prediction. The reliability module estimates a normalized weight $\alpha_m$ for each available modality:
+\begin{equation}
+    \alpha_m =
+    \frac{\exp(g(\tilde{\mathbf{z}}_{m}))}
+    {\sum_{k\in\mathcal{S}}\exp(g(\tilde{\mathbf{z}}_{k}))},\quad m\in\mathcal{S}.
+\end{equation}
+The fused representation is
+\begin{equation}
+    \mathbf{z}_{\mathrm{fuse}}=\sum_{m\in\mathcal{S}}\alpha_m \tilde{\mathbf{z}}_{m}.
+\end{equation}
+Uniform fusion is recovered when $\alpha_m=1/|\mathcal{S}|$. The large gap between reliability fusion and uniform fusion in HAR, and the consistent HPE gain, support the need for adaptive weighting.
+
+\subsection{Distillation and Task Losses}
+
+For HPE, the supervised loss uses pose regression:
+\begin{equation}
+    \mathcal{L}_{\mathrm{HPE}} =
+    \|\hat{\mathbf{Y}}^{p}-\mathbf{Y}^{p}\|_{2}^{2}
+    + \lambda_{b}\mathcal{L}_{\mathrm{bone}},
+\end{equation}
+where $\mathcal{L}_{\mathrm{bone}}$ preserves skeletal consistency when enabled. Teacher-student learning adds a soft target:
+\begin{equation}
+    \mathcal{L}_{\mathrm{KD}}^{p} =
+    \|\hat{\mathbf{Y}}^{p}_{s}-\hat{\mathbf{Y}}^{p}_{t}\|_{2}^{2}.
+\end{equation}
+For HAR, the supervised loss is cross-entropy and the distillation term is KL divergence between teacher and student logits:
+\begin{equation}
+    \mathcal{L}_{\mathrm{HAR}} =
+    \mathrm{CE}(\hat{\mathbf{p}}^{a},y^{a})
+    + \lambda_{\mathrm{logit}}\mathrm{KL}
+    (\hat{\mathbf{p}}^{a}_{s}\|\hat{\mathbf{p}}^{a}_{t}).
+\end{equation}
+
+The final objective combines supervised learning, distillation, and reliability regularization:
+\begin{equation}
+    \mathcal{L}=
+    \mathcal{L}_{\mathrm{sup}}
+    +\lambda_{\mathrm{KD}}\mathcal{L}_{\mathrm{KD}}
+    +\lambda_{\mathrm{rel}}\mathcal{L}_{\mathrm{rel}}.
+\end{equation}
+The HPE no-distillation ablation is competitive, so we do not overstate distillation as always beneficial. Its role is to provide privileged supervision and to support the privacy-to-deployment training chain; the strongest empirical benefit is observed together with missing-modality training and reliability fusion.
+
+\section{Experiments}
+
+\subsection{Dataset and Protocols}
+
+Experiments use MMFi-style multimodal data following the X-Fi/VK setting. HPE evaluates VK, depth, LiDAR, mmWave, and WiFi-CSI combinations, producing $2^5-1=31$ non-empty modality combinations. HAR evaluates VK, depth, LiDAR, and mmWave combinations, producing $2^4-1=15$ combinations. Non-visual students remove VK and use only depth/LiDAR/mmWave/WiFi-CSI for HPE and depth/LiDAR/mmWave for HAR.
+
+We report random split, cross-scene, and cross-subject protocols. HPE uses \mpjpe{}, \pampjpe{}, and MSE. HAR uses accuracy and macro-F1 when available. The reproduced X-Fi/VK results are treated only as baselines and are not counted as contributions.
+
+\subsection{Implementation Notes}
+
+Unless otherwise stated, training follows the official-style 1000-iteration-per-epoch truncation used in the project scripts, while evaluation is full validation evaluation. The deployable student is tested under all modality combinations. Model complexity is measured on the available HPE implementation. Student-VK and Student-NV each contain 8.90M parameters and run at approximately 62.01 FPS and 63.37 FPS, respectively, in the measured environment.
+
+\subsection{Main HPE Results}
+
+Table~\ref{tab:hpe_main} summarizes the HPE results. The reproduced X-Fi/VK baseline obtains 244.91 mm average \mpjpe{} over 31 combinations, while the proposed Student-VK obtains 75.18 mm. The non-visual Student-NV obtains 84.68 mm average \mpjpe{} across 15 non-visual combinations and 51.03 mm in the full non-visual setting.
+
+\begin{table*}[t]
+\centering
+\caption{Main HPE results. Lower \mpjpe{} is better. The reproduced X-Fi/VK baseline is included only as a baseline.}
+\label{tab:hpe_main}
+\begin{tabular}{llccccc}
+\toprule
+Method & Role & Inference Modalities & RGB at Inference & Protocol & Avg. \mpjpe{} (mm) & Full \mpjpe{} (mm) \\
+\midrule
+Reproduced X-Fi/VK & Baseline & VK+D+L+R+W & No & Random & 244.91 & 244.70 \\
+\ours{} Student-VK & Ours & VK+D+L+R+W & No & Random & \textbf{75.18} & 50.17 \\
+\ours{} Student-NV & Ours & D+L+R+W & No & Random & 84.68 & 51.03 \\
+\ours{} Student-VK & Ours & VK+D+L+R+W & No & Cross-scene & 142.02 & 71.71 \\
+\ours{} Student-NV & Ours & D+L+R+W & No & Cross-scene & 153.89 & 78.96 \\
+\ours{} Student-VK & Ours & VK+D+L+R+W & No & Cross-subject & 78.57 & 49.88 \\
+\ours{} Student-NV & Ours & D+L+R+W & No & Cross-subject & 90.74 & 52.45 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Main HAR Results}
+
+Table~\ref{tab:har_main} shows the HAR results. Student-VK obtains 85.15\% average accuracy over all 15 modality combinations and 96.56\% full-modality accuracy. Student-NV obtains 80.62\% average accuracy over seven non-visual combinations and 96.12\% full non-visual accuracy. These results show that the same missing-modality design applies to both body-structure regression and action-semantic classification.
+
+\begin{table*}[t]
+\centering
+\caption{Main HAR results. Higher accuracy is better. The reproduced baseline is not our contribution.}
+\label{tab:har_main}
+\begin{tabular}{llccccc}
+\toprule
+Method & Role & Inference Modalities & RGB at Inference & Protocol & Avg. Acc. (\%) & Full Acc. (\%) \\
+\midrule
+Reproduced X-Fi/VK & Baseline & VK+D+L+R & No & Random & 69.63 & 77.70 \\
+\ours{} Student-VK & Ours & VK+D+L+R & No & Random & \textbf{85.15} & \textbf{96.56} \\
+\ours{} Student-NV & Ours & D+L+R & No & Random & 80.62 & 96.12 \\
+\ours{} Student-VK & Ours & VK+D+L+R & No & Cross-scene & 80.61 & 95.25 \\
+\ours{} Student-NV & Ours & D+L+R & No & Cross-scene & 76.70 & 95.41 \\
+\ours{} Student-VK & Ours & VK+D+L+R & No & Cross-subject & 85.30 & 96.12 \\
+\ours{} Student-NV & Ours & D+L+R & No & Cross-subject & 81.26 & 95.70 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Missing-Modality Robustness}
+
+Table~\ref{tab:missing_group} groups results by the number of missing modalities. For HPE Student-VK, performance degrades gradually from 50.17 mm with all five modalities to 78.11 mm when only two modalities remain, and 124.73 mm in single-modality inference. The non-visual HPE student shows a similar trend. For HAR, Student-VK maintains 93.83\% accuracy with one missing modality and 87.55\% with two missing modalities. The drop becomes larger in three-missing-modality cases, indicating that single-modality recognition remains difficult, especially for LiDAR-only settings.
+
+\begin{table*}[t]
+\centering
+\caption{Robustness grouped by the number of missing modalities. HPE uses \mpjpe{} in mm; HAR uses accuracy in \%.}
+\label{tab:missing_group}
+\begin{tabular}{lcccccc}
+\toprule
+Task/Model & Metric & Missing 0 & Missing 1 & Missing 2 & Missing 3 & Missing 4 \\
+\midrule
+HPE Student-VK & \mpjpe{} $\downarrow$ & 50.17 & 53.54 & 60.78 & 78.11 & 124.73 \\
+HPE Student-NV & \mpjpe{} $\downarrow$ & 51.03 & 61.35 & 79.39 & 124.33 & -- \\
+HAR Student-VK & Acc. $\uparrow$ & 96.56 & 93.83 & 87.55 & 70.00 & -- \\
+HAR Student-NV & Acc. $\uparrow$ & 96.12 & 90.05 & 66.02 & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{figure}[t]
+    \centering
+    \fbox{\begin{minipage}[c][1.45in][c]{0.92\linewidth}
+    \centering
+    Missing-modality curve placeholder. Plot Table~\ref{tab:missing_group}: x-axis = number of missing modalities; left y-axis = HPE MPJPE; right y-axis = HAR accuracy. Include Student-VK and Student-NV curves.
+    \end{minipage}}
+    \caption{Robustness trend under increasing missing-modality severity. This figure should be generated from the missing-modality summary CSV files.}
+    \label{fig:missing_curve}
+\end{figure}
+
+\subsection{Reliability Fusion Ablation}
+
+Table~\ref{tab:ablation} compares the proposed model with uniform fusion and other ablations. For HPE, replacing reliability fusion with uniform fusion increases average \mpjpe{} from 75.18 mm to 82.77 mm. For HAR, the effect is much larger: average accuracy drops from 85.15\% to 67.46\%. This validates the need for dynamic weighting under changing modality availability.
+
+\begin{table*}[t]
+\centering
+\caption{Ablation summary. HPE reports average \mpjpe{} over 31 combinations; HAR reports average accuracy over 15 combinations.}
+\label{tab:ablation}
+\begin{tabular}{llccc}
+\toprule
+Task & Setting & Avg. Metric & Full Metric & Main Interpretation \\
+\midrule
+HPE & \ours{} Student-VK & 75.18 mm & 50.17 mm & Main model \\
+HPE & w/o distillation & 72.68 mm & 48.83 mm & HPE KD claim must be cautious \\
+HPE & Uniform fusion & 82.77 mm & 52.28 mm & Reliability fusion improves robustness \\
+HPE & Simple MLP VK encoder & 503.74 mm & 77.69 mm & Severe missing-combination degradation; appendix-level detail \\
+HPE & Skeleton prompt encoder & 1000.80 mm & 55.07 mm & Severe missing-combination degradation; appendix-level detail \\
+\midrule
+HAR & \ours{} Student-VK & 85.15\% & 96.56\% & Main model \\
+HAR & w/o distillation & 82.86\% & 95.99\% & Distillation modestly improves average robustness \\
+HAR & Uniform fusion & 67.46\% & 95.39\% & Reliability fusion is critical \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+The HPE no-distillation result is strong. Therefore, the manuscript should not claim that distillation always improves HPE. A more accurate statement is that distillation is part of the privileged training chain, while reliability-guided missing-modality learning is the most consistently supported component across HPE and HAR.
+
+\subsection{Cross-Scene and Cross-Subject Generalization}
+
+Cross-scene evaluation is more difficult than random and cross-subject evaluation. HPE Student-VK obtains 142.02 mm average \mpjpe{} across 31 combinations in the cross-scene protocol, while Student-NV obtains 153.89 mm across non-visual combinations. HAR Student-VK obtains 80.61\% average accuracy in cross-scene evaluation, and Student-NV obtains 76.70\%. Cross-subject performance is closer to random split: HPE Student-VK obtains 78.57 mm average \mpjpe{}, and HAR Student-VK obtains 85.30\% average accuracy.
+
+These results indicate that the proposed design generalizes across subjects more easily than across scenes. Scene shift remains an important limitation, especially for weak single-modality combinations.
+
+\begin{table*}[t]
+\centering
+\caption{Generalization summary under cross-scene and cross-subject protocols.}
+\label{tab:generalization}
+\begin{tabular}{llccc}
+\toprule
+Task & Model & Protocol & Avg. Metric & Full-Modality Metric \\
+\midrule
+HPE & Student-VK & Cross-scene & 142.02 mm \mpjpe{} & 71.71 mm \mpjpe{} \\
+HPE & Student-NV & Cross-scene & 153.89 mm \mpjpe{} & 78.96 mm \mpjpe{} \\
+HPE & Student-VK & Cross-subject & 78.57 mm \mpjpe{} & 49.88 mm \mpjpe{} \\
+HPE & Student-NV & Cross-subject & 90.74 mm \mpjpe{} & 52.45 mm \mpjpe{} \\
+HAR & Student-VK & Cross-scene & 80.61\% Acc. & 95.25\% Acc. \\
+HAR & Student-NV & Cross-scene & 76.70\% Acc. & 95.41\% Acc. \\
+HAR & Student-VK & Cross-subject & 85.30\% Acc. & 96.12\% Acc. \\
+HAR & Student-NV & Cross-subject & 81.26\% Acc. & 95.70\% Acc. \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Noise and Keypoint-Drop Robustness}
+
+We also evaluate HPE Student-VK with VK perturbations. With no perturbation, the full-modality \mpjpe{} is 50.18 mm. Under 50\% joint dropping without coordinate noise, \mpjpe{} increases to 54.75 mm. Under a coordinate noise standard deviation of 20.0 with no joint dropping, \mpjpe{} is 53.63 mm. Under both noise standard deviation 20.0 and 50\% joint dropping, \mpjpe{} is 54.78 mm. These results suggest that the model is not overly dependent on exact VK coordinates when other modalities remain available.
+
+\begin{table}[t]
+\centering
+\caption{HPE Student-VK robustness to VK noise and joint dropping under full modality availability.}
+\label{tab:noise}
+\begin{tabular}{cccc}
+\toprule
+Noise Std. & Drop Ratio & \mpjpe{} (mm) & \pampjpe{} (mm) \\
+\midrule
+0.0 & 0.0 & 50.18 & 33.48 \\
+0.0 & 0.5 & 54.75 & 35.50 \\
+10.0 & 0.0 & 52.08 & 34.57 \\
+20.0 & 0.0 & 53.63 & 35.20 \\
+20.0 & 0.5 & 54.78 & 35.54 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Complexity}
+
+Table~\ref{tab:complexity} reports measured complexity for HPE models. Student-VK and Student-NV both have 8.90M parameters and run above 62 FPS in the measured environment. The reproduced full baseline has fewer parameters but lower measured FPS. These measurements should be reported as implementation-specific rather than hardware-independent claims.
+
+\begin{table}[t]
+\centering
+\caption{Measured HPE model complexity.}
+\label{tab:complexity}
+\begin{tabular}{lccc}
+\toprule
+Model & Params & FPS & Peak Memory (GB) \\
+\midrule
+Student-VK & 8.90M & 62.01 & 4.95 \\
+Student-NV & 8.90M & 63.37 & 4.95 \\
+Baseline full & 5.74M & 52.05 & 4.94 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Exploratory Super-Teacher Results}
+
+The cross-task Super-Teacher is treated as exploratory. It is useful for organizing RGB/VK privileged knowledge, but current all-combination results do not support claiming that it is a stronger standalone missing-modality model. Its HPE all-combination average is 1538.81 mm \mpjpe{} while full-modality \mpjpe{} is 59.78 mm; its HAR all-combination average is 53.59\% accuracy while full-modality accuracy is 90.55\%. A Super-Teacher-distilled HPE Student-VK obtains 82.06 mm average \mpjpe{} and 56.82 mm full-modality \mpjpe{}.
+
+These results are not used in the main performance tables. They are included only to document the exploration and to motivate a clearer distinction between full-modality privileged supervision and missing-modality student adaptation.
+
+\section{Discussion}
+
+\subsection{What Is Actually New}
+
+The novelty is not that the model uses a teacher, keypoints, or modality dropout. The novelty lies in the formulation and integration: RGB is treated as training-only privileged knowledge; VK is used as a structured privacy bridge; the deployed student is non-RGB/missing-modality robust; and the framework is validated on both HPE and HAR. This framing is more precise and defensible than claiming a new general theory of distillation.
+
+\subsection{Why HPE and HAR Belong Together}
+
+HPE tests geometric body understanding, while HAR tests semantic action understanding. If only HPE were evaluated, the method could be interpreted as a pose-specific regressor. If only HAR were evaluated, the method would not demonstrate body-structure fidelity. Together, HPE and HAR show that the same modality-robust fusion strategy supports both structure and semantics.
+
+\subsection{Privacy Claim Boundary}
+
+The method is privacy-friendly, not formally privacy-preserving. VKs remove most visual appearance and background texture, but they do not provide mathematical anonymity. The correct claim is reduced visual exposure at inference, especially for the Student-NV variant where VK is also removed.
+
+\subsection{Limitations}
+
+First, single-modality cases remain difficult, especially LiDAR-only and WiFi-only settings. Second, cross-scene generalization is weaker than random and cross-subject performance. Third, the HPE no-distillation ablation is strong, so distillation should not be oversold. Fourth, the Super-Teacher exploration needs a more efficient training design before it can become a primary contribution.
+
+\section{Figure and Table Production Plan}
+
+\subsection{Figures to Draw}
+\begin{itemize}
+    \item Fig.~1: Problem setting. Show RGB as privacy-sensitive and training-only; show non-RGB sensors and missing combinations at inference.
+    \item Fig.~2: Full framework. Show VK bridge, teacher, student, random modality dropping, reliability fusion, HPE/HAR heads.
+    \item Fig.~3: Missing-modality robustness curves using Table~\ref{tab:missing_group}.
+    \item Fig.~4: HPE and HAR main comparison bars using Tables~\ref{tab:hpe_main} and~\ref{tab:har_main}.
+    \item Fig.~5: Reliability fusion ablation bars using Table~\ref{tab:ablation}.
+    \item Fig.~6: Qualitative privacy illustration: RGB image, VK skeleton, and non-RGB sensor examples. Use only if dataset visualization permission is available.
+\end{itemize}
+
+\subsection{Tables Included in This Draft}
+This draft already includes HPE main results, HAR main results, missing-modality grouping, ablation summary, generalization, noise robustness, and complexity. Encoder ablation details and Super-Teacher full-combination failure cases should remain in supplementary material rather than the main manuscript.
+
+\section{Reviewer Risk Notes}
+
+\begin{itemize}
+    \item Risk: reviewers may say missing-modality learning is already known. Response: the paper must emphasize the RGB privileged knowledge $\rightarrow$ VK bridge $\rightarrow$ non-RGB student chain and HPE/HAR validation.
+    \item Risk: reviewers may say VK is just skeleton input. Response: present VK as a privacy-reduced structural bridge and support it with RGB/VK qualitative visualization.
+    \item Risk: HPE no-distillation performs strongly. Response: do not claim distillation always improves HPE; claim that the overall training chain improves privacy-friendly missing-modality perception and that distillation is most useful in HAR and privileged supervision.
+    \item Risk: Super-Teacher results are weak under missing combinations. Response: keep them out of the main tables and describe them as exploratory.
+    \item Risk: privacy claims may be too strong. Response: use ``privacy-friendly'' and ``reduced visual exposure'', not ``privacy-preserving'' or ``anonymous''.
+\end{itemize}
+
+\section{Conclusion}
+
+This paper presents \ours{}, a privacy-friendly multimodal human perception framework for missing-modality HPE and HAR. RGB is used only as training-time privileged information, VK acts as a structured bridge, and the deployable student supports arbitrary modality combinations through random modality-subset training and reliability-guided fusion. Across MMFi HPE and HAR evaluations, the proposed students significantly improve over reproduced X-Fi/VK baselines in average missing-combination performance, maintain strong full-modality accuracy, and generalize to cross-scene and cross-subject protocols. The results support a focused claim: robust human perception can be trained from visual structural knowledge while reducing dependence on RGB during deployment.
+
+\appendices
+
+\section{Result Index Used in This Draft}
+
+\begin{table*}[h]
+\centering
+\caption{Result sources and manuscript usage.}
+\label{tab:result_index}
+\begin{tabular}{p{0.31\linewidth}p{0.13\linewidth}p{0.16\linewidth}p{0.28\linewidth}}
+\toprule
+Source & Category & Task & Usage \\
+\midrule
+HPE student VK all combinations & Main & HPE & Main HPE and missing-modality robustness \\
+HPE student NV non-visual combinations & Main & HPE & Non-RGB deployment result \\
+HPE cross-scene/cross-subject student results & Main & HPE & Generalization \\
+HAR student VK all combinations & Main & HAR & Main HAR and missing-modality robustness \\
+HAR student NV non-visual combinations & Main & HAR & Non-RGB deployment result \\
+HAR cross-scene/cross-subject student results & Main & HAR & Generalization \\
+Ori-HPE/Ori-HAR reproduced outputs & Baseline & HPE/HAR & Baseline only, never as contribution \\
+Uniform fusion ablations & Ablation & HPE/HAR & Reliability fusion evidence \\
+No-distillation ablations & Ablation & HPE/HAR & Cautious distillation discussion \\
+Encoder ablations & Appendix & HPE & Summarized only due severe outliers \\
+Super-Teacher evaluations & Exploration & HPE/HAR & Discussion or appendix only \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\section{References to Verify Before Submission}
+
+The following bibliography contains placeholders and well-known reference targets. Before submission, every entry must be checked against IEEE Xplore, ACM Digital Library, CVF, arXiv, or the official MMFi/X-Fi paper pages. Do not submit this section without verification.
+
+\begin{thebibliography}{99}
+
+\bibitem{mmfi}
+[To verify] MMFi dataset paper or official release, multimodal human perception benchmark.
+
+\bibitem{xfi}
+[To verify] X-Fi original paper, multimodal human pose estimation/activity recognition with RGB/VK and non-RGB sensors.
+
+\bibitem{hinton2015distilling}
+G. Hinton, O. Vinyals, and J. Dean, ``Distilling the knowledge in a neural network,'' arXiv:1503.02531, 2015.
+
+\bibitem{vapnik2009privileged}
+[To verify] V. Vapnik and A. Vashist, ``A new learning paradigm: Learning using privileged information,'' 2009.
+
+\bibitem{openpose}
+[To verify] Z. Cao et al., ``OpenPose: Realtime multi-person 2D pose estimation using part affinity fields.''
+
+\bibitem{stgcn}
+[To verify] S. Yan, Y. Xiong, and D. Lin, ``Spatial temporal graph convolutional networks for skeleton-based action recognition.''
+
+\bibitem{mmwave_human}
+[To verify] Representative mmWave human sensing paper.
+
+\bibitem{wifi_csi_har}
+[To verify] Representative WiFi-CSI human activity recognition paper.
+
+\bibitem{lidar_human}
+[To verify] Representative LiDAR-based human perception paper.
+
+\bibitem{depth_pose}
+[To verify] Representative depth-based pose or action recognition paper.
+
+\bibitem{modality_dropout}
+[To verify] Representative modality dropout/missing-modality learning paper.
+
+\bibitem{missing_modality_survey}
+[To verify] Survey or recent paper on missing-modality multimodal learning.
+
+\bibitem{multimodal_transformer}
+[To verify] Representative multimodal transformer/fusion paper.
+
+\bibitem{reliability_fusion}
+[To verify] Reliability-aware or uncertainty-aware multimodal fusion paper.
+
+\bibitem{privileged_distillation}
+[To verify] Privileged-information distillation paper for multimodal learning.
+
+\bibitem{rgb_to_skeleton_privacy}
+[To verify] Paper using skeleton/keypoints for privacy-friendly human sensing.
+
+\bibitem{hpe_survey}
+[To verify] Recent HPE survey.
+
+\bibitem{har_survey}
+[To verify] Recent HAR survey.
+
+\bibitem{multitask_hpe_har}
+[To verify] Paper jointly studying pose estimation and action recognition.
+
+\bibitem{sensors_human_sensing}
+[To verify] IEEE Sensors Journal or similar paper on multimodal human sensing.
+
+\bibitem{iotj_human_sensing}
+[To verify] IEEE Internet of Things Journal paper only if the final target remains IoTJ; do not force IoT framing.
+
+\bibitem{tmm_multimodal}
+[To verify] IEEE Transactions on Multimedia paper on multimodal human perception.
+
+\bibitem{tcsvt_action}
+[To verify] IEEE TCSVT paper on skeleton or multimodal action recognition.
+
+\bibitem{aaai_missing_action}
+[To verify] AAAI missing-modality robust action recognition paper.
+
+\bibitem{sensor_privacy}
+[To verify] Privacy-sensitive sensing paper discussing RGB limitations.
+
+\bibitem{pose_kd}
+[To verify] Knowledge distillation paper for pose estimation.
+
+\bibitem{har_kd}
+[To verify] Knowledge distillation paper for activity recognition.
+
+\bibitem{domain_generalization}
+[To verify] Cross-scene or domain generalization paper for human sensing.
+
+\bibitem{uncertainty_fusion}
+[To verify] Uncertainty-based fusion paper.
+
+\bibitem{point_transformer}
+[To verify] Point Transformer or point-cloud backbone reference used by LiDAR/mmWave modules.
+
+\bibitem{resnet}
+[To verify] ResNet reference if reproduced backbones are discussed.
+
+\bibitem{transformer}
+[To verify] Transformer reference for sequence/token fusion.
+
+\bibitem{csi_sensing}
+[To verify] CSI sensing review or representative work.
+
+\bibitem{mmfi_github}
+[To verify] Official MMFi dataset GitHub or documentation.
+
+\bibitem{xfi_github}
+[To verify] Official X-Fi GitHub or implementation reference.
+
+\bibitem{privacy_keypoint_limit}
+[To verify] Paper discussing privacy limits of skeleton/keypoint data.
+
+\end{thebibliography}
+
+\end{document}

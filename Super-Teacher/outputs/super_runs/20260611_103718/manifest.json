@@ -1,0 +1,917 @@
+{
+  "dataset": "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+  "gpu": "0",
+  "device": "cuda:0",
+  "max_train_batches": 1000,
+  "max_eval_batches": null,
+  "task_count": 37,
+  "tasks": [
+    {
+      "name": "random_super_teacher_train",
+      "title": "random | Super Teacher training",
+      "kind": "train",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\train_super_teacher.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\super_teacher.yaml",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000",
+        "--resume",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher\\last.pth"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher\\best_joint.pth",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher\\best_hpe.pth",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher\\best_har.pth"
+      ]
+    },
+    {
+      "name": "random_super_teacher_hpe_eval31",
+      "title": "random | Super Teacher HPE combinations",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\eval_super_teacher_hpe.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\super_teacher.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher\\best_joint.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_teacher_random_hpe_all_combinations.csv"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_teacher_random_hpe_all_combinations.csv"
+      ]
+    },
+    {
+      "name": "random_super_teacher_har_eval",
+      "title": "random | Super Teacher HAR combinations",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\eval_super_teacher_har.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\super_teacher.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher\\best_joint.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_teacher_random_har_all_combinations.csv"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_teacher_random_har_all_combinations.csv"
+      ]
+    },
+    {
+      "name": "random_hpe_student_vk_train",
+      "title": "random | HPE Student-VK training from Super Teacher",
+      "kind": "train",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\train_hpe_student_from_super.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\hpe_student_from_super.yaml",
+        "--teacher",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher\\best_joint.pth",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000",
+        "--variant",
+        "vk"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_hpe_student_vk\\best.pth"
+      ]
+    },
+    {
+      "name": "random_hpe_student_vk_eval31",
+      "title": "random | HPE Student-VK combinations",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\eval_hpe_student.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\hpe_student_from_super.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_hpe_student_vk\\best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_hpe_student_random_vk_all_combinations.csv",
+        "--variant",
+        "vk"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_hpe_student_random_vk_all_combinations.csv"
+      ]
+    },
+    {
+      "name": "random_hpe_student_nv_train",
+      "title": "random | HPE Student-NV training from Super Teacher",
+      "kind": "train",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\train_hpe_student_from_super.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\hpe_student_from_super.yaml",
+        "--teacher",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher\\best_joint.pth",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000",
+        "--variant",
+        "nv"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_hpe_student_nv\\best.pth"
+      ]
+    },
+    {
+      "name": "random_hpe_student_nv_eval",
+      "title": "random | HPE Student-NV nonvisual combinations",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\eval_hpe_student.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\hpe_student_from_super.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_hpe_student_nv\\best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_hpe_student_random_nv_nonvisual_combinations.csv",
+        "--variant",
+        "nv",
+        "--nonvisual"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_hpe_student_random_nv_nonvisual_combinations.csv"
+      ]
+    },
+    {
+      "name": "random_har_student_vk_train",
+      "title": "random | HAR Student-VK training from Super Teacher",
+      "kind": "train",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\train_har_student_from_super.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\har_student_from_super.yaml",
+        "--teacher",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher\\best_joint.pth",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000",
+        "--variant",
+        "vk"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_har_student_vk\\best.pth"
+      ]
+    },
+    {
+      "name": "random_har_student_vk_eval",
+      "title": "random | HAR Student-VK combinations",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\eval_har_student.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\har_student_from_super.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_har_student_vk\\best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_har_student_random_vk_all_combinations.csv",
+        "--variant",
+        "vk"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_har_student_random_vk_all_combinations.csv"
+      ]
+    },
+    {
+      "name": "random_har_student_nv_train",
+      "title": "random | HAR Student-NV training from Super Teacher",
+      "kind": "train",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\train_har_student_from_super.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\har_student_from_super.yaml",
+        "--teacher",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher\\best_joint.pth",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000",
+        "--variant",
+        "nv"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_har_student_nv\\best.pth"
+      ]
+    },
+    {
+      "name": "random_har_student_nv_eval",
+      "title": "random | HAR Student-NV nonvisual combinations",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\eval_har_student.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\har_student_from_super.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_har_student_nv\\best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_har_student_random_nv_nonvisual_combinations.csv",
+        "--variant",
+        "nv",
+        "--nonvisual"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_har_student_random_nv_nonvisual_combinations.csv"
+      ]
+    },
+    {
+      "name": "cross_scene_super_teacher_train",
+      "title": "cross_scene | Super Teacher training",
+      "kind": "train",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\train_super_teacher.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\super_teacher_cross_scene.yaml",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_cross_scene\\best_joint.pth",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_cross_scene\\best_hpe.pth",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_cross_scene\\best_har.pth"
+      ]
+    },
+    {
+      "name": "cross_scene_super_teacher_hpe_eval31",
+      "title": "cross_scene | Super Teacher HPE combinations",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\eval_super_teacher_hpe.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\super_teacher_cross_scene.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_cross_scene\\best_joint.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_teacher_cross_scene_hpe_all_combinations.csv"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_teacher_cross_scene_hpe_all_combinations.csv"
+      ]
+    },
+    {
+      "name": "cross_scene_super_teacher_har_eval",
+      "title": "cross_scene | Super Teacher HAR combinations",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\eval_super_teacher_har.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\super_teacher_cross_scene.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_cross_scene\\best_joint.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_teacher_cross_scene_har_all_combinations.csv"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_teacher_cross_scene_har_all_combinations.csv"
+      ]
+    },
+    {
+      "name": "cross_scene_hpe_student_vk_train",
+      "title": "cross_scene | HPE Student-VK training from Super Teacher",
+      "kind": "train",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\train_hpe_student_from_super.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\hpe_student_from_super_cross_scene.yaml",
+        "--teacher",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_cross_scene\\best_joint.pth",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000",
+        "--variant",
+        "vk"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_hpe_student_cross_scene_vk\\best.pth"
+      ]
+    },
+    {
+      "name": "cross_scene_hpe_student_vk_eval31",
+      "title": "cross_scene | HPE Student-VK combinations",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\eval_hpe_student.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\hpe_student_from_super_cross_scene.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_hpe_student_cross_scene_vk\\best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_hpe_student_cross_scene_vk_all_combinations.csv",
+        "--variant",
+        "vk"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_hpe_student_cross_scene_vk_all_combinations.csv"
+      ]
+    },
+    {
+      "name": "cross_scene_hpe_student_nv_train",
+      "title": "cross_scene | HPE Student-NV training from Super Teacher",
+      "kind": "train",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\train_hpe_student_from_super.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\hpe_student_from_super_cross_scene.yaml",
+        "--teacher",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_cross_scene\\best_joint.pth",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000",
+        "--variant",
+        "nv"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_hpe_student_cross_scene_nv\\best.pth"
+      ]
+    },
+    {
+      "name": "cross_scene_hpe_student_nv_eval",
+      "title": "cross_scene | HPE Student-NV nonvisual combinations",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\eval_hpe_student.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\hpe_student_from_super_cross_scene.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_hpe_student_cross_scene_nv\\best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_hpe_student_cross_scene_nv_nonvisual_combinations.csv",
+        "--variant",
+        "nv",
+        "--nonvisual"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_hpe_student_cross_scene_nv_nonvisual_combinations.csv"
+      ]
+    },
+    {
+      "name": "cross_scene_har_student_vk_train",
+      "title": "cross_scene | HAR Student-VK training from Super Teacher",
+      "kind": "train",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\train_har_student_from_super.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\har_student_from_super_cross_scene.yaml",
+        "--teacher",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_cross_scene\\best_joint.pth",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000",
+        "--variant",
+        "vk"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_har_student_cross_scene_vk\\best.pth"
+      ]
+    },
+    {
+      "name": "cross_scene_har_student_vk_eval",
+      "title": "cross_scene | HAR Student-VK combinations",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\eval_har_student.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\har_student_from_super_cross_scene.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_har_student_cross_scene_vk\\best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_har_student_cross_scene_vk_all_combinations.csv",
+        "--variant",
+        "vk"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_har_student_cross_scene_vk_all_combinations.csv"
+      ]
+    },
+    {
+      "name": "cross_scene_har_student_nv_train",
+      "title": "cross_scene | HAR Student-NV training from Super Teacher",
+      "kind": "train",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\train_har_student_from_super.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\har_student_from_super_cross_scene.yaml",
+        "--teacher",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_cross_scene\\best_joint.pth",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000",
+        "--variant",
+        "nv"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_har_student_cross_scene_nv\\best.pth"
+      ]
+    },
+    {
+      "name": "cross_scene_har_student_nv_eval",
+      "title": "cross_scene | HAR Student-NV nonvisual combinations",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\eval_har_student.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\har_student_from_super_cross_scene.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_har_student_cross_scene_nv\\best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_har_student_cross_scene_nv_nonvisual_combinations.csv",
+        "--variant",
+        "nv",
+        "--nonvisual"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_har_student_cross_scene_nv_nonvisual_combinations.csv"
+      ]
+    },
+    {
+      "name": "cross_subject_super_teacher_train",
+      "title": "cross_subject | Super Teacher training",
+      "kind": "train",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\train_super_teacher.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\super_teacher_cross_subject.yaml",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_cross_subject\\best_joint.pth",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_cross_subject\\best_hpe.pth",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_cross_subject\\best_har.pth"
+      ]
+    },
+    {
+      "name": "cross_subject_super_teacher_hpe_eval31",
+      "title": "cross_subject | Super Teacher HPE combinations",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\eval_super_teacher_hpe.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\super_teacher_cross_subject.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_cross_subject\\best_joint.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_teacher_cross_subject_hpe_all_combinations.csv"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_teacher_cross_subject_hpe_all_combinations.csv"
+      ]
+    },
+    {
+      "name": "cross_subject_super_teacher_har_eval",
+      "title": "cross_subject | Super Teacher HAR combinations",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\eval_super_teacher_har.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\super_teacher_cross_subject.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_cross_subject\\best_joint.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_teacher_cross_subject_har_all_combinations.csv"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_teacher_cross_subject_har_all_combinations.csv"
+      ]
+    },
+    {
+      "name": "cross_subject_hpe_student_vk_train",
+      "title": "cross_subject | HPE Student-VK training from Super Teacher",
+      "kind": "train",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\train_hpe_student_from_super.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\hpe_student_from_super_cross_subject.yaml",
+        "--teacher",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_cross_subject\\best_joint.pth",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000",
+        "--variant",
+        "vk"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_hpe_student_cross_subject_vk\\best.pth"
+      ]
+    },
+    {
+      "name": "cross_subject_hpe_student_vk_eval31",
+      "title": "cross_subject | HPE Student-VK combinations",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\eval_hpe_student.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\hpe_student_from_super_cross_subject.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_hpe_student_cross_subject_vk\\best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_hpe_student_cross_subject_vk_all_combinations.csv",
+        "--variant",
+        "vk"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_hpe_student_cross_subject_vk_all_combinations.csv"
+      ]
+    },
+    {
+      "name": "cross_subject_hpe_student_nv_train",
+      "title": "cross_subject | HPE Student-NV training from Super Teacher",
+      "kind": "train",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\train_hpe_student_from_super.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\hpe_student_from_super_cross_subject.yaml",
+        "--teacher",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_cross_subject\\best_joint.pth",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000",
+        "--variant",
+        "nv"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_hpe_student_cross_subject_nv\\best.pth"
+      ]
+    },
+    {
+      "name": "cross_subject_hpe_student_nv_eval",
+      "title": "cross_subject | HPE Student-NV nonvisual combinations",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\eval_hpe_student.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\hpe_student_from_super_cross_subject.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_hpe_student_cross_subject_nv\\best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_hpe_student_cross_subject_nv_nonvisual_combinations.csv",
+        "--variant",
+        "nv",
+        "--nonvisual"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_hpe_student_cross_subject_nv_nonvisual_combinations.csv"
+      ]
+    },
+    {
+      "name": "cross_subject_har_student_vk_train",
+      "title": "cross_subject | HAR Student-VK training from Super Teacher",
+      "kind": "train",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\train_har_student_from_super.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\har_student_from_super_cross_subject.yaml",
+        "--teacher",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_cross_subject\\best_joint.pth",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000",
+        "--variant",
+        "vk"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_har_student_cross_subject_vk\\best.pth"
+      ]
+    },
+    {
+      "name": "cross_subject_har_student_vk_eval",
+      "title": "cross_subject | HAR Student-VK combinations",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\eval_har_student.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\har_student_from_super_cross_subject.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_har_student_cross_subject_vk\\best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_har_student_cross_subject_vk_all_combinations.csv",
+        "--variant",
+        "vk"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_har_student_cross_subject_vk_all_combinations.csv"
+      ]
+    },
+    {
+      "name": "cross_subject_har_student_nv_train",
+      "title": "cross_subject | HAR Student-NV training from Super Teacher",
+      "kind": "train",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\train_har_student_from_super.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\har_student_from_super_cross_subject.yaml",
+        "--teacher",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_cross_subject\\best_joint.pth",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000",
+        "--variant",
+        "nv"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_har_student_cross_subject_nv\\best.pth"
+      ]
+    },
+    {
+      "name": "cross_subject_har_student_nv_eval",
+      "title": "cross_subject | HAR Student-NV nonvisual combinations",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\eval_har_student.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\har_student_from_super_cross_subject.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_har_student_cross_subject_nv\\best.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_har_student_cross_subject_nv_nonvisual_combinations.csv",
+        "--variant",
+        "nv",
+        "--nonvisual"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_har_student_cross_subject_nv_nonvisual_combinations.csv"
+      ]
+    },
+    {
+      "name": "ablation_hpe_only_teacher_train",
+      "title": "ablation | HPE-only Super Teacher",
+      "kind": "train",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\train_super_teacher.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\super_teacher_hpe_only.yaml",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_hpe_only\\best_joint.pth",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_hpe_only\\best_hpe.pth",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_hpe_only\\best_har.pth"
+      ]
+    },
+    {
+      "name": "ablation_hpe_only_hpe_eval31",
+      "title": "ablation | HPE-only teacher HPE combinations",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\eval_super_teacher_hpe.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\super_teacher_hpe_only.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_hpe_only\\best_hpe.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_teacher_hpe_only_hpe_all_combinations.csv"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_teacher_hpe_only_hpe_all_combinations.csv"
+      ]
+    },
+    {
+      "name": "ablation_har_only_teacher_train",
+      "title": "ablation | HAR-only Super Teacher",
+      "kind": "train",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\train_super_teacher.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\super_teacher_har_only.yaml",
+        "--device",
+        "cuda:0",
+        "--max-train-batches",
+        "1000"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_har_only\\best_joint.pth",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_har_only\\best_hpe.pth",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_har_only\\best_har.pth"
+      ]
+    },
+    {
+      "name": "ablation_har_only_har_eval",
+      "title": "ablation | HAR-only teacher HAR combinations",
+      "kind": "eval",
+      "command": [
+        "D:\\Anaconda\\python.exe",
+        "-u",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\scripts\\eval_super_teacher_har.py",
+        "--dataset",
+        "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+        "--config",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\configs\\super_teacher_har_only.yaml",
+        "--checkpoint",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\super_teacher_har_only\\best_har.pth",
+        "--device",
+        "cuda:0",
+        "--output-csv",
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_teacher_har_only_har_all_combinations.csv"
+      ],
+      "outputs": [
+        "E:\\Deskbook\\Tea\\Super-Teacher\\outputs\\eval\\super_teacher_har_only_har_all_combinations.csv"
+      ]
+    }
+  ]
+}

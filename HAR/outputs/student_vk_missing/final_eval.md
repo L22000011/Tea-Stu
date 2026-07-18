@@ -1,0 +1,5 @@
+# VK-RCD-HAR-Student-VK-Missing final evaluation
+
+|method|split|protocol|modality_set|loss|acc|macro_f1|params|fps|peak_memory|
+|---|---|---|---|---|---|---|---|---|---|
+|VK-RCD-HAR-Student-VK-Missing|random_split|protocol3|vk+depth+lidar+mmwave|0.16269618745436706|0.9653790996383589|0.9652812674667608|8606392|NA|NA|

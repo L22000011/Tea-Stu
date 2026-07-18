@@ -1,0 +1,56 @@
+\section{Completion Audit}
+This section reports the first-round local result inventory. DONE means that the expected checkpoint or evaluation CSV exists locally. MISSING entries are not fabricated and must be completed or resynchronized before final paper submission.
+\begin{table}[htbp]\centering\caption{Current HPE and HAR completion summary}\begin{tabular}{lrrr}\toprule
+Task & DONE & MISSING\_MODEL & MISSING\_EVAL\\\midrule
+HPE & 8 & 18 & 20\\
+HAR & 24 & 1 & 0\\
+\bottomrule\end{tabular}\end{table}
+\begin{longtable}{p{0.08\linewidth}p{0.12\linewidth}p{0.31\linewidth}p{0.18\linewidth}p{0.23\linewidth}}
+\caption{Missing result items}\\
+\toprule
+Task & Type & Item & Status & Expected path\\\midrule
+\endfirsthead
+\toprule
+Task & Type & Item & Status & Expected path\\\midrule
+\endhead
+HPE & model & ablation/no\_kd/best.pth & MISSING\_MODEL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}ablation\textbackslash{}no\_kd\textbackslash{}best.pth\\
+HPE & model & ablation/output\_kd/best.pth & MISSING\_MODEL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}ablation\textbackslash{}output\_kd\textbackslash{}best.pth\\
+HPE & model & ablation/output\_token\_kd/best.pth & MISSING\_MODEL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}ablation\textbackslash{}output\_token\_kd\textbackslash{}best.pth\\
+HPE & model & ablation/output\_bone\_kd/best.pth & MISSING\_MODEL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}ablation\textbackslash{}output\_bone\_kd\textbackslash{}best.pth\\
+HPE & model & ablation/full\_structural\_kd/best.pth & MISSING\_MODEL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}ablation\textbackslash{}full\_structural\_kd\textbackslash{}best.pth\\
+HPE & model & ablation/uniform/best.pth & MISSING\_MODEL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}ablation\textbackslash{}uniform\textbackslash{}best.pth\\
+HPE & model & ablation/attention/best.pth & MISSING\_MODEL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}ablation\textbackslash{}attention\textbackslash{}best.pth\\
+HPE & model & ablation/uncertainty/best.pth & MISSING\_MODEL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}ablation\textbackslash{}uncertainty\textbackslash{}best.pth\\
+HPE & model & ablation/mlp\_vk/best.pth & MISSING\_MODEL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}ablation\textbackslash{}mlp\_vk\textbackslash{}best.pth\\
+HPE & model & ablation/skeleton\_prompt/best.pth & MISSING\_MODEL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}ablation\textbackslash{}skeleton\_prompt\textbackslash{}best.pth\\
+HPE & model & teacher\_full\_cross\_scene\_split/best.pth & MISSING\_MODEL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}teacher\_full\_cross\_scene\_split\textbackslash{}best.pth\\
+HPE & model & student\_vk\_missing\_cross\_scene\_split/best.pth & MISSING\_MODEL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}student\_vk\_missing\_cross\_scene\_split\textbackslash{}best.pth\\
+HPE & model & student\_nv\_missing\_cross\_scene/best.pth & MISSING\_MODEL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}student\_nv\_missing\_cross\_scene\textbackslash{}best.pth\\
+HPE & model & baseline\_full\_cross\_scene\_split/best.pth & MISSING\_MODEL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}baseline\_full\_cross\_scene\_split\textbackslash{}best.pth\\
+HPE & model & teacher\_full\_cross\_subject\_split/best.pth & MISSING\_MODEL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}teacher\_full\_cross\_subject\_split\textbackslash{}best.pth\\
+HPE & model & student\_vk\_missing\_cross\_subject\_split/best.pth & MISSING\_MODEL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}student\_vk\_missing\_cross\_subject\_split\textbackslash{}best.pth\\
+HPE & model & student\_nv\_missing\_cross\_subject/best.pth & MISSING\_MODEL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}student\_nv\_missing\_cross\_subject\textbackslash{}best.pth\\
+HPE & model & baseline\_full\_cross\_subject\_split/best.pth & MISSING\_MODEL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}baseline\_full\_cross\_subject\_split\textbackslash{}best.pth\\
+HPE & eval & student\_nv\_nonvisual\_combinations.csv & MISSING\_EVAL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}eval\textbackslash{}student\_nv\_nonvisual\_combinations.csv\\
+HPE & eval & baseline\_full\_all\_combinations.csv & MISSING\_EVAL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}eval\textbackslash{}baseline\_full\_all\_combinations.csv\\
+HPE & eval & ablation\_distillation\_no\_kd\_all\_combinations.csv & MISSING\_EVAL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}eval\textbackslash{}ablation\_distillation\_no\_kd\_all\_combinations.csv\\
+HPE & eval & ablation\_distillation\_output\_kd\_all\_combinations.csv & MISSING\_EVAL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}eval\textbackslash{}ablation\_distillation\_output\_kd\_all\_combinations.csv\\
+HPE & eval & ablation\_distillation\_output\_token\_kd\_all\_combinations.csv & MISSING\_EVAL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}eval\textbackslash{}ablation\_distillation\_output\_token\_kd\_all\_combinations.csv\\
+HPE & eval & ablation\_distillation\_output\_bone\_kd\_all\_combinations.csv & MISSING\_EVAL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}eval\textbackslash{}ablation\_distillation\_output\_bone\_kd\_all\_combinations.csv\\
+HPE & eval & ablation\_distillation\_full\_structural\_kd\_all\_combinations.csv & MISSING\_EVAL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}eval\textbackslash{}ablation\_distillation\_full\_structural\_kd\_all\_combinations.csv\\
+HPE & eval & ablation\_reliability\_uniform\_all\_combinations.csv & MISSING\_EVAL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}eval\textbackslash{}ablation\_reliability\_uniform\_all\_combinations.csv\\
+HPE & eval & ablation\_reliability\_attention\_all\_combinations.csv & MISSING\_EVAL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}eval\textbackslash{}ablation\_reliability\_attention\_all\_combinations.csv\\
+HPE & eval & ablation\_reliability\_uncertainty\_all\_combinations.csv & MISSING\_EVAL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}eval\textbackslash{}ablation\_reliability\_uncertainty\_all\_combinations.csv\\
+HPE & eval & ablation\_encoder\_mlp\_vk\_all\_combinations.csv & MISSING\_EVAL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}eval\textbackslash{}ablation\_encoder\_mlp\_vk\_all\_combinations.csv\\
+HPE & eval & ablation\_encoder\_skeleton\_prompt\_all\_combinations.csv & MISSING\_EVAL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}eval\textbackslash{}ablation\_encoder\_skeleton\_prompt\_all\_combinations.csv\\
+HPE & eval & teacher\_cross\_scene\_all\_combinations.csv & MISSING\_EVAL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}eval\textbackslash{}teacher\_cross\_scene\_all\_combinations.csv\\
+HPE & eval & student\_vk\_cross\_scene\_all\_combinations.csv & MISSING\_EVAL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}eval\textbackslash{}student\_vk\_cross\_scene\_all\_combinations.csv\\
+HPE & eval & student\_nv\_cross\_scene\_nonvisual\_combinations.csv & MISSING\_EVAL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}eval\textbackslash{}student\_nv\_cross\_scene\_nonvisual\_combinations.csv\\
+HPE & eval & baseline\_cross\_scene\_all\_combinations.csv & MISSING\_EVAL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}eval\textbackslash{}baseline\_cross\_scene\_all\_combinations.csv\\
+HPE & eval & teacher\_cross\_subject\_all\_combinations.csv & MISSING\_EVAL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}eval\textbackslash{}teacher\_cross\_subject\_all\_combinations.csv\\
+HPE & eval & student\_vk\_cross\_subject\_all\_combinations.csv & MISSING\_EVAL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}eval\textbackslash{}student\_vk\_cross\_subject\_all\_combinations.csv\\
+HPE & eval & student\_nv\_cross\_subject\_nonvisual\_combinations.csv & MISSING\_EVAL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}eval\textbackslash{}student\_nv\_cross\_subject\_nonvisual\_combinations.csv\\
+HPE & eval & baseline\_cross\_subject\_all\_combinations.csv & MISSING\_EVAL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HPE\textbackslash{}outputs\textbackslash{}eval\textbackslash{}baseline\_cross\_subject\_all\_combinations.csv\\
+HAR & model & student\_vk\_missing\_cross\_subject/best.pth & MISSING\_MODEL & \scriptsize E:\textbackslash{}Deskbook\textbackslash{}Tea\textbackslash{}HAR\textbackslash{}outputs\textbackslash{}student\_vk\_missing\_cross\_subject\textbackslash{}best.pth\\
+\bottomrule
+\end{longtable}

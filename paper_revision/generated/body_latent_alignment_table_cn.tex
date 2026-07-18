@@ -1,0 +1,23 @@
+\begin{table*}[!htbp]
+\centering
+\caption{Body-latent token 对应性检查。Same 和 Shuffled 为同一样本与打乱样本的平均余弦相似度，Top-1 为同样本检索准确率，Random 为随机水平。结果显示 token 空间存在轻微高于随机的对应性，但差距有限，因此本文将其作为任务监督诱导表示的一部分，而不是严格几何配准证明。}
+\label{tab:body_latent_cn}
+\scriptsize
+\begin{adjustbox}{width=\textwidth}
+\begin{tabular}{llccccc}
+\toprule
+Task & Target modality & Same & Shuffled & Gap & Top-1 & Random \\
+\midrule
+HAR & D & 0.7851 & 0.7841 & 0.0010 & 0.0869 & 0.0625 \\
+HAR & L & 0.8826 & 0.8821 & 0.0004 & 0.1006 & 0.0625 \\
+HAR & R & 0.7466 & 0.7456 & 0.0009 & 0.0744 & 0.0625 \\
+\midrule
+HPE & D & 0.9296 & 0.9291 & 0.0005 & 0.0806 & 0.0625 \\
+HPE & L & 0.8784 & 0.8782 & 0.0001 & 0.0650 & 0.0625 \\
+HPE & R & 0.8492 & 0.8486 & 0.0006 & 0.0700 & 0.0625 \\
+HPE & W & 0.8945 & 0.8943 & 0.0002 & 0.0675 & 0.0625 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table*}
+

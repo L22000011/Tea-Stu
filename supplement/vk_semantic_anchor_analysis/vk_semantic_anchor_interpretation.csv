@@ -1,0 +1,18 @@
+task,setting,perturbed_modality,perturbation_type,degradation,unit,interpretation
+HPE,vk_noise_0.1,vk,gaussian_scaled_by_batch_std,1.9068,mm MPJPE increase,worse
+HPE,vk_noise_0.3,vk,gaussian_scaled_by_batch_std,4.8996,mm MPJPE increase,worse
+HPE,vk_noise_0.5,vk,gaussian_scaled_by_batch_std,4.7487,mm MPJPE increase,worse
+HPE,depth_noise_0.3,depth,gaussian_scaled_by_batch_std_plus_light_zeroing,160.5380,mm MPJPE increase,worse
+HPE,lidar_noise_0.3,lidar,gaussian_scaled_by_batch_std_plus_light_zeroing,7.5928,mm MPJPE increase,worse
+HPE,mmwave_noise_0.3,mmwave,gaussian_scaled_by_batch_std_plus_light_zeroing,2.2553,mm MPJPE increase,worse
+HPE,wifi_csi_noise_0.3,wifi-csi,gaussian_scaled_by_batch_std_plus_light_zeroing,-0.5973,mm MPJPE increase,better_or_no_worse
+HPE,vk_joint_shuffle,vk,joint_identity_shuffle,10.1044,mm MPJPE increase,worse
+HPE,vk_sample_mismatch,vk,batch_sample_roll_mismatch,1.3925,mm MPJPE increase,worse
+HAR,vk_noise_0.1,vk,gaussian_scaled_by_batch_std,0.1250,percentage-point accuracy drop,worse
+HAR,vk_noise_0.3,vk,gaussian_scaled_by_batch_std,0.3125,percentage-point accuracy drop,worse
+HAR,vk_noise_0.5,vk,gaussian_scaled_by_batch_std,0.1875,percentage-point accuracy drop,worse
+HAR,depth_noise_0.3,depth,gaussian_scaled_by_batch_std_plus_light_zeroing,2.0000,percentage-point accuracy drop,worse
+HAR,lidar_noise_0.3,lidar,gaussian_scaled_by_batch_std_plus_light_zeroing,-0.1250,percentage-point accuracy drop,better_or_no_worse
+HAR,mmwave_noise_0.3,mmwave,gaussian_scaled_by_batch_std_plus_light_zeroing,10.3125,percentage-point accuracy drop,worse
+HAR,vk_joint_shuffle,vk,joint_identity_shuffle,1.1875,percentage-point accuracy drop,worse
+HAR,vk_sample_mismatch,vk,batch_sample_roll_mismatch,-0.0625,percentage-point accuracy drop,better_or_no_worse

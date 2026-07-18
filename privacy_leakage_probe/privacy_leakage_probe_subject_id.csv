@@ -1,0 +1,7 @@
+modality,status,num_samples,feature_dim,split_mode,subject_train_acc,subject_test_acc,chance_acc,chance_percent,privacy_interpretation
+rgb,done,2400,3124,action-holdout,1.000000,0.675290,0.025000,2.50,High subject leakage; only reduced visual exposure can be claimed.
+vk,done,2400,50,action-holdout,0.996873,0.154326,0.025000,2.50,Measurable subject leakage; avoid privacy guarantee claims.
+depth,done,2400,288,action-holdout,0.976544,0.438002,0.025000,2.50,High subject leakage; only reduced visual exposure can be claimed.
+lidar,done,2400,19,action-holdout,0.841282,0.365745,0.025000,2.50,High subject leakage; only reduced visual exposure can be claimed.
+mmwave,done,2400,31,action-holdout,0.866302,0.097235,0.025000,2.50,Measurable subject leakage; avoid privacy guarantee claims.
+wifi-csi,done,2400,42,action-holdout,0.494918,0.086530,0.025000,2.50,Measurable subject leakage; avoid privacy guarantee claims.

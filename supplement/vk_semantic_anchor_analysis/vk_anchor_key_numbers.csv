@@ -1,0 +1,11 @@
+task,setting,quantity,value,unit
+HPE,clean,Clean MPJPE,45.0460,mm
+HPE,vk_joint_shuffle,VK joint shuffle degradation,10.1044,mm
+HPE,vk_noise_0.3,VK coordinate noise 0.3 degradation,4.8996,mm
+HPE,depth_noise_0.3,Depth noise 0.3 degradation,160.5380,mm
+HPE,lidar_noise_0.3,LiDAR noise 0.3 degradation,7.5928,mm
+HAR,clean,Clean accuracy,99.7500,%
+HAR,vk_joint_shuffle,VK joint shuffle degradation,1.1875,pp
+HAR,vk_noise_0.3,VK coordinate noise 0.3 degradation,0.3125,pp
+HAR,depth_noise_0.3,Depth noise 0.3 degradation,2.0000,pp
+HAR,mmwave_noise_0.3,mmWave noise 0.3 degradation,10.3125,pp

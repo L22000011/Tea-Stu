@@ -1,0 +1,2 @@
+protocol,variant,mse,mae,nme,pck05,pck10,train_samples,val_samples
+cross_scene,temporal_global_local_no_offset,978.4249514770507,22.0334645652771,0.11631261363625527,0.2152757369808387,0.532996326717548,48114,5896

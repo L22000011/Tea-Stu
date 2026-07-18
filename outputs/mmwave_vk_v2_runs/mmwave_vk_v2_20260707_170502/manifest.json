@@ -1,0 +1,27 @@
+{
+  "pipeline": "dgcnn_mmwave_generated_vk",
+  "rgb_root": "E:\\Deskbook\\Tea\\RGB-Subset-Fairness\\outputs_rgb_subset",
+  "mmfi_root": "E:\\Deskbook\\Tea",
+  "mmwave_root": "E:\\Deskbook\\NIPS_Data\\filtered_mmwave",
+  "output_root": "E:\\Deskbook\\Tea\\RGB-Subset-Fairness\\outputs_mmwave_vk_v2",
+  "manifest": "E:\\Deskbook\\Tea\\outputs\\rgb_subset_manifest\\manifest.csv",
+  "device": "cuda:0",
+  "epochs": 1,
+  "max_train_batches": 2,
+  "max_eval_batches": 2,
+  "protocols": [
+    "cross_scene",
+    "cross_subject"
+  ],
+  "vk_variants": [
+    "dgcnn_raw",
+    "dgcnn_calibrated"
+  ],
+  "tasks": [
+    "hpe",
+    "har"
+  ],
+  "stages": [
+    "generate"
+  ]
+}

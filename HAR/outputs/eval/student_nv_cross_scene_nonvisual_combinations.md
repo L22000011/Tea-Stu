@@ -1,0 +1,11 @@
+# HAR non-visual modality combinations
+
+|modality_set|loss|acc|macro_f1|params|fps|peak_memory|method|split|protocol|
+|---|---|---|---|---|---|---|---|---|---|
+|depth|1.1417176479900237|0.8881780770669659|0.8879390989194865|8606392|NA|NA|VK-RCD-HAR-Student-NV-Missing|cross_scene_split|protocol3|
+|lidar|3.6090860272869087|0.08943758573388202|0.06392629036102968|8606392|NA|NA|VK-RCD-HAR-Student-NV-Missing|cross_scene_split|protocol3|
+|mmwave|1.274382356450963|0.7969572265868562|0.7998597573356633|8606392|NA|NA|VK-RCD-HAR-Student-NV-Missing|cross_scene_split|protocol3|
+|depth+lidar|1.1100095358618587|0.8891507669285447|0.8886770688691887|8606392|NA|NA|VK-RCD-HAR-Student-NV-Missing|cross_scene_split|protocol3|
+|depth+mmwave|0.33049440080746095|0.9545454545454546|0.9544832145113616|8606392|NA|NA|VK-RCD-HAR-Student-NV-Missing|cross_scene_split|protocol3|
+|lidar+mmwave|1.1851007883480893|0.7968449931412894|0.7998682047453495|8606392|NA|NA|VK-RCD-HAR-Student-NV-Missing|cross_scene_split|protocol3|
+|depth+lidar+mmwave|0.3327911004309661|0.9540591096146652|0.953989492908582|8606392|NA|NA|VK-RCD-HAR-Student-NV-Missing|cross_scene_split|protocol3|

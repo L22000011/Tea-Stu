@@ -1,0 +1,1142 @@
+\documentclass[journal]{IEEEtran}
+
+% Compile with XeLaTeX.
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{adjustbox}
+\usepackage{float}
+\usepackage{url}
+\newcommand{\parahead}[1]{\vspace{0.4em}\noindent{\textbf{#1}}}
+\newcommand{\method}{VK-RMD}
+\newcommand{\gain}[1]{\textcolor{green!45!black}{#1}}
+\newcommand{\loss}[1]{\textcolor{red!70!black}{#1}}
+\newcommand{\neutral}[1]{\textcolor{gray!70!black}{#1}}
+\newcommand{\spsfc}{SP-SFC}
+\newcommand{\cnModalitySetShort}{模态}
+\newcommand{\cnHpeDirectCaption}{MMFi HPE 逐模态组合比较（mm，数值越低越好）。V 在 X-Fi/VK-RMD 中分别表示 RGB/VK；D、L、R、W 分别表示 Depth、LiDAR、mmWave、WiFi-CSI。绿色和红色分别表示提升和退化。}
+\newcommand{\cnHarDirectCaption}{MMFi HAR 逐模态组合比较（Accuracy，\%）。V 在 X-Fi/VK-RMD 中分别表示 RGB/VK；D、L、R 分别表示 Depth、LiDAR、mmWave。绿色和红色分别表示提升和退化。}
+\setmainfont{Times New Roman}
+\setCJKmainfont{SimSun}
+\setCJKsansfont{SimHei}
+\setCJKmonofont{FangSong}
+
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+\begin{document}
+
+\title{VK-RMD：面向缺失模态多模态人体感知的低外观结构 Token 化与子集投影一致性学习}
+
+\author{Eagle}
+% 母稿保留的作者单位、通信作者与收稿日期占位信息需在正式投稿系统中按真实信息补入，本文不虚构作者元数据。
+
+\markboth{Submitted to IEEE Internet of Things Journal}%
+{作者等：VK-RMD：低外观结构 Token 化与子集投影一致性学习}
+
+\maketitle
+
+\begin{abstract}
+人体感知作为智能空间、人机交互和具身智能中的基础感知能力，
+逐渐成为人类行为理解与智能空间决策的重要技术支撑。
+现有多模态人体感知方法通常建立在传感器稳定部署，模型部署场景稳定等较理想条件上。
+以RGB为代表的视觉信号在人体感知中起到至关重要的作用，然而，RGB在携带丰富人体信息的同时，
+还携带大量的个人身份信息，在部署上存在明显的视觉暴露风险。
+其次，IoT 传感器在长期运行中可能因遮挡或设备损坏等原因而随机不可用，
+导致依赖完整模态或固定模态组合的模型性能退化，更进一步，
+人体感知现有技术在面对跨主体、跨场景条件下的泛化能力仍然有限。
+为此，本文提出 VK-RMD，一种面向低视觉暴露、随机传感器失效和跨协议评估的多模态人体感知框架。
+VK-RMD 使用视觉关键点（Visual Keypoints，VK）作为输入，
+VK结构可以由多种低外观或前端脱敏的人体姿态估计模块生成。
+实验结果显示VK将主体识别准确率从脱敏RGB的67.53\%降至15.43\%，表明VK可以显著降低下游感知中的身份预测。
+仅降低视觉暴露不能解决真实部署中的全部问题，真实部署中还必须面对设备随机失效、受试主体变化和场景迁移等难题，
+基于此，本文使用完整多模态数据训练教师模型，而使用随机缺失模态数据训练学生模型，并提出子集投影的结构与融合一致性目标
+（Subset-Projected Structural and Fusion Consistency，SP-SFC）：将教师的任务响应、人体结构、token 表示和融合行为条件化到学生当前可见子集，
+以缩小完整观测和随机缺失观测之间的行为差距。针对动态子集引起的模态支配冲突，本文进一步以同一任务不确定性代理耦合
+chunk 级专家读出和全局融合 token 读出，从而同时保留模态专属证据与跨模态互补信息。
+本文在 MMFi数据集的 cross-random-split、cross-subject 和 cross-scene 三类协议下系统
+验证视觉关键点的泛化能力，并在人体姿态估计和人体活动识别任务上进行全子集评估，
+覆盖 HPE 的 31 种模态组合和 HAR 的 15 种模态组合。
+实验结果表明，VK-RMD 在随机划分和跨主体协议下保持稳定性能，并在跨场景协议中揭示了环境迁移带来的明显性能边界；
+在随机模态缺失和低视觉暴露条件下，本文方法能够在降低视觉暴露的同时，提高模型面对动态传感器可用性的适应能力。
+VK-RMD 在完整模态设置下将 HPE 的 MPJPE 从 83.7 mm 降至 50.2 mm，并将 HAR 的准确率从 72.2\% 提升至 96.6\%；
+配对边际分析进一步显示，加入 VK 后 HPE 的 15/15 个匹配子集和 HAR 的 7/7 个匹配子集均得到改善。跨主体性能相对稳定，而 cross-scene HPE 的明显退化说明场景迁移仍是未解决边界。
+总而言之，VK-RMD 在降低视觉暴露和适应随机模态缺失方面表现出稳定优势，并通过跨协议评估明确其部署边界，为传感器可用性动态变化的 IoT 场景提供了一种可验证的多模态人体感知方案。
+\end{abstract}
+    
+\begin{IEEEkeywords}
+多模态感知，人体姿态估计，人体活动识别，缺失模态学习，低视觉暴露，子集投影一致性。
+\end{IEEEkeywords}
+
+\section{引言}
+人体感知是智能空间、辅助生活、人机交互、公共安全和具身智能中的基础能力。
+它的目标是从环境中的多源观测信号中恢复人体状态，包括人体姿态、运动过程和动作语义。
+受益于计算能力和传感器精度的持续提升，多模态人体感知已取得显著进展，
+并被广泛应用于智能空间、辅助生活、人机交互、公共安全和具身智能等领域\cite{mmfi,xfi}。
+
+目前，人体感知系统通常依赖 RGB、Depth、LiDAR、mmWave 和 WiFi-CSI 等多源传感判别人体姿态和活动语义。
+随着多模态感知模型的发展，不同传感器之间的互补信息已经被广泛用于提升人体姿态估计和人体活动识别性能。
+然而，当这些系统从实验环境走向开放 IoT 部署时，关键挑战不再只是如何融合更多传感器，还包括身份相关信息暴露，
+以及如何在观测受限且动态变化的条件下保持可靠感知。因此，人体感知方法还需要同时考虑视觉信息暴露、传感器可用性
+变化以及跨主体和跨场景分布迁移。
+
+已有研究已经注意到原始 RGB 在人体感知中的隐私风险，并尝试通过减少视觉信息进入下游模型来降低身份泄露。
+一类方法直接移除摄像头，转向 WiFi、毫米波雷达、LiDAR 或 Depth 等非 RGB 传感器；
+例如，基于 WiFi-CSI 的活动识别和基于毫米波雷达的人体姿态估计等非视觉人体感知方法\cite{metafi,virteach,adapose,robustwifi}，旨在避免采集人脸、
+衣着等显式视觉信息，从源头降低身份暴露风险。然而，完全脱离视觉信息也会削弱模型对人体关节结构和动作上下文
+的感知能力，且非视觉传感器本身受到空间分辨率、环境反射等因素限制，难以在复杂场景中稳定支撑高精度人体感知。
+另一类方法将 RGB 图像转化为人体骨架，做单模态的姿态估计和活动识别\cite{openpose,hrnet,vitpose,stgcn}。这类方法保留了人体关节拓扑和姿态几何信息，
+同时减少了原始图像中的身份外观暴露。然而，单模态骨架方案无法充分利用几何、雷达和无线观测的互补信息，也不能单独消除场景迁移带来的分布偏移，
+因此仍需要能够组织不同传感器证据的多模态方法。
+同时，在真实 IoT 部署中，人体感知系统面对的观测条件更加复杂。不同房间布局、主体差异和环境反射等
+会造成明显的跨场景分布变化，因此模型的 cross-scene 泛化能力需要被明确评估；
+同时，传感器可能因遮挡、噪声或设备损坏而随机不可用，模态缺失也成为长期运行中的常态\cite{goodPracticeMissing,moddrop,incompleteKD,mmanet}。
+由此产生本文的核心科学问题：在在线推理不依赖原始 RGB、且传感器可能任意缺失时，如何利用低外观人体结构接口组织异构传感器证据，
+并使当前有限模态子集尽可能维持完整观测条件下的 HPE 与 HAR 行为？该问题同时包含视觉暴露、观测条件不对称和动态证据组织三层矛盾，
+不能由简单替换输入、普通 modality dropout 或固定融合单独解决。
+
+
+为实现低视觉暴露和缺失模态鲁棒的人体感知，本文希望设计一个能够适应动态传感器可用性，并明确刻画跨主体和跨场景泛化边界的模型。
+首先，考虑到真实部署中模态数量可能变化，模型需要支持任意可用模态子集输入。其次，考虑到不同模态
+具有不同物理含义，本文采用模态专属编码器分别提取 Visual Keypoints、Depth、LiDAR、mmWave 和 
+WiFi-CSI 的特征。最后，为了在融合过程中保留每个模态的差异性信息，本文将各模态特征划分为
+modality chunks，并设计专家分支和全局融合 token 读出，同时保留模态专属判断和跨模态互补信息。这样，模型
+不仅能够处理动态模态输入，还能在随机缺失模态训练中学习不同传感器之间的互补关系，从而优于简单
+特征拼接、平均融合或固定模态输入方法。
+
+基于此，本文提出一种新的低视觉暴露缺失模态人体感知框架 
+VK-RMD。VK-RMD 使用 Visual Keypoints 作为下游结构输入，而不是在线使用原始 RGB。
+Visual Keypoints 在本文中被定义为上游模块提供的 17 点结构接口，而不是某一种硬件的原始输出。当前主实验使用 MMFi 中与其他传感器同步的关键点数据；
+如果由 RGB 获取，可通过离线或受控前端关键点模型完成，使原始 RGB 不进入在线下游感知模型。Depth/mmWave 来源的 VK 仅作为后文轻量可行性分析，
+本文不据此假设任意设备都能提供同等精度的关键点。如图所示，VK-RMD 包含一组模态专属编码器，
+用于提取各模态的专属特征，并将其投影到统一的 body-token 空间。对于 Visual Keypoints 分支，
+模型首先对 17 个关键点进行坐标归一化和关节级嵌入，再结合骨架拓扑关系形成结构化人体 token。
+对于 Depth、LiDAR、mmWave 和 WiFi-CSI 分支，模型使用对应的传感器编码器提取物理模态特征，
+并通过投影层映射到相同维度的 body-token 表示。对于不同传感器组合，系统只激活当前可用模态的编码器，
+获得对应 modality chunks。随后，跨模态 Transformer 学习当前模态子集中的交互关系。每个 chunk
+一方面通过专家分支生成模态级预测，另一方面通过全局融合 token 读出形成子集级预测。
+
+为了进一步提升随机缺失场景下的稳定性，本文采用完整观测教师与随机子集学生的 Full-to-Subset 训练关系。
+鉴于完整到不完整观测的蒸馏思想已有研究，本文不将该关系本身作为独立创新，而是在其上提出子集投影的结构与融合一致性目标 SP-SFC。
+具体而言，完整模态教师学习所有传感器可用时的感知行为；随机缺失模态学生在不同子集下学习教师的任务响应和 token 表示，
+并将教师的完整融合分布截取到当前可见模态后重新归一，以此监督学生的子集融合行为。HPE 进一步加入骨架结构一致性，
+HAR 使用温度化类别响应一致性；两个任务均以模态专家误差约束 log-variance，使预测质量、子集贡献权重和教师条件分布形成闭环。
+本文在 MMFi 数据集上的 HPE 和 HAR 任务中进行验证，
+覆盖 HPE 的 31 种模态组合和 HAR 的 15 种模态组合。实验结果显示，VK-RMD 在完整模态设置下将 
+HPE 的 MPJPE 从 83.7 mm 降至 50.2 mm，将 HAR 准确率从 72.2\% 提升至 96.6\%。
+
+主要贡献总结如下。第一，本文提出 VK-RMD，一种面向低视觉暴露人体感知的多模态框架，使用 
+Visual Keypoints 完全替代在线原始 RGB，在降低身份外观暴露的同时保留人体结构信息。
+第二，本文提出 SP-SFC，将完整模态教师的任务响应、人体结构、token 表示及融合行为投影到学生当前可见子集，
+并通过专家不确定性把模态级预测质量与子集级证据分配联系起来，从而具体解决完整观测知识不能直接复制到随机缺失观测的问题。
+第三，本文设计由同一任务不确定性代理耦合的 chunk 级专家读出与全局融合 token 读出机制，
+在动态模态组合中同时保留模态专属证据和跨模态互补信息；并通过 VK 配对边际贡献、HPE 的 31 种组合、HAR 的 15 种组合以及
+cross-random-split、cross-subject 和 cross-scene 协议系统验证 VK-RMD 的效用与边界。
+
+
+
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/framework.png}
+    \caption{VK-RMD 总体框架。在线原始 RGB 不进入下游模型；Visual Keypoints 经关节身份与骨拓扑编码形成低外观结构 token，异构传感器经模态专属编码器形成等维 token。完整观测 teacher 通过 SP-SFC 条件化指导随机子集 student，student 以 chunk 专家读出和全局融合 token 读出联合形成 HPE/HAR 预测。}
+    \label{fig:framework}
+\end{figure*}
+
+\section{相关工作}
+
+\subsection{人体感知}
+
+人体感知是智能空间、人机交互和具身智能中的基础能力，其目标是从环境中的感知信号中恢复人体姿态、动作和行为状态。视觉姿态估计、骨架动作识别以及 Transformer 表示学习已经显著提升了人体结构与动作建模能力\cite{openpose,stgcn,hrnet,vitpose,transformer}。然而，RGB 信号在提供强感知能力的同时，也直接记录面部、衣着、体型和背景等身份相关信息，使其在家庭、医院和办公空间等隐私敏感场景中的部署受到限制。
+
+为了减少对原始 RGB 的依赖，研究者开始探索更加适合实际部署的替代感知信号。Depth、LiDAR、毫米波雷达和 WiFi-CSI 分别从空间几何、点云反射、雷达回波和无线信道扰动中捕获人体信息\cite{shotton2011,pointnet,pointtransformer,rfpose,wifiSurvey,wifiHar}；骨架和关键点则将密集视觉外观压缩为结构化关节信息。上述表示减少了对纹理和背景的依赖，但其物理含义、噪声模式和空间分辨率差异显著，单一模态难以稳定覆盖复杂场景。
+
+因此，当前人体感知研究逐渐从单一高质量输入转向多传感器协同建模\cite{sensorFusion,contrastivehar,iotHarReview}。多模态方法能够结合几何、无线、雷达和结构化人体表示，但许多方法仍默认传感器组合固定、部署场景稳定且输入完整。在真实 IoT 场景中，遮挡、设备故障、带宽限制和环境变化会同时引起模态缺失与分布迁移；模型因而需要在完整模态性能之外，明确评估动态可用性和跨协议泛化。
+
+\subsection{动态模态与缺失模态学习}
+
+真实多传感器系统很难保证所有模态始终可用。遮挡、设备故障、带宽限制、能耗约束和部署变化都可能导致模态缺失。现有研究主要从随机模态丢弃、共享--特定表示、缺失模态生成和完整到不完整知识迁移等方向展开\cite{missingSurvey,goodPracticeMissing,moddrop,shaspec}。
+
+模态不变表示学习希望将不同模态组合映射到统一表示空间，使模型能够处理可变数量的输入模态。X-Fi 通过模态专属编码器和跨模态融合支持多种传感器组合\cite{xfi}；模态 dropout 则在训练阶段随机移除输入，以提高推理时的缺失鲁棒性\cite{moddrop}。前者强调统一模型的组合适应能力，后者主要改变训练分布，但二者都未直接规定完整观测行为应如何约束当前有限子集。
+
+另一类方法通过共享潜空间或代理表示补全缺失模态。此类方法可以保持固定融合接口，但对 LiDAR、毫米波雷达和 WiFi-CSI 等物理异构信号，代理特征可能引入额外误差。专家网络和门控机制能够按输入条件选择分支，却可能随传感器数量增加而提高结构与配置成本。VK-RMD 采用不同路线：不生成不可观测模态，而只组织当前可见 chunk 的任务证据。
+
+知识蒸馏也被用于完整到不完整多模态学习。传统蒸馏及特征提示分别约束输出分布和中间表示\cite{kd,fitnets,lupi}；不完整多模态方法进一步使用完整模态 teacher 指导部分模态 student\cite{incompleteKD,mmanet,crossModalKD}。这些工作说明完整观测能够作为训练期参考，但没有形成本文面向 HPE/HAR 的任务响应、骨架结构、token 表示与可见融合分布联合约束。本文因此不把 teacher--student 形式本身作为创新，而把贡献限定在任务化的一致性目标及其与动态证据读出的耦合。
+
+\subsection{低视觉暴露人体感知}
+
+在隐私敏感环境中，人体感知模型不仅需要保证任务性能，还需要控制输入信号带来的视觉暴露。原始 RGB 图像包含面部、衣着、体型、背景和场景布局等信息，即使下游任务只关注姿态或动作，仍可能带来身份和环境泄露风险。因此，近年来研究者开始探索使用低外观表示或非视觉传感器来替代在线 RGB 输入。
+
+骨架和关键点表示主要保留关节位置、拓扑和运动模式，减少纹理、颜色与背景信息；低分辨率视觉和可学习光学前端也被用于限制可识别外观\cite{lowresDepth,privacyOptics}。与此同时，Depth、LiDAR、毫米波雷达和 WiFi-CSI 为减少在线 RGB 依赖提供了不同路径，但不同传感器仍可能保留身体几何、步态或环境相关线索。
+
+因此，低视觉暴露并不等同于严格隐私保护。骨架关键点仍可能包含体型、步态和动作习惯，Depth 与 LiDAR 也可能反映人体形状和空间行为。本文采用可检验的较窄目标：排除在线下游原始 RGB，并以主体识别探针量化表示中的残余身份可预测性，而不声称匿名性或形式化隐私保证。低视觉暴露、动态模态可用性和跨协议迁移由此构成同一部署问题的三个边界，而不是三个互不相关的卖点。
+
+\section{VK-RMD：可用性条件结构证据学习框架}
+
+本节从一个统一问题出发构建 VK-RMD：当原始 RGB 不进入在线感知模型、且传感器可用性随时间变化时，模型既要保留对 HPE/HAR 有效的人体结构，又要避免将完整观测下的融合规律机械复制到信息不完整的子集。为此，VK-RMD 将方法组织为三个相互依赖的机制：以 Visual Keypoints（VK）建立低外观结构接口；以完整到子集的结构--融合一致性约束连接完整观测与随机子集；以可见 modality chunk 的双层证据读出处理子集变化引起的证据支配差异。图~\ref{fig:framework} 给出了整体计算流程。
+
+\subsection{问题定义与设计原则}
+
+令 $\mathcal{M}_{\mathrm{HPE}}=\{v,d,l,r,w\}$ 和 $\mathcal{M}_{\mathrm{HAR}}=\{v,d,l,r\}$ 分别表示 HPE 与 HAR 的候选模态集合，其中 $v,d,l,r,w$ 依次表示 VK、Depth、LiDAR、毫米波雷达和 WiFi-CSI。同步样本记为 $\mathcal{X}=\{x_m\}_{m\in\mathcal{M}}$，监督标签记为 $y$；HPE 中 $y\in\mathbb{R}^{17\times3}$，HAR 中 $y\in\{1,\ldots,C\}$。在线时模型只接收一个非空可见子集 $S\subseteq\mathcal M$，其输入为 $\mathcal X_S=\{x_m\mid m\in S\}$，并预测 $\hat y_S=F(\mathcal X_S,S)$。训练时，student 的 $S$ 由模态丢弃分布 $q(S)$ 采样；当前实现从允许的缺失数量集合中等概率选择一个数量，再在候选模态中均匀选择被丢弃项。测试则枚举所有非空组合，从而将每个组合视为一种合法部署状态，而不把模态丢弃仅解释为普通正则化。
+
+这一问题包含三个耦合矛盾。首先，去除在线 RGB 会削弱密集视觉外观，但人体结构仍需进入模型；其次，完整观测 teacher 与随机子集 student 的信息容量不同，直接复制完整融合分布并不合理；最后，不同子集中的主导模态会改变，单一全局读出可能掩盖弱但互补的可见证据。VK-RMD 的三个核心模块分别对应这三个矛盾，并由同一子集变量 $S$ 贯穿编码、融合和训练目标。
+
+\subsection{VK 低外观结构接口}
+
+\subsubsection{关节身份与骨拓扑编码}
+
+VK 输入记为 $K\in\mathbb{R}^{17\times2}$。它是上游关键点模块输出的结构化接口，而不是在线原始图像。本文实验使用数据集中同步提供的 17 点 VK；上游如何产生 VK 不属于当前下游模型的优化范围，因此本文不假设不同来源的关键点具有相同精度。该边界使本文的声明限定为 raw-RGB-free online inference 和 reduced visual exposure，而不是形式化隐私保证。
+
+对于不同坐标尺度，首先将有限坐标自适应归一到 $[0,1]$ 并截断异常值，得到 $\widetilde K=\operatorname{Normalize}(K)$。第 $j$ 个关节同时编码绝对位置、中心化位置和关节身份；随后依据 COCO-17 骨连接构造含自环、按节点度归一化的邻接矩阵 $A$。整个 VK 结构编码可凝练为
+\begin{equation}
+\begin{aligned}
+H_{v,j}^{(0)}&=\phi_c(\widetilde K_j)+\phi_p(2\widetilde K_j-1)+e_j^{\mathrm{joint}},\\
+H_v^{(q+1)}&=\operatorname{LN}\!\left(H_v^{(q)}+
+\psi_q[H_v^{(q)}\Vert A H_v^{(q)}]\right),\\
+Z_v&=P_v(H_v^{(Q)})\in\mathbb R^{K_t\times D}.
+\end{aligned}
+\label{eq:vk_structural_interface}
+\end{equation}
+其中 $\phi_c$ 与 $\phi_p$ 为多层感知机，$e_j^{\mathrm{joint}}$ 为可学习关节嵌入，$\psi_q$ 为骨邻域混合映射。实现采用两层骨图混合，并将 17 个 joint tokens 投影为 $K_t=32$ 个、维度为 $D=512$ 的结构 token。该设计避免把坐标序列视为无语义点集：即使两个关节坐标接近，其 joint identity 仍然不同。
+因此，VK 的作用不是作为 attention query 查询其他传感器，也不是要求其他模态回归到二维关键点坐标；它提供的是一种保留关节身份和拓扑关系的低外观人体结构接口。
+
+\subsubsection{与其他传感器的关系}
+
+Depth、LiDAR、毫米波雷达和 WiFi-CSI 在原始空间中分别表现为深度阵列、点云、雷达反射和信道状态序列，不存在统一的像素级对应关系。对每个非 VK 模态 $m$，VK-RMD 使用与其数据结构匹配的预训练 backbone $B_m$ 提取特征，并冻结这些 backbone 以保留原有传感器表征；随后使用可训练 projector 将输出变为固定数量的 token。这里统一的是 token 数量和特征维度，而不是传感器的物理坐标。VK、非视觉传感器、同步样本和共同 HPE/HAR 标签共同诱导 task-supervised human-state tokenization；本文不将这一过程表述为严格的 body-latent semantic alignment。
+
+\subsection{可用性条件的 Human-State Tokenization}
+
+对当前可见模态加入模态身份嵌入，并仅拼接当前存在的 token。异构传感器投影、子集编码与 chunk 恢复可概括为
+\begin{equation}
+\begin{aligned}
+Z_m&=P_m(B_m(x_m)),\quad \bar Z_m=Z_m+e_m,\\
+T_S&=\operatorname{TrEnc}\!\left(\operatorname{Concat}_{m\in S}\bar Z_m\right)
+=[C_m]_{m\in S},
+\end{aligned}
+\label{eq:body_token}
+\end{equation}
+其中 $Z_m,C_m\in\mathbb R^{K_t\times D}$。实现中 Transformer 包含两层、八个注意力头，能够接受由 $|S|$ 决定的可变 token 长度。Self-attention 只在当前可见证据之间建立依赖，不构造零填充 token，也不生成缺失模态代理。每个 $C_m$ 已包含跨模态上下文，但仍保留清晰的来源边界，因而被称为 visible modality chunk。
+
+\subsection{子集自适应的可见 Chunk 双层证据读出}
+
+\subsubsection{Chunk 级任务证据}
+
+对于每个 $C_m$，共享任务头而非独立参数专家产生模态级预测 $\hat y_m$ 与标量 log-variance $s_m$。HPE 中 $\hat y_m\in\mathbb{R}^{17\times3}$，HAR 中 $\hat y_m\in\mathbb{R}^{C}$。共享参数保证不同模态接受同一任务判据，而 chunk 边界使每个可见模态在全局压缩前保留独立任务证据。因而，“chunk expert”指按模态读取的任务证据，而不是参数互不共享的 mixture-of-experts。
+
+在默认 uncertainty 模式下，$s_m$ 经温度化 softmax 形成当前子集内的 contribution proxy。局部预测、全局 token 及最终输出统一表示为
+\begin{equation}
+\begin{aligned}
+(\hat y_m,s_m)&=H_{\mathrm{shared}}(C_m),\quad
+\alpha_m^S=\frac{e^{-s_m/\tau}}{\sum_{j\in S}e^{-s_j/\tau}},\\
+\hat y_{\mathrm{chunk}}^S&=\sum_{m\in S}\alpha_m^S\hat y_m,\quad
+z_S=\sum_{m\in S}\alpha_m^S\operatorname{Pool}(C_m),\\
+\hat y_S&=\tfrac12\hat y_{\mathrm{chunk}}^S+
+\tfrac12H_{\mathrm{global}}(z_S).
+\end{aligned}
+\label{eq:reliability_weight}
+\end{equation}
+$\alpha_m^S$ 只反映当前任务、样本和模态组合下的相对贡献，不代表经过校准的物理传感器可靠性。其数值由后述异方差任务损失学习，而不是由人工质量标签指定。
+
+\subsubsection{局部预测与全局 token 的耦合聚合}
+
+式~\eqref{eq:reliability_weight}包含两条耦合读出路径：第一条直接聚合可见 chunks 的任务预测，第二条使用同一组 $\alpha_m^S$ 聚合 pooled chunk tokens，并由全局任务头读取子集级互补证据。该设计的关键并非简单并联两个 head，而是同一 contribution proxy 同时控制预测级证据和 token 级证据：局部路径保留可见模态的直接任务判断，全局路径建模跨模态互补关系。全局头预测完整任务输出，并非拟合局部路径的数值残差，因此本文使用“全局 fused-token 读出”而非“残差修正”描述该分支。
+
+\subsection{完整到子集的结构--融合一致性}
+
+\subsubsection{观测条件不对称的 Teacher--Student 训练}
+
+VK-RMD 先以完整模态集合 $\mathcal M$ 训练 teacher $F_T$，再固定 teacher，并训练与其容量近似的 student $F_S$。二者的关键差异不是模型规模，而是观测条件：teacher 计算 $O_T=F_T(\mathcal X_{\mathcal M},\mathcal M)$，student 则在 $S\sim q(S)$ 下计算 $O_S=F_S(\mathcal X_S,S)$。完整到不完整的 teacher--student 关系已有研究基础\cite{mmanet,kd,fitnets}。本文的机制贡献是将其具体化为面向异构人体感知的结构--融合多层一致性体系，并与上述可见 chunk 证据读出耦合。为与全文现有记号保持一致，下文仍记为 SP-SFC；其精确含义是 full-to-subset structural-fusion consistency，而不是声称所有 teacher 表示均经过显式子集投影。
+
+\subsubsection{当前子集上的融合行为约束}
+
+完整 teacher 输出 $\boldsymbol\alpha_T^{\mathcal M}$。直接要求 student 复制该分布既存在维数差异，也忽略缺失模态的概率质量。因而，只对融合行为执行可见子集限制并重新归一：
+\begin{equation}
+\widetilde\alpha_{T,m}^{S}
+=\frac{\alpha_{T,m}^{\mathcal M}}{\sum_{j\in S}\alpha_{T,j}^{\mathcal M}},\qquad
+\mathcal L_{\mathrm{rel}}=D_{\mathrm{KL}}\!\left(
+\widetilde{\boldsymbol\alpha}_T^S\,\|\,\boldsymbol\alpha_S\right).
+    \label{eq:subset_fusion_consistency}
+\end{equation}
+式~\eqref{eq:subset_fusion_consistency}对应实际实现中以 teacher 分布为 KL target 的方向。它监督的是“在相同可见证据条件下如何重新分配贡献”，而不是要求 student 恢复不可观测模态。
+
+\subsubsection{任务误差驱动的 Contribution Proxy}
+
+每个可见 chunk 的 log-variance 由其独立任务误差监督：
+\begin{equation}
+    \mathcal L_{\mathrm{unc}}
+    =\frac{1}{|S|}\sum_{m\in S}
+    \left[\exp(-s_m)\ell_m+s_m\right],
+    \label{eq:expert_uncertainty}
+\end{equation}
+其中 HPE 使用模态级 Smooth-L1 姿态误差，HAR 使用模态级交叉熵。由于 $s_m$ 同时决定式~\eqref{eq:reliability_weight}中的 $\alpha_m^S$，该目标把 chunk 预测质量与子集证据分配联系起来。需要注意，代码并未单独最小化 teacher 与 student 的 log-variance 距离；teacher 的不确定性只通过 $\widetilde{\boldsymbol\alpha}_T^S$ 间接影响 student，避免把未实现的 uncertainty distillation 写入方法。
+
+\subsection{任务特定目标与总体优化}
+
+\subsubsection{Teacher 目标}
+
+HPE teacher 使用真实姿态 Smooth-L1 回归和骨长约束，即 $\mathcal L_T^{\mathrm{HPE}}=\ell_{\mathrm{SL1}}(\hat p_T,y)+\lambda_b\mathcal L_{\mathrm{bone}}(\hat p_T,y)$。HAR teacher 使用真实类别交叉熵，并以式~\eqref{eq:expert_uncertainty}约束各 chunk 的分类证据，即 $\mathcal L_T^{\mathrm{HAR}}=\operatorname{CE}(\hat c_T,y)+\lambda_u\mathcal L_{mathrm{unc}}^T$。
+
+\subsubsection{HPE Student 目标}
+
+HPE 的 ground-truth 项为 $\mathcal L_{\mathrm{gt}}=\ell_{\mathrm{SL1}}(\hat p_S,y)$，输出一致性为 $\mathcal L_{\mathrm{out}}=\ell_{\mathrm{SL1}}(\hat p_S,\operatorname{sg}(\hat p_T))$。令 $q_S$ 与 $q_T$ 表示编码 token 的全局均值，则 $\mathcal L_{\mathrm{tok}}=\|q_S-\operatorname{sg}(q_T)\|_2^2$。骨结构项 $\mathcal L_{\mathrm{bone}}$ 对 COCO-17 各骨段的 student/teacher 长度执行平均 L1 约束。完整 HPE student 目标为
+\begin{equation}
+\begin{aligned}
+\mathcal L^{\mathrm{HPE}}_S
+=&\mathcal L_{\mathrm{gt}}
++\lambda_{\mathrm{out}}\mathcal L_{\mathrm{out}}
++\lambda_{\mathrm{tok}}\mathcal L_{\mathrm{tok}}
++\lambda_{\mathrm{bone}}\mathcal L_{\mathrm{bone}}\\
+&+\lambda_{\mathrm{rel}}\mathcal L_{\mathrm{rel}}
++\lambda_{\mathrm{unc}}\mathcal L_{\mathrm{unc}}.
+\end{aligned}
+\label{eq:hpe_student_loss}
+\end{equation}
+其中 output、token 和 bone 项直接参照完整 teacher；只有 $\mathcal L_{\mathrm{rel}}$ 将 teacher 融合分布限制到 student 的当前可见子集。因此，SP-SFC 表示一个完整到子集的联合一致性体系，而不是对每个 teacher 中间变量都执行同一种投影算子。
+
+\subsubsection{HAR Student 目标}
+
+HAR student 首先由真实标签监督 $\mathcal L_{\mathrm{ce}}=\operatorname{CE}(\hat c_S,y)$。soft-response 项 $\mathcal L_{\mathrm{logit}}$ 使用温度 $T_d$ 下 teacher 到 student 的 KL 散度，并乘以 $T_d^2$；$q_S$ 和 $q_T$ 对应 contribution-weighted fused token，其 token 一致性仍采用均方误差。总目标为
+\begin{equation}
+\begin{aligned}
+\mathcal L^{\mathrm{HAR}}_S
+=&\mathcal L_{\mathrm{ce}}
++\lambda_{\mathrm{kd}}\mathcal L_{\mathrm{logit}}
++\lambda_{\mathrm{tok}}\mathcal L_{\mathrm{tok}}\\
+&+\lambda_{\mathrm{rel}}\mathcal L_{\mathrm{rel}}
++\lambda_{\mathrm{unc}}\mathcal L_{\mathrm{unc}}.
+\end{aligned}
+\label{eq:har_student_loss}
+\end{equation}
+HPE 与 HAR 共享完整观测到随机子集的训练逻辑，但根据几何回归和语义分类的任务性质使用不同结构项。这种任务化实例化比把所有任务统一为单一 logits 蒸馏更能对应人体感知中的几何与语义差异。
+
+\subsection{训练与推理流程}
+
+完整流程可概括为以下步骤：
+\begin{enumerate}
+    \item 使用完整模态样本训练 teacher，并固定其参数；
+    \item 对每个 student batch 采样可见子集 $S\sim q(S)$，只激活 $S$ 中的编码器；
+    \item 将 VK 结构 token 和可见物理传感器 token 输入共享 Transformer，并按来源恢复 visible chunks；
+    \item 由共享任务头生成 chunk 预测与 log-variance，再以同一 contribution proxy 形成局部预测聚合和全局 fused-token 读出；
+    \item 使用真实标签、完整 teacher 的任务/表示/结构目标以及重归一化后的可见融合分布更新 student；
+    \item 推理时移除 teacher，student 直接接受任意非空模态组合并输出 HPE 或 HAR 结果。
+\end{enumerate}
+
+上述计算链说明三项机制为何构成整体而非并列模块：VK 接口定义在线模型保留的人体信息；SP-SFC 定义完整与有限观测之间的训练关系；visible-chunk 双层读出定义当前子集中的证据组织方式。后续实验分别通过身份探针与 VK 配对边际贡献、teacher-guidance 与全子集分析、uniform fusion 和 chunk/global/dual 消融检验这三个机制假设，并通过 cross-subject 与 cross-scene 协议报告其泛化边界。
+
+\section{实验设置}
+
+\parahead{数据集与任务。}
+本文在 MMFi 多模态人体感知数据集上训练和评估 VK-RMD。MMFi 提供同步采集的多模态人体感知数据，包含 40 名受试者、27 类动作以及多种传感器模态。
+
+对于人体姿态估计任务（Human Pose Estimation, HPE），本文使用 Visual Keypoints、Depth、LiDAR、毫米波雷达和 WiFi-CSI 五种输入模态，并采用 17 个三维人体关节坐标作为监督标签。对于人体活动识别任务（Human Activity Recognition, HAR），本文使用 Visual Keypoints、Depth、LiDAR 和毫米波雷达四种输入模态，并预测 27 类人体动作标签。与在线 RGB-based 方法不同，本文不将原始 RGB 输入到下游 HPE/HAR 模型中，而是使用 Visual Keypoints 作为低视觉暴露的人体结构输入。
+
+为了全面评估模型在不同部署条件下的表现，本文采用三类协议进行实验。第一类是 cross-random-split 协议，用于评估模型在随机划分训练集和测试集条件下的整体性能。第二类是 cross-subject 协议，用于评估模型对未知受试者的泛化能力。第三类是 cross-scene 协议，用于评估模型在不同环境布设下的跨场景泛化能力。
+
+此外，本文对 HPE 和 HAR 分别进行全子集模态组合评估。对于 HPE，五种模态共形成 31 种非空组合；对于 HAR，四种模态共形成 15 种非空组合。该设置用于模拟真实 IoT 场景中传感器随机缺失和动态可用的情况。
+
+\parahead{训练目标。}
+VK-RMD 的训练包含完整模态 teacher 和随机缺失模态 student 两个阶段。Teacher 使用完整模态输入进行训练，不执行随机模态丢弃，用于学习所有传感器可用条件下的完整感知行为。Student 在训练阶段随机采样可用模态子集，并在缺失模态条件下完成 HPE 或 HAR。二者构成 Full-to-Subset 训练关系，具体约束由 SP-SFC 实现。
+
+对于 HPE，teacher 的训练目标由姿态回归损失和骨架结构损失组成。Student 的训练目标包括真实姿态标签监督、teacher 姿态输出约束、body-token 约束、骨架结构约束、融合权重约束和不确定性约束。
+
+对于 HAR，teacher 使用交叉熵损失和专家不确定性约束进行训练；student 的训练目标包括真实动作标签交叉熵、teacher soft logits 约束、body-token 约束、融合权重约束和不确定性约束。与传统模型压缩式蒸馏不同，本文的训练目标并不是将大模型压缩为小模型，而是使随机缺失模态 student 学习完整模态 teacher 的感知行为。
+
+\parahead{对比方法。}
+本文主要与已有 X-Fi 结果进行对比。X-Fi 是面向模态不变人体感知的代表性方法，能够处理不同模态组合的人体姿态估计和人体活动识别任务。为保证对比清晰，本文采用 X-Fi 原论文中报告的 MMFi HPE 和 HAR 表格结果作为主要对照，并在相同模态组合下报告 VK-RMD 的结果。
+
+对于 HPE，本文比较 MPJPE 和 PA-MPJPE 两个指标；对于 HAR，本文比较分类准确率。需要说明的是，本文不使用复现过程中出现的异常 X-Fi 结果作为主对比，而采用原论文表格中公开报告的数值作为基线。
+
+除 X-Fi 外，本文还设置若干内部消融和补充对比，用于分析 VK-RMD 中不同组成部分的作用。包括完整模态 baseline、uniform fusion、无蒸馏约束变体、不同缺失强度下的 student 结果、Student-VK 与 Student-NV 结果，以及 reliability-aware fusion 相关诊断实验。这些实验用于分析低视觉暴露输入、随机模态缺失训练、子集自适应融合和 SP-SFC 对整体性能的影响。
+
+\parahead{实现细节。}
+本文对不同模态采用模态专属编码器，并将其输出统一投影到 body-token 空间。每个模态被映射为 32 个 token，每个 token 的维度为 512。Visual Keypoints 分支首先对 17 个关键点进行坐标归一化和关节级嵌入，并结合骨架拓扑关系生成结构化人体 token。
+
+Depth、LiDAR、毫米波雷达和 WiFi-CSI 分支分别采用对应的预训练传感器 backbone 提取模态特征，并通过投影层映射到统一维度。跨模态 Transformer 使用 2 层编码器结构和 8 个注意力头，用于建模不同模态 token 之间的交互关系。融合模块采用 chunk 级专家预测与全局融合 token 读出协同机制，并根据不确定性估计生成子集贡献权重。
+
+HPE 和 HAR 实验均使用 AdamW 优化器进行训练，batch size 设为 16。HPE 训练 100 个 epoch，HAR 训练 50 个 epoch。Student 训练时随机丢弃 1 到 3 个模态，以模拟不同程度的传感器缺失。模型每隔固定 epoch 在验证集上评估，并保存最佳 checkpoint。所有实验在 NVIDIA GPU 上完成。
+
+对于全子集评估，本文不再重新训练每一种模态组合，而是使用训练好的 VK-RMD student 直接测试所有可用模态组合，从而验证模型在动态传感器可用状态下的适应能力。通过上述设置，本文能够同时评估 VK-RMD 在低视觉暴露输入、完整模态性能、随机缺失模态鲁棒性、跨主体泛化和跨场景泛化五个方面的表现。
+
+
+\section{实验结果与分析}
+
+% 以下保留母稿原有结果组织，仅停止排版；重组后的正式正文位于该块之后。
+\iffalse
+
+\subsection{定量结果}
+
+本文首先在 MMFi 数据集上比较 VK-RMD 与 X-Fi 原论文报告结果在 HPE 和 HAR 两类任务上的表现。与只报告平均性能不同，本文按照原始模态组合逐项比较，以评估 VK-RMD 在不同传感器可用状态下的实际效果。对于 HPE，本文采用 MPJPE 和 PA-MPJPE 作为评价指标，数值越低表示姿态估计越准确；对于 HAR，本文采用分类准确率作为评价指标，数值越高表示动作识别性能越好。
+
+\parahead{人体姿态估计。}
+表~\ref{tab:xfi_hpe_direct} 给出了 VK-RMD 与 X-Fi 在 MMFi HPE 任务上的逐组合对比结果。可以看到，在完整模态输入下，VK-RMD 将 MPJPE 从 X-Fi 的 83.7 mm 降至 50.2 mm，将 PA-MPJPE 从 47.6 mm 降至 33.5 mm，说明在不使用在线原始 RGB 的条件下，VK-RMD 仍能获得更准确的姿态估计结果。
+
+在单模态输入下，不同模态表现出明显差异。Visual Keypoints 和 Depth 具有较强的姿态结构表达能力，其中 Depth 单模态结果尤其稳定；LiDAR、毫米波雷达和 WiFi-CSI 单独使用时性能相对较弱，反映出稀疏点云、低分辨率反射和无线信道扰动在细粒度姿态估计中的局限性。值得注意的是，当这些模态与 Visual Keypoints 或 Depth 组合时，性能通常明显提升，说明弱模态并非完全无效，而是在与结构模态或几何模态结合后能够提供互补信息。
+
+在双模态、三模态和四模态组合中，VK-RMD 在多数模态组合上均优于 X-Fi。尤其是在包含 Depth 的组合中，VK-RMD 通常取得较低的 MPJPE 和 PA-MPJPE，表明 Depth 的空间几何信息与 Visual Keypoints 的结构信息能够形成有效互补。对于包含 WiFi-CSI 的组合，虽然 WiFi-CSI 单模态性能较弱，但在多模态输入中并不会必然降低整体性能，说明可靠性引导融合能够在一定程度上抑制弱模态对最终预测的不利影响。
+
+总体来看，HPE 结果表明，VK-RMD 的优势并不只来自完整模态输入，而是体现在多种模态子集下的稳定改进。该结果支持本文的核心观点：Visual Keypoints 可以作为低视觉暴露的人体结构输入，与 Depth、LiDAR、毫米波雷达和 WiFi-CSI 等物理传感器共同支撑鲁棒姿态估计。
+
+\parahead{人体活动识别。}
+表~\ref{tab:xfi_har_direct} 给出了 VK-RMD 与 X-Fi 在 MMFi HAR 任务上的逐组合准确率对比。在完整模态输入下，VK-RMD 将 HAR 准确率从 X-Fi 的 72.2\% 提升至 96.6\%，显示出明显优势。与 HPE 不同，HAR 更关注动作类别判别，而不是逐关节几何精度，因此毫米波雷达等能够反映人体运动模式的模态在 HAR 中具有更高价值。 
+
+在单模态输入下，Depth 和毫米波雷达表现较强，Visual Keypoints 也能提供有效动作结构信息。LiDAR 单模态在 HAR 中表现较弱，说明稀疏点云在动作类别判别中可能不足以稳定刻画完整动作模式。然而，在多模态组合中，LiDAR 与其他模态结合后仍能贡献一定互补信息。对于双模态和三模态输入，VK-RMD 在大多数模态组合上取得明显高于 X-Fi 的准确率，说明本文方法能够有效利用不同传感器之间的动作互补线索。
+
+这些结果表明，VK-RMD 不仅适用于需要细粒度几何回归的 HPE，也适用于需要语义判别的 HAR。两个任务的结果共同说明，本文方法并非只针对单一任务调优；同时，个别弱模态组合的退化也表明，不同任务仍具有各自的传感器依赖边界。
+
+
+\subsection{缺失模态与跨协议分析}
+
+\parahead{全子集缺失模态评估。}
+为了进一步评估 VK-RMD 在真实传感器随机缺失条件下的稳定性，本文对所有非空模态组合进行测试。对于 HPE，五种输入模态共形成 31 种组合；对于 HAR，四种输入模态共形成 15 种组合。与只测试完整模态不同，全子集评估能够更直接地反映模型在动态传感器可用状态下的部署能力。
+
+实验结果显示，VK-RMD 在完整模态、单模态缺失、多模态缺失和严重缺失条件下均能保持可用性能。对于 HPE，Student-VK 在 31 种组合上的平均 MPJPE 为 75.18 mm，完整模态 MPJPE 为 50.17 mm；Student-NV 在非视觉组合上的平均 MPJPE 为 84.68 mm，完整非视觉组合 MPJPE 为 51.03 mm。该结果表明，即使移除在线原始 RGB，模型仍可以通过 Visual Keypoints 和非视觉传感器保持较强姿态估计能力。对于 HAR，Student-VK 在 15 种组合上的平均准确率为 85.15\%，完整模态准确率为 96.56\%；Student-NV 在非视觉组合上的平均准确率为 80.62\%，完整非视觉组合准确率为 96.12\%。这说明 VK-RMD 在动作识别任务中同样具备较强的缺失模态鲁棒性。
+
+\parahead{缺失强度分析。}
+本文进一步按照缺失模态数量统计模型性能。当缺失模态数量较少时，模型通常能够通过剩余模态补偿信息损失；当只保留单一模态时，性能下降更明显，且不同任务表现出不同的关键模态依赖。HPE 对 Depth 和 Visual Keypoints 更敏感，因为二者直接提供人体结构和空间几何信息；HAR 对毫米波雷达更敏感，因为动作识别更依赖运动和反射模式。该现象说明，VK-RMD 的鲁棒性并不意味着所有模态贡献完全相同，而是通过子集训练和可靠性引导融合，使模型能够根据当前任务和模态组合动态利用可用信息。
+
+\parahead{跨主体与跨场景评估。}
+除随机划分协议外，本文还在 cross-subject 和 cross-scene 协议下评估 VK-RMD 的泛化能力。Cross-subject 用于测试模型对未知受试者的适应能力，cross-scene 用于测试模型在不同环境布设下的泛化能力。结果显示，VK-RMD 在 cross-subject 协议下仍保持较稳定表现，说明 Visual Keypoints 和多传感器融合能够在一定程度上缓解主体差异带来的影响。
+
+相比之下，cross-scene 协议下性能下降更明显。例如，HPE Student-VK 的平均 MPJPE 从 random split 下的 75.18 mm 上升到 cross-scene 下的 142.02 mm，Student-NV 也出现类似退化。这一结果说明，缺失模态鲁棒性并不等同于场景泛化鲁棒性。不同环境中的传感器布设、空间反射和无线传播条件变化仍然会显著影响模型性能。因此，本文将 cross-scene 结果作为真实部署边界进行报告，而不将其包装为已经完全解决的问题。
+
+\subsection{机制分析}
+
+\parahead{SP-SFC 与 Full-to-Subset 训练关系的作用。}
+VK-RMD 使用完整模态 teacher 约束随机缺失模态 student。与传统模型压缩式蒸馏不同，本文中的 teacher 和 student 并不主要体现为大模型到小模型的参数压缩关系，而是体现为完整传感器条件到缺失传感器条件的输入条件差异。Teacher 学习所有模态可用时的完整感知行为，student 则在随机模态子集下学习逼近 teacher 的输出、body-token、骨架结构、融合权重和不确定性模式。
+
+实验结果表明，SP-SFC 所在的完整到子集约束对 HAR 任务具有明显帮助，而在 HPE 中其作用更接近一种任务相关的结构化正则。换言之，本文不将蒸馏描述为所有任务性能提升的唯一来源，而是将其定位为完整模态行为到缺失模态条件的辅助监督机制。该结果也说明，VK-RMD 的性能主要来自 Visual Keypoints 结构输入、随机模态子集训练和子集自适应融合，SP-SFC 则负责组织多层条件一致性，而不是单独解释全部提升。
+
+\parahead{可靠性引导融合分析。}
+为了分析融合模块的作用，本文比较了可靠性引导融合与 uniform fusion 等变体。Uniform fusion 对所有可用模态赋予相同权重，无法区分强模态、弱模态和噪声模态。相比之下，VK-RMD 根据每个 modality chunk 的预测不确定性生成任务驱动的贡献权重，使模型能够在不同模态组合下动态调整各模态贡献。
+
+可靠性权重可视化和扰动实验进一步表明，模型会根据输入组合和模态扰动调整权重分布。不过需要指出的是，这些权重不应被解释为物理传感器的真实可靠性，而应理解为 learned contribution proxy，即任务层面的模态贡献代理。该分析支持本文的融合设计，但也提示未来仍需要进一步研究更严格的传感器质量估计机制。
+
+\parahead{低视觉暴露分析。}
+为了检验 Visual Keypoints 是否能够降低身份外观暴露，本文进行了身份泄露探针实验。结果显示，脱敏 RGB 的主体识别准确率为 67.53\%，而 Visual Keypoints 的主体识别准确率降至 15.43\%，明显低于脱敏 RGB，但仍高于随机猜测水平。该结果说明，Visual Keypoints 能够显著减少面部、衣着和背景等外观信息带来的身份识别风险，但并不能提供严格匿名性。人体几何、步态和动作习惯仍可能包含身份相关线索。因此，本文将 VK-RMD 定位为低视觉暴露人体感知方法，而不是形式化隐私保护方法。
+
+\parahead{Visual Keypoints 的结构作用。}
+本文还通过 Visual Keypoints 扰动实验分析其结构作用。实验对 Visual Keypoints 坐标加入噪声、打乱关节顺序或进行样本错配，并观察 HPE/HAR 性能变化。结果显示，破坏 Visual Keypoints 的关节身份或样本同步关系会导致性能下降，说明模型确实利用了 Visual Keypoints 中的结构语义。然而，HPE 对 Depth 也高度敏感，HAR 对毫米波雷达也高度敏感。这表明 Visual Keypoints 并不是唯一中心，而是提供结构化人体先验；Depth、LiDAR、毫米波雷达和 WiFi-CSI 则提供互补物理证据。二者共同构成 VK-RMD 的多模态感知基础。
+
+\subsection{定性结果}
+
+为了更直观地展示 VK-RMD 的人体感知能力，本文对 HPE 预测结果、模态贡献权重和低视觉暴露输入进行可视化分析。
+
+\parahead{人体姿态估计可视化。}
+在 HPE 任务中，本文可视化不同模态组合下的预测骨架与真实 3D 骨架。结果显示，当 Visual Keypoints 或 Depth 单独输入时，模型能够较好恢复整体人体结构，但在部分肢体细节上仍可能出现偏差。当多模态输入同时包含 Visual Keypoints 和 Depth 时，预测骨架更加接近真实姿态，说明结构关键点和空间几何之间具有互补作用。对于 LiDAR、毫米波雷达和 WiFi-CSI 等较弱模态，其单独输入时预测误差较大，但与强模态组合后仍能提供一定补充信息。
+
+\parahead{融合权重可视化。}
+本文还展示不同模态组合下的可靠性引导权重。可视化结果表明，模型不会对所有模态赋予固定权重，而是会根据当前可用模态组合调整不同传感器的贡献。例如，在包含 Depth 的 HPE 组合中，Depth 通常获得较高权重；在 HAR 任务中，毫米波雷达在多个组合中表现出较高贡献。这与定量结果中不同任务依赖不同关键模态的现象一致。
+
+\parahead{低视觉暴露表示可视化。}
+为了说明 Visual Keypoints 与 RGB 的差异，本文展示原始或脱敏 RGB 与 Visual Keypoints 表示的对比。RGB 图像包含人体外观、衣着和背景，而 Visual Keypoints 仅保留人体关节结构和动作形态。该可视化与身份泄露探针结果一致，说明 Visual Keypoints 能够降低下游感知中的视觉暴露风险。不过，本文仍强调 Visual Keypoints 不是严格隐私保护表示，因为其仍可能包含体型和动作习惯等身份线索。
+
+
+\subsection{主要发现总结}
+
+本文提出 VK-RMD，一种面向低视觉暴露和缺失模态鲁棒人体感知的多模态框架。针对现有方法依赖在线原始 RGB、固定传感器组合以及完整模态输入的局限，VK-RMD 使用 Visual Keypoints 作为结构化人体输入，在降低身份外观暴露的同时保留人体姿态和动作语义。进一步地，本文通过模态专属编码、任务监督的人体状态 token、chunk 级专家预测与全局融合 token 读出，使模型能够处理不同数量和类型的可用传感器输入。SP-SFC 将完整模态 teacher 的任务响应、结构表示和融合行为投影到随机缺失模态 student 的当前可见子集。
+
+在 MMFi 数据集上的系统实验表明，VK-RMD 在 HPE 和 HAR 两类任务中均取得稳定表现，并在 HPE 的 31 种模态组合和 HAR 的 15 种模态组合下验证了动态传感器可用条件下的鲁棒性。与 X-Fi 原论文结果相比，VK-RMD 在完整模态设置下将 HPE 的 MPJPE 从 83.7 mm 降至 50.2 mm，并将 HAR 准确率从 72.2\% 提升至 96.6\%。同时，身份泄露探针结果显示 Visual Keypoints 相比脱敏 RGB 显著降低主体识别准确率，说明其能够减少在线下游感知中的视觉暴露。本文也观察到 cross-scene 协议下仍存在明显性能退化，表明缺失模态鲁棒性并不等同于跨场景泛化鲁棒性。未来工作将进一步研究跨环境自适应、传感器质量估计和更严格的隐私风险评估，以推动低视觉暴露多模态人体感知在真实 IoT 场景中的部署。
+
+% 以下内容在母稿中为第二组结果占位；现补充为结构接口的直接证据，不删除原有章节位置。
+\section{结构接口的配对效用与近期方法比较}
+
+\subsection{Visual Keypoints 的配对边际贡献}
+
+\begin{table*}[!t]
+    \centering
+    \caption{Visual Keypoints 的配对边际贡献。对每个不含 VK 的模态子集 $S$，使用同一训练模型比较 $S$ 与 $S+V$；正增益始终表示加入 VK 后任务性能改善。符号一致性检验仅作描述性分析，因为不同子集共享模型参数与传感器。}
+    \label{tab:vk_paired_marginal}
+    \begin{tabular}{llrrrrr}
+        \toprule
+        任务 & 指标 & 配对数 & 改善数 & 改善比例 & 平均增益 & 中位增益 \\
+        \midrule
+        HPE & MPJPE & 15 & 15 & 100\% & 28.56 mm & 2.22 mm \\
+        HPE & PA-MPJPE & 15 & 15 & 100\% & 16.70 mm & 1.31 mm \\
+        HAR & Accuracy & 7 & 7 & 100\% & 5.81 pp & 1.49 pp \\
+        HAR & Macro-F1 & 7 & 7 & 100\% & 5.97 pp & 1.51 pp \\
+        \bottomrule
+    \end{tabular}
+\end{table*}
+
+表~\ref{tab:vk_paired_marginal} 控制了非 VK 传感器子集的身份，配对内唯一变化是加入 Visual Keypoints，因而比比较无关模态组合或只报告全组合平均更直接地度量 VK 的条件任务价值。结果显示，VK 在 HPE 的全部 15 个匹配子集和 HAR 的全部 7 个匹配子集中均带来改善。平均增益大于中位增益，说明 VK 对弱非视觉子集的补充尤其明显；但该结果不意味着 VK 是唯一中心模态，leave-one-out 分析仍显示 HPE 主要受 Depth 影响、HAR 主要受毫米波雷达影响。
+
+\subsection{近期 MMFi 缺失模态方法的协议级比较}
+
+\begin{table}[!t]
+    \centering
+    \caption{与近期 MMFi 方法在共同非视觉子集上的协议级比较。数值为 VK-RMD 在 7 个共同子集中优于对方的数量；该比较遵循公开 random split 协议，但对方未公开逐样本 manifest，因此不是配对复现。}
+    \label{tab:recent_mmfi}
+    \begin{tabular}{llcc}
+        \toprule
+        任务 & 近期方法 & 指标 & VK-RMD 更优 \\
+        \midrule
+        HPE & PTA~\cite{pta2026} & MPJPE & 4/7 \\
+        HPE & PTA~\cite{pta2026} & PA-MPJPE & 5/7 \\
+        HAR & COMPASS~\cite{compass2026} & Accuracy & 5/7 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{诊断分析}
+
+PTA 比较覆盖 Depth、LiDAR 与 WiFi-CSI 的全部 7 个共同非空子集；COMPASS 比较覆盖 Depth、LiDAR 与毫米波雷达的全部 7 个共同非空子集。所有包含 RGB 或 VK 的行均被排除，避免将不同视觉输入直接视为公平对照。结果不是全面胜出：LiDAR 单模态和 LiDAR 主导组合仍是 VK-RMD 的弱点。因此，表~\ref{tab:recent_mmfi} 只支持“在多数几何互补子集上具有竞争力”，不能支持“对近期方法普遍最优”。最终公平性仍需在相同逐样本 split、训练预算和输入表示下复现 adapted X-Fi 与完整到不完整蒸馏方法。
+
+% 母稿在此处预留了讨论、结论、致谢和数据可用性标题。为避免正文在扩展实验前提前结束，
+% 新稿将这些正式章节统一放到全部实验之后；原有占位信息在源文件中保留于本注释。
+
+\section{扩展实验与 IoT 部署分析}
+
+为避免仅依赖平均结果或单一主表，本文进一步把已有输出中的关键结果补充到正文中。本节整理现有 X-Fi 原论文对齐表、缺失模态强度分析、跨协议泛化、核心消融、低视觉暴露探针以及 L40 GPU 部署成本。其目的有三点：第一，说明 VK-RMD 的收益不是只来自与弱 baseline 的平均值比较，而是在逐模态组合下也能观察到稳定改进；第二，说明 SP-SFC 与动态融合机制在随机传感器可用状态下的作用边界；第三，补充 IoT 部署时必须关注的模型大小、推理延迟和高成本模态问题。该扩展分析与模态不变人体感知、缺失模态学习、知识蒸馏和 IoT 人体感知研究直接相关\cite{xfi,mmfi,missingSurvey,goodPracticeMissing,moddrop,kd,fitnets,lupi,iotSurvey,smartHealthcare}。
+
+\parahead{与 X-Fi 原论文的逐组合对齐比较。}
+为了与已有工作保持一致，本文采用 X-Fi 原论文中的模态组合顺序和指标格式进行对比。HPE 表同时报告 MPJPE 和 PA-MPJPE，HAR 表报告 Accuracy。与只报告全组合平均不同，逐组合结果能够显示模型在单模态、双模态、三模态以及完整模态下的具体表现，也能暴露 WiFi-CSI、LiDAR 等困难模态的边界。X-Fi 和 MMFi 为本文提供了最直接的数据、任务和模态组合参照\cite{xfi,mmfi}。
+
+\input{../Paper/generated/xfi_hpe_direct_table_cn.tex}
+\input{../Paper/generated/xfi_har_direct_table_cn.tex}
+
+从 HPE 结果可以看到，VK-RMD 在大多数包含 Visual Keypoints 或 Depth 的组合中取得明显改进，完整模态下 MPJPE 从 83.7 mm 降至 50.2 mm。单独 WiFi-CSI 的 PA-MPJPE 存在退化，说明 WiFi-CSI 对精细姿态估计的信息仍然不足，不能将其包装为强姿态模态。从 HAR 结果看，VK-RMD 在多数多模态组合上提升明显，完整模态下 Accuracy 从 72.2\% 提升至 96.6\%。但 LiDAR 单模态在 HAR 中下降，说明动作识别更依赖毫米波雷达和 Depth 等动态或几何线索。类似地，已有 WiFi、毫米波和 Depth 人体感知工作也表明，不同传感器适合捕获的人体线索并不相同\cite{metafi,virteach,adapose,robustwifi,wifiSurvey,shotton2011}。
+
+\parahead{缺失强度、关键模态与跨协议泛化。}
+\begin{table*}[!t]
+\centering
+\caption{随机子集学习的缺失强度结果。HPE 为 MPJPE/PA-MPJPE，单位 mm，越低越好；HAR 为 Accuracy/F1，单位 \%，越高越好。VK 表示包含 Visual Keypoints 的 Student-VK，NV 表示完全非视觉 Student-NV。}
+\label{tab:severity_add}
+\scriptsize
+\begin{adjustbox}{width=\textwidth}
+\begin{tabular}{lcccccccc}
+\toprule
+\multirow{2}{*}{缺失数量} & \multicolumn{4}{c}{HPE$\downarrow$} & \multicolumn{4}{c}{HAR$\uparrow$} \\
+\cmidrule(lr){2-5}\cmidrule(lr){6-9}
+ & VK MPJPE & VK PA & NV MPJPE & NV PA & VK Acc. & VK F1 & NV Acc. & NV F1 \\
+\midrule
+0 & 50.2 & 33.5 & 51.0 & 35.7 & 96.6 & 96.5 & 96.1 & 96.1 \\
+1 & 53.5 & 34.9 & 61.3 & 40.5 & 93.8 & 93.8 & 90.1 & 90.0 \\
+2 & 60.8 & 38.1 & 79.4 & 50.7 & 87.5 & 87.6 & 66.0 & 65.7 \\
+3 & 78.1 & 46.8 & 124.3 & 71.2 & 70.0 & 69.9 & -- & -- \\
+4 & 124.8 & 68.0 & -- & -- & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table*}
+
+\begin{table*}[!t]
+\centering
+\caption{Leave-one-out 关键模态分析。HPE 数值表示移除该模态后的误差增加量，HAR 数值表示移除该模态后的 Accuracy/F1 下降量。}
+\label{tab:loo_add}
+\scriptsize
+\begin{adjustbox}{width=0.58\textwidth}
+\begin{tabular}{lcccc}
+\toprule
+移除模态 & HPE $\Delta$MPJPE & HPE $\Delta$PA & HAR $\Delta$Acc. & HAR $\Delta$F1 \\
+\midrule
+V & 1.6 & 1.1 & 0.1 & 0.1 \\
+D & 14.1 & 5.3 & 3.8 & 3.7 \\
+L & 0.2 & 0.1 & 0.0 & 0.0 \\
+R & 0.9 & 0.7 & 6.9 & 7.1 \\
+W & 0.1 & -0.0 & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table*}
+
+\begin{table*}[!t]
+\centering
+\caption{跨协议、消融、低视觉暴露、部署成本与非视觉 VK 来源的扩展证据汇总。HPE 误差单位为 mm，HAR 与身份探针单位为 \%；延迟为 L40 GPU、batch size 1 的平均值。}
+\label{tab:extended_add}
+\label{tab:protocol_add}
+\label{tab:ablation_add}
+\label{tab:privacy_add}
+\label{tab:iot_add}
+\label{tab:generated_vk}
+\footnotesize
+\textbf{(a) 跨协议泛化。}\par\smallskip
+\begin{adjustbox}{width=0.86\textwidth}
+\begin{tabular}{llcccc}
+\toprule
+协议 & 模型 & HPE Avg.$\downarrow$ & HPE Full$\downarrow$ & HAR Avg.$\uparrow$ & HAR Full$\uparrow$ \\
+\midrule
+random split & VK-RMD VK & 75.18 & 50.17 & 85.15 & 96.56 \\
+random split & VK-RMD NV & 84.68 & 51.03 & 80.62 & 96.12 \\
+cross-subject & VK-RMD VK & 78.57 & 49.88 & 85.30 & 96.12 \\
+cross-subject & VK-RMD NV & 90.74 & 52.45 & 81.26 & 95.70 \\
+cross-scene & VK-RMD VK & 142.02 & 71.71 & 80.61 & 95.25 \\
+cross-scene & VK-RMD NV & 153.89 & 78.96 & 76.70 & 95.41 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+
+\vspace{0.5em}
+\begin{minipage}[t]{0.48\textwidth}
+\centering
+\textbf{(b) 核心消融。}\par\smallskip
+\begin{adjustbox}{width=0.88\linewidth}
+\begin{tabular}{llcc}
+\toprule
+任务 & 设置 & 平均 & 完整模态 \\
+\midrule
+HPE & VK-RMD & 75.18 & 50.17 \\
+HPE & w/o distillation & 72.68 & 48.83 \\
+HPE & uniform fusion & 82.77 & 52.28 \\
+HAR & VK-RMD & 85.15 & 96.56 \\
+HAR & w/o distillation & 82.86 & 95.99 \\
+HAR & uniform fusion & 67.46 & 95.39 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\textwidth}
+\centering
+\textbf{(c) 主体身份识别探针。}\par\smallskip
+\begin{adjustbox}{width=\linewidth}
+\begin{tabular}{lcc}
+\toprule
+输入表示 & Accuracy & 主要残余线索 \\
+\midrule
+随机猜测 & 2.50 & 40 个主体 \\
+脱敏 RGB & 67.53 & 体型、服饰与背景 \\
+Visual Keypoints & 15.43 & 身体几何与动作 \\
+Depth & 43.80 & 几何外形 \\
+LiDAR & 36.57 & 体形与运动 \\
+mmWave & 9.72 & 动态反射 \\
+WiFi-CSI & 8.65 & 信道扰动 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{minipage}
+
+\vspace{0.5em}
+\begin{minipage}[t]{0.48\textwidth}
+\centering
+\textbf{(d) 代表性推理成本。}\par\smallskip
+\begin{adjustbox}{width=\linewidth}
+\begin{tabular}{llccc}
+\toprule
+任务 & 模态 & 参数量 & 模型大小 & 延迟 \\
+\midrule
+HPE & V & 45.94M & 175.39 MB & 8.0 ms \\
+HPE & V+D & 45.94M & 175.39 MB & 21.4 ms \\
+HPE & V+D+L+R+W & 45.94M & 175.39 MB & 3375.7 ms \\
+HAR & V & 24.38M & 93.06 MB & 15.9 ms \\
+HAR & V+D & 24.38M & 93.06 MB & 36.0 ms \\
+HAR & V+D+L+R & 24.38M & 93.06 MB & 3321.3 ms \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\textwidth}
+\centering
+\textbf{(e) 非视觉来源 VK 的生成质量。}\par\smallskip
+\begin{adjustbox}{width=\linewidth}
+\begin{tabular}{llrrr}
+\toprule
+来源 & 协议 & MAE/pixel & NME & PCK@0.10 \\
+\midrule
+Depth & random & 16.41 & 0.0813 & 79.79\% \\
+Depth & cross-subject & 18.14 & 0.0843 & 79.00\% \\
+Depth & cross-scene & 46.45 & 0.2538 & 3.71\% \\
+mmWave-temporal & cross-subject & 19.14 & 0.0885 & 71.60\% \\
+mmWave-temporal & cross-scene & 22.03 & 0.1163 & 53.30\% \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{minipage}
+\end{table*}
+
+表 \ref{tab:severity_add} 显示，随着缺失数量增加，HPE 误差上升、HAR 准确率下降，说明全子集评估能够揭示完整模态评估无法暴露的部署风险。表 \ref{tab:loo_add} 显示，HPE 对 Depth 更敏感，移除 Depth 带来 14.1 mm MPJPE 增加；HAR 对毫米波雷达更敏感，移除 mmWave 带来 6.9\% Accuracy 下降。这说明 VK 并不是唯一中心模态，而是低外观结构输入；Depth 和 mmWave 提供任务相关物理证据。表 \ref{tab:extended_add}(a) 进一步表明，cross-subject 性能较稳定，而 cross-scene 下 HPE 明显退化。因此，本文将 cross-scene 作为当前方法边界，而不是声称已经解决跨场景泛化。该结论与跨域适应和无线感知中关于环境迁移困难的观察一致\cite{domainAdapt,adapose,robustwifi,rfpose,mmwaveHar}。
+
+\parahead{消融、低视觉暴露探针与 IoT 部署成本。}
+表 \ref{tab:extended_add}(b) 表明，uniform fusion 在 HPE 和 HAR 中均弱于 VK-RMD，说明动态融合机制对缺失模态条件有实际作用。w/o distillation 在 HPE 中数值更强，而在 HAR 中弱于 VK-RMD，因此本文不将 SP-SFC 写成所有任务上必然提升的模块，而是将其定位为完整模态行为到缺失模态学生的任务相关训练约束。表 \ref{tab:extended_add}(c) 显示 VK 相比脱敏 RGB 能明显降低主体识别准确率，但仍高于随机猜测；Depth 和 LiDAR 的身份可预测性也较高。因此，本文只使用低视觉暴露和 privacy-friendly 表述，不作身份不可恢复承诺，也不把所有非 RGB 传感器等同于隐私安全。表 \ref{tab:extended_add}(d) 显示，轻量模态组合具有较低延迟，而包含点云和雷达处理的完整模态组合推理成本明显更高，这说明在 IoT 部署中必须根据传感器可用性、实时性和任务需求选择模态组合。上述分析分别对应多模态融合、蒸馏监督、低视觉暴露和 IoT 系统部署四类文献脉络\cite{sensorFusion,crossModalKD,kd,privacyOptics,lowresDepth,iotSurvey,smartHealthcare,wearableSurvey}。
+
+\parahead{非视觉来源 VK 的可行性与边界。}
+除直接使用 Visual Keypoints 作为在线输入外，本文还以轻量上游模型考察由 Depth 或毫米波雷达生成 17 点 VK 的可行性。该实验不是主方法的一部分，也不假设不同来源 VK 与当前关键点标签具有相同精度。表~\ref{tab:extended_add}(e) 报告与同步关键点标签比较的生成质量。Depth-to-VK 在 random 和 cross-subject 下分别达到 0.0813 和 0.0843 NME，但 cross-scene 增至 0.2538；时序全局--局部 mmWave-to-VK 在 cross-subject 达到 0.0885 NME，在 cross-scene 为 0.1163。结果说明非视觉结构接口具有初步可行性，但跨场景生成仍不稳定，不能据此声称不同设备可无损替代当前 VK。已有毫米波和射频姿态研究同样表明，无线信号可以恢复人体结构，但对同步监督和环境迁移较敏感\cite{virteach,adapose,robustwifi,rfpose,mmwaveHar}。
+
+\fi
+
+\subsection{与 X-Fi 的逐模态组合比较}
+
+本文首先按照 X-Fi 原论文的模态组合顺序报告 HPE 和 HAR 结果，而不以单一平均值代替不同传感器状态。需要强调的是，
+X-Fi 表中的视觉模态为 RGB，而 VK-RMD 使用 Visual Keypoints；因此，含视觉模态的行用于说明两种部署路线在公开表项下的性能差异，
+不能解释为输入完全相同的严格公平比较。由 Depth、LiDAR、毫米波雷达和 WiFi-CSI 构成的纯非视觉行具有一致的传感器输入，
+是更直接的输入匹配比较。两类表项均采用 MMFi 的公开协议与相同任务指标。
+
+\begingroup
+\renewcommand{\arraystretch}{0.995}
+\input{../Paper/generated/xfi_hpe_direct_table_cn.tex}
+\endgroup
+
+\parahead{人体姿态估计。}
+表~\ref{tab:xfi_hpe_direct} 显示，VK-RMD 在完整模态设置下将 MPJPE 从 83.7 mm 降至 50.2 mm，
+将 PA-MPJPE 从 47.6 mm 降至 33.5 mm。纯非视觉组合中，Depth 及其组合带来最稳定的几何约束，
+例如 D+L、D+R 和 D+W 的 MPJPE 分别为 53.0、52.3 和 53.5 mm，均明显低于对应 X-Fi 表项。
+LiDAR、毫米波雷达和 WiFi-CSI 单独输入时仍较困难，其中 WiFi-CSI 的 PA-MPJPE 从 105.3 mm 上升到 110.2 mm，
+说明本文并未在所有单模态状态下占优。总体结果支持的是多模态互补和动态子集适应，而不是每个传感器都成为强姿态模态。
+
+\parahead{人体活动识别。}
+\input{../Paper/generated/xfi_har_direct_table_cn.tex}
+表~\ref{tab:xfi_har_direct} 显示，完整模态 Accuracy 从 72.2\% 提升至 96.6\%。
+在输入匹配的纯非视觉组合中，D、R、D+L、D+R、L+R 和 D+L+R 均优于 X-Fi，
+但 LiDAR 单模态由 52.7\% 降至 40.8\%。这表明 HAR 更依赖 Depth 的几何变化和毫米波雷达的运动反射，
+而稀疏 LiDAR 单独使用时难以稳定区分动作。HPE 与 HAR 的差异也说明，VK-RMD 学习的是任务相关模态贡献，而非固定的全局模态排序。
+
+\subsection{Visual Keypoints 的结构效用与低视觉暴露证据}
+
+逐组合表中的含 V 行同时改变了视觉表示，不能单独回答 VK 是否为同一模型提供增量信息。为此，本文执行配对边际分析：
+对每个不含 VK 的传感器子集 $S$，在同一已训练 student 内比较 $S$ 与 $S+V$，使配对内唯一变化为是否加入 VK。
+
+\begin{table}[H]
+    \centering
+    \caption{Visual Keypoints 的配对边际贡献。正增益始终表示加入 VK 后任务性能改善；HPE 的增益为误差降低量，HAR 的增益为百分点提升。符号一致性仅作描述性统计，因为不同子集共享模型参数与传感器。}
+    \label{tab:vk_paired_marginal}
+    \begin{adjustbox}{width=\columnwidth}
+    \begin{tabular}{llrrrrr}
+        \toprule
+        任务 & 指标 & 配对数 & 改善数 & 改善比例 & 平均增益 & 中位增益 \\
+        \midrule
+        HPE & MPJPE & 15 & 15 & 100\% & 28.56 mm & 2.22 mm \\
+        HPE & PA-MPJPE & 15 & 15 & 100\% & 16.70 mm & 1.31 mm \\
+        HAR & Accuracy & 7 & 7 & 100\% & 5.81 pp & 1.49 pp \\
+        HAR & Macro-F1 & 7 & 7 & 100\% & 5.97 pp & 1.51 pp \\
+        \bottomrule
+    \end{tabular}
+    \end{adjustbox}
+\end{table}
+
+表~\ref{tab:vk_paired_marginal} 显示，加入 VK 后，HPE 的 15 个匹配子集和 HAR 的 7 个匹配子集均得到改善。
+平均增益明显大于中位增益，说明 VK 对部分弱非视觉子集的补充尤其突出，而在已有强物理证据时增益较小。
+该结果证明 VK 具有条件任务价值，但不支持“VK 是唯一中心模态”的表述；后文 leave-one-out 结果显示，HPE 和 HAR 仍分别高度依赖 Depth 和毫米波雷达。
+
+\begin{table}[H]
+\centering
+\caption{不同输入表示的主体身份线性探针结果。Accuracy 越低表示该探针从输入中恢复主体身份越困难，但不等价于形式化隐私保证。}
+\label{tab:privacy_add}
+\footnotesize
+\begin{tabular}{lcc}
+\toprule
+输入表示 & Accuracy & 主要残余线索 \\
+\midrule
+随机猜测 & 2.50\% & 40 个主体 \\
+脱敏 RGB & 67.53\% & 体型、服饰与背景 \\
+Visual Keypoints & 15.43\% & 身体几何与动作 \\
+Depth & 43.80\% & 几何外形 \\
+LiDAR & 36.57\% & 体形与运动 \\
+mmWave & 9.72\% & 动态反射 \\
+WiFi-CSI & 8.65\% & 信道扰动 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+表~\ref{tab:privacy_add} 中，VK 的主体识别率为 15.43\%，显著低于脱敏 RGB 的 67.53\%，但仍高于 2.50\% 的随机水平。
+因此，VK 的作用是抑制面部、衣着、纹理和背景等外观信息，同时保留人体几何；它降低而非消除身份泄露。
+Depth 和 LiDAR 仍具有较高身份可预测性，也说明“非 RGB”不能自动等同于隐私安全。本文据此仅使用
+低视觉暴露和 privacy-friendly 表述，不作匿名性、差分隐私或密码学安全承诺。
+
+\subsection{随机缺失模态鲁棒性}
+
+\begin{table}[H]
+\centering
+\caption{按缺失模态数量分组的全子集结果。HPE 为 MPJPE/PA-MPJPE，单位 mm，越低越好；HAR 为 Accuracy/F1，单位 \%，越高越好。VK 表示 Student-VK，NV 表示完全非视觉 Student-NV。}
+\label{tab:severity_add}
+\scriptsize
+\begin{adjustbox}{width=\columnwidth}
+\begin{tabular}{lcccccccc}
+\toprule
+\multirow{2}{*}{缺失数量} & \multicolumn{4}{c}{HPE$\downarrow$} & \multicolumn{4}{c}{HAR$\uparrow$} \\
+\cmidrule(lr){2-5}\cmidrule(lr){6-9}
+ & VK MPJPE & VK PA & NV MPJPE & NV PA & VK Acc. & VK F1 & NV Acc. & NV F1 \\
+\midrule
+0 & 50.2 & 33.5 & 51.0 & 35.7 & 96.6 & 96.5 & 96.1 & 96.1 \\
+1 & 53.5 & 34.9 & 61.3 & 40.5 & 93.8 & 93.8 & 90.1 & 90.0 \\
+2 & 60.8 & 38.1 & 79.4 & 50.7 & 87.5 & 87.6 & 66.0 & 65.7 \\
+3 & 78.1 & 46.8 & 124.3 & 71.2 & 70.0 & 69.9 & -- & -- \\
+4 & 124.8 & 68.0 & -- & -- & -- & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+表~\ref{tab:severity_add} 显示，性能随缺失程度增加而有序退化，而不是在任一模态离线后立即失效。
+HPE 中，Student-VK 从完整模态的 50.2 mm 增至仅保留单模态时的平均 124.8 mm；对应 Student-NV 从 51.0 mm 增至 124.3 mm。
+HAR 中，Student-VK 在缺失一个和两个模态时仍达到 93.8\% 和 87.5\%，而 Student-NV 在只剩单模态时下降到 66.0\%。
+这些数据说明 VK 的价值主要出现在严重缺失和弱非视觉子集，而完整强模态组合可以更多依赖物理传感器证据。
+
+\begin{table}[H]
+\centering
+\caption{Leave-one-out 关键模态分析。HPE 数值为移除对应模态后的误差增加量；HAR 数值为 Accuracy/F1 下降量。V=VK，D=Depth，L=LiDAR，R=mmWave，W=WiFi-CSI。}
+\label{tab:loo_add}
+\footnotesize
+\begin{tabular}{lcccc}
+\toprule
+移除模态 & $\Delta$MPJPE & $\Delta$PA & $\Delta$Acc. & $\Delta$F1 \\
+\midrule
+V & 1.6 & 1.1 & 0.1 & 0.1 \\
+D & 14.1 & 5.3 & 3.8 & 3.7 \\
+L & 0.2 & 0.1 & 0.0 & 0.0 \\
+R & 0.9 & 0.7 & 6.9 & 7.1 \\
+W & 0.1 & $-0.0$ & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Leave-one-out 与配对边际分析回答了不同问题。表~\ref{tab:loo_add} 从完整强模态状态出发，因而冗余较高：
+移除 VK 只使 MPJPE 增加 1.6 mm，而移除 Depth 增加 14.1 mm；HAR 中移除毫米波雷达使 Accuracy 下降 6.9 个百分点。
+这不否定 VK，而是说明在完整观测时强物理模态能够替代部分结构信息；表~\ref{tab:vk_paired_marginal} 则说明在相同非视觉子集上加入 VK 始终有益。
+二者共同支持“结构接口与任务相关物理证据互补”，而非“单一 VK 主导所有决策”。
+
+\subsection{跨协议泛化与近期方法比较}
+
+\begin{table}[H]
+\centering
+\caption{跨协议泛化结果。Avg. 表示所有非空模态子集的算术平均，Full 表示对应模型全部候选模态均可用；HPE 为 MPJPE（mm），HAR 为 Accuracy（\%）。}
+\label{tab:protocol_add}
+\footnotesize
+\begin{adjustbox}{width=\columnwidth}
+\begin{tabular}{llcccc}
+\toprule
+协议 & 模型 & HPE Avg.$\downarrow$ & HPE Full$\downarrow$ & HAR Avg.$\uparrow$ & HAR Full$\uparrow$ \\
+\midrule
+random split & VK-RMD VK & 75.18 & 50.17 & 85.15 & 96.56 \\
+random split & VK-RMD NV & 84.68 & 51.03 & 80.62 & 96.12 \\
+cross-subject & VK-RMD VK & 78.57 & 49.88 & 85.30 & 96.12 \\
+cross-subject & VK-RMD NV & 90.74 & 52.45 & 81.26 & 95.70 \\
+cross-scene & VK-RMD VK & 142.02 & 71.71 & 80.61 & 95.25 \\
+cross-scene & VK-RMD NV & 153.89 & 78.96 & 76.70 & 95.41 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{与近期 MMFi 缺失模态方法的协议级比较。仅统计共同的纯非视觉子集；公开论文未提供相同逐样本清单，因此该表不是同代码复现。}
+\label{tab:recent_mmfi}
+\footnotesize
+\begin{tabular}{llc}
+\toprule
+任务/指标 & 方法 & VK-RMD 更优 \\
+\midrule
+HPE/MPJPE & PTA~\cite{pta2026} & 4/7 \\
+HPE/PA-MPJPE & PTA~\cite{pta2026} & 5/7 \\
+HAR/Accuracy & COMPASS~\cite{compass2026} & 5/7 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Random split 下的核心消融。Avg. 为全组合平均，Full 为完整候选模态输入；HPE 报告 MPJPE（mm），HAR 报告 Accuracy（\%）。}
+\label{tab:ablation_add}
+\footnotesize
+\begin{tabular}{llcc}
+\toprule
+任务 & 设置 & 全组合平均 & 完整模态 \\
+\midrule
+HPE & VK-RMD & 75.18 & 50.17 \\
+HPE & w/o SP-SFC & 72.68 & 48.83 \\
+HPE & uniform fusion & 82.77 & 52.28 \\
+HAR & VK-RMD & 85.15 & 96.56 \\
+HAR & w/o SP-SFC & 82.86 & 95.99 \\
+HAR & uniform fusion & 67.46 & 95.39 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+表~\ref{tab:protocol_add} 显示，cross-subject 与 random split 的差距有限，说明模型能够适应未见主体；
+但 cross-scene HPE 的平均 MPJPE 从 75.18 mm 上升到 142.02 mm，Student-NV 也从 84.68 mm 上升到 153.89 mm。
+HAR 的跨场景退化相对较小，但仍可观察到全子集平均下降。由此可见，缺失模态鲁棒性与跨场景鲁棒性是两个不同问题：
+随机子集训练缓解传感器可用性变化，却没有消除环境布设、空间反射和无线传播分布偏移。
+
+PTA 比较覆盖 Depth、LiDAR 与 WiFi-CSI 的 7 个共同非空子集，COMPASS 比较覆盖 Depth、LiDAR 与毫米波雷达的 7 个共同非空子集；
+所有包含 RGB 或 VK 的表项均被排除。表~\ref{tab:recent_mmfi} 表明 VK-RMD 在多数共同子集上具有竞争力，但并非全面胜出，
+LiDAR 单模态和部分 LiDAR 主导组合仍是弱点。由于公开工作未提供相同逐样本清单，该结果只能称为协议级比较，不能替代同代码、同预算的 adapted baseline。
+
+\subsection{机制消融与诊断边界}
+
+表~\ref{tab:ablation_add} 中，uniform fusion 在 HPE 和 HAR 的全组合平均上分别退化 7.59 mm 和 17.69 个百分点，
+说明按当前子集学习模态贡献比固定平均更适合缺失模态场景。SP-SFC 的收益具有任务依赖性：HAR 移除该约束后平均 Accuracy 下降 2.29 个百分点，
+但 HPE 的 w/o SP-SFC 反而降低 2.50 mm。因此，本文不把完整到子集监督宣称为两个任务上均成立的独立增益，
+而将其定位为组织任务响应、结构 token 与融合行为的一致性约束；HPE 中如何避免 teacher 偏差仍需进一步研究。
+
+\begin{table}[H]
+\centering
+\caption{相同 10-epoch 轻量预算下的读出路径消融。HPE 报告全组合平均 MPJPE/PA-MPJPE（mm，越低越好）；HAR 报告 Accuracy/Macro-F1（\%，越高越好）。}
+\label{tab:readout_ablation}
+\footnotesize
+\begin{tabular}{llcc}
+\toprule
+任务 & Readout & 主指标 & 次指标 \\
+\midrule
+HPE & chunk-only & \textbf{95.27} & \textbf{62.46} \\
+HPE & global-only & 109.81 & 78.49 \\
+HPE & dual & 99.44 & 68.00 \\
+\midrule
+HAR & chunk-only & 80.57 & 36.67 \\
+HAR & global-only & 81.41 & 38.17 \\
+HAR & dual & \textbf{82.43} & \textbf{43.40} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+表~\ref{tab:readout_ablation} 显示，读出路径的作用具有任务依赖性：HPE 的 chunk-only 获得最低误差，说明细粒度姿态回归更依赖保留模态来源的局部几何证据；HAR 的 dual 在 Accuracy 和 Macro-F1 上均最高，说明动作分类受益于局部专家证据与全局跨模态语义的联合读取。因而，dual 不是所有任务上的单调最优分支，而是为 HPE/HAR 提供统一读出接口；该结果也限定了本文对双层读出的主张。
+
+扰动与专家补偿诊断提供了进一步边界。破坏 VK 的关节顺序会降低部分 VK+Depth 和 VK+mmWave 组合的 HAR，说明网络使用了关节身份而非仅统计坐标分布；当非视觉强模态存在时，最终融合预测通常优于受扰动的 VK 专家，表明存在一定互补补偿。然而，VK 权重并未对所有噪声强度呈单调下降，权重与专家质量的相关性也不稳定。因此，$\alpha_m$ 只能解释为训练得到的任务贡献代理，不能称为经过校准的物理传感器可靠性。
+
+\subsection{部署成本与非视觉 VK 来源诊断}
+
+\begin{table}[H]
+\centering
+\caption{代表性推理成本。延迟在 NVIDIA L40 GPU、batch size 1 下测量；参数量和模型大小不随激活模态子集改变。}
+\label{tab:deployment_cost}
+\footnotesize
+\begin{adjustbox}{width=\columnwidth}
+\begin{tabular}{llccc}
+\toprule
+任务 & 模态 & 参数量 & 模型大小 & 延迟 \\
+\midrule
+HPE & V & 45.94M & 175.39 MB & 8.0 ms \\
+HPE & V+D & 45.94M & 175.39 MB & 21.4 ms \\
+HPE & V+D+L+R+W & 45.94M & 175.39 MB & 3375.7 ms \\
+HAR & V & 24.38M & 93.06 MB & 15.9 ms \\
+HAR & V+D & 24.38M & 93.06 MB & 36.0 ms \\
+HAR & V+D+L+R & 24.38M & 93.06 MB & 3321.3 ms \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{非视觉来源 VK 的生成质量。指标与同步 17 点关键点标签比较，仅用于来源可行性诊断。}
+\label{tab:generated_vk}
+\scriptsize
+\setlength{\tabcolsep}{2.4pt}
+\begin{tabular}{llrrr}
+\toprule
+来源 & 协议 & MAE/pixel & NME & PCK@0.10 \\
+\midrule
+Depth & random & 16.41 & 0.0813 & 79.79\% \\
+Depth & cross-subject & 18.14 & 0.0843 & 79.00\% \\
+Depth & cross-scene & 46.45 & 0.2538 & 3.71\% \\
+mmWave-temporal & cross-subject & 19.14 & 0.0885 & 71.60\% \\
+mmWave-temporal & cross-scene & 22.03 & 0.1163 & 53.30\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+表~\ref{tab:deployment_cost} 显示，V 和 V+D 的轻量组合具有毫秒级延迟，而包含点云与雷达处理的完整组合超过 3 s。
+因此，模型参数量不随输入子集改变，但实际延迟主要由被激活的传感器 backbone 决定；全模态并不必然是实时部署的最佳选择。
+表~\ref{tab:generated_vk} 考察结构接口的来源可扩展性。Depth-to-VK 在 random 与 cross-subject 下达到约 0.08 NME，
+但 cross-scene 恶化到 0.2538；时序 mmWave-to-VK 在 cross-subject 和 cross-scene 下分别为 0.0885 和 0.1163 NME。
+这些结果仅说明低外观传感器生成统一 17 点接口具有初步可行性，同时揭示明显的来源域偏移；它们不是主模型性能证明，
+也不能支持“任意设备生成的 VK 可无损替代当前 VK”。
+
+综上，核心结果形成一条闭合证据链：逐组合比较验证动态输入下的任务性能；配对边际分析与身份探针分别验证 VK 的条件效用和低外观属性；
+缺失强度、leave-one-out 与跨协议结果揭示鲁棒性来源及边界；uniform fusion 消融支持子集自适应贡献建模，而 SP-SFC 的任务依赖结果和非单调权重响应则限定了机制主张。
+
+\section{讨论}
+
+\parahead{创新边界。}
+VK-RMD 的贡献不是分别发明 Visual Keypoints、Transformer、modality dropout 或知识蒸馏。已有 X-Fi 已处理动态模态人体感知，
+完整模态教师指导不完整模态网络也已有系统研究\cite{xfi,incompleteKD,mmanet}。本文的增量在于围绕同一科学矛盾建立三层机制关系：
+首先，以带有关节身份和骨拓扑的 VK 形成低外观结构接口；其次，以 SP-SFC 将完整观测教师的任务响应、结构、token 和融合分布条件化到学生当前可见子集；
+最后，以同一任务不确定性代理耦合 chunk 专家证据和全局融合 token 读出。该定位属于面向缺失传感器人体感知的机制与系统组合创新，而不是新蒸馏理论或形式化隐私方法。
+
+\parahead{SP-SFC 的任务相关性。}
+表~\ref{tab:ablation_add} 显示，移除蒸馏项后 HPE 平均 MPJPE 从 75.18 mm 改善至 72.68 mm，而 HAR 平均 Accuracy 从 85.15\% 降至 82.86\%。
+这意味着完整到子集的一致性约束不是两个任务上的单调增益来源。HPE 的连续几何标签已经提供较强监督，多层教师约束可能限制学生对特定子集的适应；HAR 的类别关系与完整观测软响应则提供了更明显的辅助信息。
+因此，本文将 SP-SFC 定位为任务相关的完整观测行为正则，而把随机子集训练和子集自适应融合视为更稳定的鲁棒性来源。后续工作需要进一步研究任务自适应损失权重，而不是默认更多蒸馏项必然更优。
+
+\parahead{贡献权重的解释。}
+式~\eqref{eq:reliability_weight}中的 $\alpha_m$ 来自专家预测 log-variance，并随当前子集变化。Uniform fusion 的明显退化证明这种自适应证据分配具有任务价值，
+但合成扰动实验中并非每个受扰模态的权重都单调下降。因此，$\alpha_m$ 应被解释为 learned contribution proxy，而不是经过校准的物理传感器可靠性。
+同样，统一 token 维度和共同任务监督只能说明模型学习了人体状态相关表示，不能证明不同模态在严格数学意义上与 VK 完全对齐。
+
+\parahead{隐私与部署边界。}
+主体识别探针量化了不同表示中的身份可预测性，但不是完整的隐私攻击评估。VK 将识别准确率从脱敏 RGB 的 67.53\% 降至 15.43\%，支持“降低身份与视觉暴露”；
+然而 VK 仍高于随机水平，Depth 和 LiDAR 也保留显著身份线索。因此，本文不声称匿名、差分隐私或密码学安全。另一方面，cross-scene HPE 平均 MPJPE 达到 142.02 mm，
+明显弱于 random split 的 75.18 mm，说明缺失模态鲁棒性不能替代环境域泛化。当前系统更适用于固定或经过校准的传感器布设，跨环境自适应仍是重要后续方向。
+
+\parahead{实验限制。}
+本研究主要在 MMFi 单一数据集上完成，核心模型尚缺少大规模多随机种子统计；X-Fi 原论文对比和 PTA/COMPASS 比较也不等于相同逐样本 manifest、输入表示与训练预算下的 adapted reproduction。
+此外，当前部署表只反映 L40 GPU 推理成本，不代表边缘设备能耗。读出路径消融已经揭示 HPE 与 HAR 对局部/全局证据的不同需求，但仍属于 10-epoch 轻量预算；未来需要在完整训练预算和多随机种子下复核该趋势，并在相同 VK 输入、相同子集序列和相同训练预算下复现 adapted X-Fi 与不完整多模态蒸馏方法。
+
+\section{结论}
+
+本文研究在线原始 RGB 不参与下游推理且传感器可能任意缺失条件下的多模态人体感知问题，并提出 VK-RMD。
+该方法以关节身份和骨拓扑编码 Visual Keypoints，形成低外观人体结构接口；以 SP-SFC 将完整观测教师的任务响应、结构、token 表示与融合行为投影到学生当前可见子集；
+并以任务不确定性代理联合组织 chunk 级专家证据和全局融合 token 表示。MMFi 上的 HPE 31 组合和 HAR 15 组合实验表明，VK-RMD 在完整输入和多种缺失条件下均保持竞争力。
+严格配对分析进一步显示，在控制非 VK 传感器子集不变后，加入 VK 在 HPE 15/15 与 HAR 7/7 配对中均改善任务性能；身份探针则表明 VK 显著降低但未消除主体可预测性。
+Uniform fusion、Student-NV 以及跨主体/跨场景实验共同说明，该框架的主要价值是低外观结构证据与动态传感器证据的协同组织，而不是依赖单一中心模态。
+同时，HPE 中任务相关的蒸馏收益、跨场景退化和残余身份泄露界定了当前方法的适用范围。总体而言，VK-RMD 为动态传感器可用条件下的低视觉暴露 HPE/HAR 提供了一条可追溯、可消融且边界明确的技术路径。
+
+\section*{致谢}
+作者感谢 MMFi 与 X-Fi 工作提供公开数据、协议和基准实现。
+
+\section*{数据与代码可用性}
+本文实验使用公开 MMFi 数据集。训练配置、评估脚本、全模态组合结果及生成论文表格所需的汇总文件将在论文发表时随项目仓库公开；涉及数据访问的部分遵循 MMFi 原始许可协议。
+
+% Legacy hand-written references are retained below only for provenance.
+% The compiled manuscript uses the verified BibTeX database after this block.
+\iffalse
+\begin{thebibliography}{70}
+
+% 母稿原有“参考文献占位”已完成替换；本注释保留其历史位置。
+
+\bibitem{xfi}
+X. Chen and J. Yang, ``X-Fi: A modality-invariant foundation model for multimodal human sensing,'' in \emph{Proc. ICLR}, 2025.
+
+\bibitem{mmfi}
+J. Yang, H. Huang, Y. Zhou, X. Chen, Y. Xu, S. Yuan, H. Zou, C. X. Lu, and L. Xie,
+``MM-Fi: Multi-modal non-intrusive 4D human dataset for versatile wireless sensing,'' in \emph{Advances in Neural Information Processing Systems}, vol. 36, 2023.
+
+\bibitem{openpose}
+Z. Cao, G. Hidalgo, T. Simon, S.-E. Wei, and Y. Sheikh, ``OpenPose: Realtime multi-person 2D pose estimation using part affinity fields,'' \emph{IEEE TPAMI}, vol. 43, no. 1, pp. 172--186, 2021.
+
+\bibitem{stgcn}
+S. Yan, Y. Xiong, and D. Lin, ``Spatial temporal graph convolutional networks for skeleton-based action recognition,'' in \emph{Proc. AAAI}, 2018.
+
+\bibitem{hrnet}
+K. Sun, B. Xiao, D. Liu, and J. Wang, ``Deep high-resolution representation learning for human pose estimation,'' in \emph{Proc. CVPR}, 2019.
+
+\bibitem{vitpose}
+Y. Xu, J. Zhang, Q. Zhang, and D. Tao, ``ViTPose: Simple vision transformer baselines for human pose estimation,'' in \emph{Proc. NeurIPS}, 2022.
+
+\bibitem{transformer}
+A. Vaswani et al., ``Attention is all you need,'' in \emph{Proc. NeurIPS}, 2017.
+
+\bibitem{pointnet}
+C. R. Qi, H. Su, K. Mo, and L. J. Guibas, ``PointNet: Deep learning on point sets for 3D classification and segmentation,'' in \emph{Proc. CVPR}, 2017.
+
+\bibitem{pointtransformer}
+H. Zhao, L. Jiang, J. Jia, P. Torr, and V. Koltun, ``Point Transformer,'' in \emph{Proc. ICCV}, 2021.
+
+\bibitem{shotton2011}
+J. Shotton et al., ``Real-time human pose recognition in parts from single depth images,'' in \emph{Proc. CVPR}, 2011.
+
+\bibitem{metafi}
+Y. Zhou, H. Huang, S. Yuan, H. Zou, L. Xie, and J. Yang, ``MetaFi++: WiFi-enabled transformer-based human pose estimation for metaverse avatar simulation,'' \emph{IEEE Internet of Things Journal}, vol. 10, no. 16, pp. 14128--14136, 2023.
+
+\bibitem{virteach}
+Z. Cao, G. Mei, X. Guo, and G. Wang, ``VirTeach: mmWave radar point-cloud-based pose estimation with virtual data as a teacher,'' \emph{IEEE Internet of Things Journal}, vol. 11, no. 10, pp. 17615--17628, 2024.
+
+\bibitem{adapose}
+Y. Zhou, J. Yang, H. Huang, and L. Xie, ``AdaPose: Toward cross-site device-free human pose estimation with commodity WiFi,'' \emph{IEEE Internet of Things Journal}, vol. 11, no. 24, pp. 40255--40267, 2024.
+
+\bibitem{robustwifi}
+X. H. Nguyen, V.-D. Nguyen, Q.-T. Luu, T. D. Gian, and O.-S. Shin, ``Robust WiFi sensing-based human pose estimation using denoising autoencoder and CNN with dynamic subcarrier attention,'' \emph{IEEE Internet of Things Journal}, vol. 12, no. 11, pp. 17066--17079, 2025.
+
+\bibitem{iotHarReview}
+M. G. Moghaddam, A. A. N. Shirehjini, and S. Shirmohammadi, ``Device-free human activity recognition: A systematic literature review,'' \emph{IEEE Open Journal of Instrumentation and Measurement}, vol. 4, pp. 1--34, 2025.
+
+\bibitem{contrastivehar}
+Q.-S. Hong and C.-H. Lu, ``Multimodal human activity recognition using contrastive fusion learning and lightweight isomorphic encoder for IoT-enabled smart homes,'' \emph{IEEE Internet of Things Journal}, vol. 12, no. 15, pp. 31932--31944, 2025.
+
+\bibitem{missingSurvey}
+R. Wu, H. Wang, H.-T. Chen, and G. Carneiro, ``Deep multimodal learning with missing modality: A survey,'' \emph{Transactions on Machine Learning Research}, 2026.
+
+\bibitem{goodPracticeMissing}
+S. Woo, S. Lee, Y. Park, M. A. Nugroho, and C. Kim, ``Towards good practices for missing modality robust action recognition,'' in \emph{Proc. AAAI}, vol. 37, no. 3, pp. 2776--2784, 2023.
+
+\bibitem{incompleteKD}
+Q. Wang, L. Zhan, P. Thompson, and J. Zhou, ``Multimodal learning with incomplete modalities by knowledge distillation,'' in \emph{Proc. ACM SIGKDD}, 2020, pp. 1828--1838.
+
+\bibitem{mmanet}
+S. Wei, C. Luo, and Y. Luo, ``MMANet: Margin-aware distillation and modality-aware regularization for incomplete multimodal learning,'' in \emph{Proc. IEEE/CVF CVPR}, 2023, pp. 20039--20049.
+
+\bibitem{shaspec}
+H. Wang, Y. Chen, C. Ma, J. Avery, L. Hull, and G. Carneiro, ``Multi-modal learning with missing modality via shared-specific feature modelling,'' in \emph{Proc. IEEE/CVF CVPR}, 2023, pp. 15878--15887.
+
+\bibitem{pta2026}
+P. Weng, Y. Qian, Y. Xu, and F. Wang, ``Purify-then-align: Towards robust human sensing under modality missing with knowledge distillation from noisy multimodal teacher,'' arXiv:2604.05584, 2026.
+
+\bibitem{compass2026}
+H. Wang, Y. Qian, P. Weng, Z. Xia, W. Dan, Y. Xu, and F. Wang, ``COMPASS: Complete multimodal fusion via proxy tokens and shared spaces for ubiquitous sensing,'' arXiv:2604.02056, 2026.
+
+\bibitem{moddrop}
+A. Neverova, C. Wolf, G. Taylor, and F. Nebout, ``ModDrop: Adaptive multi-modal gesture recognition,'' \emph{IEEE TPAMI}, vol. 38, no. 8, pp. 1692--1706, 2016.
+
+\bibitem{kd}
+G. Hinton, O. Vinyals, and J. Dean, ``Distilling the knowledge in a neural network,'' arXiv preprint arXiv:1503.02531, 2015.
+
+\bibitem{fitnets}
+A. Romero et al., ``FitNets: Hints for thin deep nets,'' in \emph{Proc. ICLR}, 2015.
+
+\bibitem{lupi}
+V. Vapnik and A. Vashist, ``A new learning paradigm: Learning using privileged information,'' \emph{Neural Networks}, vol. 22, no. 5--6, pp. 544--557, 2009.
+
+\bibitem{privacyOptics}
+C. Hinojosa, J. C. Niebles, and H. Arguello, ``Learning privacy-preserving optics for human pose estimation,'' in \emph{Proc. ICCV}, 2021.
+
+\bibitem{lowresDepth}
+M. S. Ryoo, B. Rothrock, C. Fleming, and H. J. Yang, ``Privacy-preserving human activity recognition from extreme low resolution,'' in \emph{Proc. AAAI}, vol. 31, no. 1, 2017.
+
+\bibitem{wifiSurvey}
+Y. Ma, G. Zhou, and S. Wang, ``WiFi sensing with channel state information: A survey,'' \emph{ACM Computing Surveys}, vol. 52, no. 3, pp. 1--36, 2019.
+
+\bibitem{sensorFusion}
+D. Lahat, T. Adali, and C. Jutten, ``Multimodal data fusion: An overview of methods, challenges, and prospects,'' \emph{Proceedings of the IEEE}, vol. 103, no. 9, pp. 1449--1477, 2015.
+
+\bibitem{iotSurvey}
+M. A. Razzaque, M. Milojevic-Jevric, A. Palade, and S. Clarke, ``Middleware for Internet of Things: A survey,'' \emph{IEEE Internet of Things Journal}, vol. 3, no. 1, pp. 70--95, 2016.
+
+\bibitem{smartHealthcare}
+L. Catarinucci et al., ``An IoT-aware architecture for smart healthcare systems,'' \emph{IEEE Internet of Things Journal}, vol. 2, no. 6, pp. 515--526, 2015.
+
+\bibitem{wearableSurvey}
+O. D. Lara and M. A. Labrador, ``A survey on human activity recognition using wearable sensors,'' \emph{IEEE Communications Surveys \& Tutorials}, vol. 15, no. 3, pp. 1192--1209, 2013.
+
+\bibitem{domainAdapt}
+Y. Ganin et al., ``Domain-adversarial training of neural networks,'' \emph{JMLR}, vol. 17, no. 59, pp. 1--35, 2016.
+
+\bibitem{uncertainty}
+A. Kendall and Y. Gal, ``What uncertainties do we need in Bayesian deep learning for computer vision?'' in \emph{Proc. NeurIPS}, 2017.
+
+\bibitem{crossModalKD}
+H. Wang, C. Ma, J. Zhang, Y. Zhang, J. Avery, L. Hull, and G. Carneiro, ``Learnable cross-modal knowledge distillation for multi-modal learning with missing modality,'' in \emph{Proc. MICCAI}, pp. 216--226, 2023.
+
+\bibitem{rfpose}
+M. Zhao, T. Li, M. A. Alsheikh, Y. Tian, H. Zhao, A. Torralba, and D. Katabi, ``Through-wall human pose estimation using radio signals,'' in \emph{Proc. IEEE/CVF CVPR}, pp. 7356--7365, 2018.
+
+\bibitem{mmwaveHar}
+P. Zhao, C. X. Lu, B. Wang, N. Trigoni, and A. Markham, ``mID: Tracking and identifying people with millimeter wave radar,'' in \emph{Proc. DCOSS}, 2019.
+
+\bibitem{lateFusion}
+S. Poria, E. Cambria, R. Bajpai, and A. Hussain, ``A review of affective computing: From unimodal analysis to multimodal fusion,'' \emph{Information Fusion}, vol. 37, pp. 98--125, 2017.
+
+\bibitem{rgbdAction}
+L. Xia, C.-C. Chen, and J. K. Aggarwal, ``View invariant human action recognition using histograms of 3D joints,'' in \emph{Proc. CVPR Workshops}, 2012.
+
+\bibitem{perceiver}
+A. Jaegle et al., ``Perceiver IO: A general architecture for structured inputs and outputs,'' in \emph{Proc. ICLR}, 2022.
+
+\bibitem{clip}
+A. Radford et al., ``Learning transferable visual models from natural language supervision,'' in \emph{Proc. ICML}, 2021.
+
+\bibitem{voxelnet}
+Y. Zhou and O. Tuzel, ``VoxelNet: End-to-end learning for point cloud based 3D object detection,'' in \emph{Proc. CVPR}, 2018.
+
+\bibitem{rgbdSurvey}
+J. Han, L. Shao, D. Xu, and J. Shotton, ``Enhanced computer vision with Microsoft Kinect sensor: A review,'' \emph{IEEE Transactions on Cybernetics}, vol. 43, no. 5, pp. 1318--1334, 2013.
+
+\bibitem{wifiHar}
+F. Wang, J. Liu, and W. Gong, ``WiFi-based human activity recognition: A survey,'' \emph{IEEE Communications Surveys \& Tutorials}, vol. 21, no. 3, pp. 2879--2910, 2019.
+
+\bibitem{edgeAi}
+X. Wang, Y. Han, V. C. M. Leung, D. Niyato, X. Yan, and X. Chen, ``Convergence of edge computing and deep learning: A comprehensive survey,'' \emph{IEEE Communications Surveys \& Tutorials}, vol. 22, no. 2, pp. 869--904, 2020.
+
+\bibitem{edgeIntelligence}
+Z. Zhou, X. Chen, E. Li, L. Zeng, K. Luo, and J. Zhang, ``Edge intelligence: Paving the last mile of artificial intelligence with edge computing,'' \emph{Proceedings of the IEEE}, vol. 107, no. 8, pp. 1738--1762, 2019.
+
+\end{thebibliography}
+\fi
+
+\bibliographystyle{IEEEtran}
+\bibliography{new_A_refs}
+
+\end{document}

@@ -1,0 +1,8 @@
+﻿modality_set,baseline,compass_acc_pct,vkrmd_acc_pct,delta_acc_ours_minus_compass,accuracy_winner
+D,COMPASS,52.0,88.02,36.02,VK-RMD
+L,COMPASS,80.1,40.8,-39.3,COMPASS
+R,COMPASS,83.2,85.88,2.68,VK-RMD
+D+L,COMPASS,66.3,88.52,22.22,VK-RMD
+D+R,COMPASS,78.1,96.45,18.35,VK-RMD
+L+R,COMPASS,90.4,89.51,-0.89,COMPASS
+D+L+R,COMPASS,84.7,96.44,11.74,VK-RMD

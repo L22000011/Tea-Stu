@@ -1,0 +1,6 @@
+representation,face_appearance,background,body_geometry,gait_action_leakage,formal_privacy_guarantee,our_claim
+RGB,High,High,High,High,No,Training privileged source only; not used by deployable student.
+VK,Low,Low,Medium/High,Medium/High,No,"Reduced visual exposure structural bridge, not anonymity."
+Depth,Low/Medium,Medium,High,Medium,No,Non-RGB sensing modality.
+LiDAR/mmWave,Low,Low/Medium,Medium,Medium,No,Non-RGB sensing modality.
+WiFi-CSI,Very low visual exposure,Low visual exposure,Indirect,Possible,No,Non-visual sensing modality.

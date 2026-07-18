@@ -1,0 +1,2 @@
+method,modality_set,params,fps,peak_memory
+VK-RCD-Teacher,vk+depth+lidar+mmwave+wifi-csi,8895208,63.24375957955146,4953925632

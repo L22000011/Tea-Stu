@@ -1,0 +1,12 @@
+{
+  "project": "HAR",
+  "project_root": "MMFi_HAR",
+  "dataset": "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+  "config": "MMFi_HAR/configs/student_vk_missing.yaml",
+  "checkpoint": "MMFi_HAR/outputs/student_vk_missing/best.pth",
+  "device": "cuda:0",
+  "gpu_name": "NVIDIA L40",
+  "warmup": 30,
+  "iters": 200,
+  "output_csv": "IoT-Deployment-Benchmark/results/deployment_efficiency_har_l40.csv"
+}

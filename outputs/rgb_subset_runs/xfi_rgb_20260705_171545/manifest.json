@@ -1,0 +1,9 @@
+{
+  "pipeline": "xfi_rgb_subset_baseline",
+  "rgb_root": "E:\\Deskbook\\Tea\\Raw-RGB",
+  "mmfi_root": "E:\\Deskbook\\Tea\\data",
+  "manifest": "E:\\Deskbook\\Tea\\outputs\\rgb_subset_manifest\\manifest.csv",
+  "device": "cuda:0",
+  "max_train_batches": 300,
+  "max_eval_batches": 100
+}

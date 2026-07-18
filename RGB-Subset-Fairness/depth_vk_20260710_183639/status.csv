@@ -1,0 +1,13 @@
+index,name,status,reason,returncode,seconds,outputs
+1,depth_vk_hpe_teacher_random_train,done,,0,18850.402,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs_depth_vk/teacher_vk_random/best.pth
+2,depth_vk_hpe_student_random_train,done,,0,27017.396,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs_depth_vk/student_vk_random/best.pth
+3,depth_vk_hpe_student_random_eval31,done,,0,7653.992,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs_depth_vk/eval/student_vk_random_all_combinations.csv
+4,depth_vk_har_teacher_random_train,done,,0,14574.816,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HAR/outputs_depth_vk/teacher_vk_random/best.pth
+5,depth_vk_har_student_random_train,done,,0,15618.185,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HAR/outputs_depth_vk/student_vk_random/best.pth
+6,depth_vk_har_student_random_eval15,done,,0,2703.790,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HAR/outputs_depth_vk/eval/student_vk_random_all_combinations.csv
+7,depth_vk_hpe_teacher_cross_subject_train,done,,0,11589.605,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs_depth_vk/teacher_vk_cross_subject/best.pth
+8,depth_vk_hpe_student_cross_subject_train,done,,0,17093.396,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs_depth_vk/student_vk_cross_subject/best.pth
+9,depth_vk_hpe_student_cross_subject_eval31,done,,0,5294.952,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs_depth_vk/eval/student_vk_cross_subject_all_combinations.csv
+10,depth_vk_har_teacher_cross_subject_train,done,,0,10817.442,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HAR/outputs_depth_vk/teacher_vk_cross_subject/best.pth
+11,depth_vk_har_student_cross_subject_train,done,,0,17181.897,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HAR/outputs_depth_vk/student_vk_cross_subject/best.pth
+12,depth_vk_har_student_cross_subject_eval15,done,,0,3158.405,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HAR/outputs_depth_vk/eval/student_vk_cross_subject_all_combinations.csv

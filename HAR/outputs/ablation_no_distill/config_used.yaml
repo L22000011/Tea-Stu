@@ -1,0 +1,61 @@
+method: VK-RCD-HAR-Ablation-NoKD
+modality:
+- vk
+- depth
+- lidar
+- mmwave
+protocol: protocol3
+split_to_use: random_split
+init_rand_seed: 0
+random_split:
+  ratio: 0.8
+  random_seed: 0
+loader:
+  batch_size: 16
+  num_workers: 4
+model:
+  modalities:
+  - vk
+  - depth
+  - lidar
+  - mmwave
+  num_classes: 27
+  dim: 512
+  tokens_per_modality: 32
+  graph_layers: 2
+  fusion_layers: 2
+  fusion_heads: 8
+  fusion_mode: uncertainty
+  freeze_pretrained_backbones: true
+  backbone_root: /apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HAR/backbones
+  pretrained_paths:
+    depth: /apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HAR/backbones/depth_benchmark/depth_Resnet18.pt
+    lidar: /apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HAR/backbones/lidar_benchmark/lidar_all_random.pt
+    mmwave: /apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HAR/backbones/mmwave_benchmark/mmwave_all_random_TD.pt
+loss:
+  lambda_unc: 0.05
+  tau: 1.0
+student_modalities:
+- vk
+- depth
+- lidar
+- mmwave
+drop_counts:
+- 1
+- 2
+- 3
+eval_modalities:
+- vk
+- depth
+- lidar
+- mmwave
+training_epochs: 50
+learning_rate: 0.0001
+eval_every: 5
+save_every: 5
+grad_clip: 1.0
+output_dir: outputs/ablation_no_distill
+config_path: configs/ablation_no_distill.yaml
+dataset_root: /apps/users/icps_intelligence/data/lyg/code/MMFi_DATA
+device: cuda:0
+max_train_batches: 1000

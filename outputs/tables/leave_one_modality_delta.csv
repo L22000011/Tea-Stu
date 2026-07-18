@@ -1,0 +1,10 @@
+task,method,missing_modality,full_modality_metric,leave_one_out_metric,degradation,metric_name,higher_better
+HPE,Student-VK,vk,50.17,51.78,1.61,MPJPE mm,False
+HPE,Student-VK,depth,50.17,64.25,14.07,MPJPE mm,False
+HPE,Student-VK,lidar,50.17,50.41,0.24,MPJPE mm,False
+HPE,Student-VK,mmwave,50.17,51.05,0.88,MPJPE mm,False
+HPE,Student-VK,wifi-csi,50.17,50.25,0.08,MPJPE mm,False
+HAR,Student-VK,vk,96.56,96.44,0.12,Accuracy %,True
+HAR,Student-VK,depth,96.56,92.73,3.83,Accuracy %,True
+HAR,Student-VK,lidar,96.56,96.56,0.00,Accuracy %,True
+HAR,Student-VK,mmwave,96.56,89.62,6.94,Accuracy %,True

@@ -1,0 +1,7 @@
+index,name,status,reason,returncode,seconds,outputs
+1,vkrmd_hpe_teacher_cross_scene_train,dry_run,,0,0.000,E:\Deskbook\Tea\HPE\outputs_rgb_subset\teacher_vk_cross_scene\best.pth
+2,vkrmd_hpe_student_cross_scene_train,skipped,missing_required=E:\Deskbook\Tea\HPE\outputs_rgb_subset\teacher_vk_cross_scene\best.pth,0,0.000,E:\Deskbook\Tea\HPE\outputs_rgb_subset\student_vk_cross_scene\best.pth
+3,vkrmd_hpe_student_cross_scene_eval31,skipped,missing_required=E:\Deskbook\Tea\HPE\outputs_rgb_subset\student_vk_cross_scene\best.pth,0,0.000,E:\Deskbook\Tea\HPE\outputs_rgb_subset\eval\student_vk_cross_scene_all_combinations.csv
+4,vkrmd_hpe_teacher_cross_subject_train,dry_run,,0,0.000,E:\Deskbook\Tea\HPE\outputs_rgb_subset\teacher_vk_cross_subject\best.pth
+5,vkrmd_hpe_student_cross_subject_train,skipped,missing_required=E:\Deskbook\Tea\HPE\outputs_rgb_subset\teacher_vk_cross_subject\best.pth,0,0.000,E:\Deskbook\Tea\HPE\outputs_rgb_subset\student_vk_cross_subject\best.pth
+6,vkrmd_hpe_student_cross_subject_eval31,skipped,missing_required=E:\Deskbook\Tea\HPE\outputs_rgb_subset\student_vk_cross_subject\best.pth,0,0.000,E:\Deskbook\Tea\HPE\outputs_rgb_subset\eval\student_vk_cross_subject_all_combinations.csv

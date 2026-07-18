@@ -1,0 +1,13 @@
+task,method,missing_modality_training,adaptive_fusion,kd,avg_metric,full_metric,metric_name,source_file,main_conclusion
+HPE,Official X-Fi/VK table,No,X-fusion / reported baseline,No,103.70,83.70,MPJPE mm lower-better,E:\Deskbook\Tea\HPE\legacy_xfi\xfi_hpe_table1.csv,External reference baseline; not counted as ours.
+HPE,Full-modality baseline under missing test,No,Standard fusion,No,617.17,49.14,MPJPE mm lower-better,E:\Deskbook\Tea\HPE\outputs\eval\baseline_full_all_combinations.csv,Shows full-modality training is brittle when modalities are missing.
+HPE,Uniform-fusion ablation,Yes,"No, uniform weights",Yes,82.77,52.28,MPJPE mm lower-better,E:\Deskbook\Tea\HPE\outputs\eval\ablation_uniform_fusion_all_combinations.csv,Tests whether learned fusion is useful beyond missing-modality training.
+HPE,w/o KD ablation,Yes,Yes,No,72.68,48.83,MPJPE mm lower-better,E:\Deskbook\Tea\HPE\outputs\eval\ablation_no_distill_all_combinations.csv,Shows HPE gains are not solely from distillation.
+HPE,VK-RMD Student-VK,Yes,Yes,Auxiliary,75.18,50.17,MPJPE mm lower-better,E:\Deskbook\Tea\HPE\outputs\eval\student_vk_random_all_combinations.csv,Main deployable VK setting.
+HPE,VK-RMD Student-NV,Yes,Yes,Auxiliary,84.68,51.03,MPJPE mm lower-better,E:\Deskbook\Tea\HPE\outputs\eval\student_nv_random_nonvisual_combinations.csv,Strict non-visual inference setting.
+HAR,Official/reproduced X-Fi/VK,No,X-fusion / reported baseline,No,62.46,72.20,Accuracy % higher-better,E:\Deskbook\Tea\HAR\legacy_xfi\xfi_har_table6.csv,External reference baseline; not counted as ours.
+HAR,Full-modality teacher under missing test,No,Standard full-modality teacher,No,66.25,95.57,Accuracy % higher-better,E:\Deskbook\Tea\HAR\outputs\eval\teacher_random_all_combinations.csv,Shows full-modality teacher is not robust to missing modalities.
+HAR,Uniform-fusion ablation,Yes,"No, uniform weights",Yes,67.46,95.39,Accuracy % higher-better,E:\Deskbook\Tea\HAR\outputs\eval\ablation_uniform_fusion_all_combinations.csv,Tests reliability-aware fusion against equal weighting.
+HAR,w/o KD ablation,Yes,Yes,No,82.86,95.99,Accuracy % higher-better,E:\Deskbook\Tea\HAR\outputs\eval\ablation_no_distill_all_combinations.csv,Shows distillation provides auxiliary benefit for HAR.
+HAR,VK-RMD Student-VK,Yes,Yes,Auxiliary,85.15,96.56,Accuracy % higher-better,E:\Deskbook\Tea\HAR\outputs\eval\student_vk_random_all_combinations.csv,Main deployable VK setting.
+HAR,VK-RMD Student-NV,Yes,Yes,Auxiliary,80.62,96.12,Accuracy % higher-better,E:\Deskbook\Tea\HAR\outputs\eval\student_nv_random_nonvisual_combinations.csv,Strict non-visual inference setting.

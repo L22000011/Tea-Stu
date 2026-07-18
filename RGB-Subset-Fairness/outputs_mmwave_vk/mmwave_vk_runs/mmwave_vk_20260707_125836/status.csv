@@ -1,0 +1,16 @@
+index,name,status,reason,returncode,seconds,outputs
+1,mmwave_vk_generator_cross_scene,done,,0,2447.506,/apps/users/icps_intelligence/data/lyg/X-Fi/RGB-Subset-Fairness/outputs_mmwave_vk/generators/cross_scene/best.pth;/apps/users/icps_intelligence/data/lyg/X-Fi/RGB-Subset-Fairness/outputs_mmwave_vk/generators/cross_scene/export_complete.json
+2,mmwave_vk_generator_cross_subject,done,,0,847.419,/apps/users/icps_intelligence/data/lyg/X-Fi/RGB-Subset-Fairness/outputs_mmwave_vk/generators/cross_subject/best.pth;/apps/users/icps_intelligence/data/lyg/X-Fi/RGB-Subset-Fairness/outputs_mmwave_vk/generators/cross_subject/export_complete.json
+3,mmwave_vk_hpe_teacher_cross_scene_train,done,,0,13629.591,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs_mmwave_vk/teacher_vk_cross_scene/best.pth
+4,mmwave_vk_hpe_student_cross_scene_train,failed,,1,7958.391,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs_mmwave_vk/student_vk_cross_scene/best.pth
+5,mmwave_vk_hpe_student_cross_scene_eval31,skipped,missing_required=/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs_mmwave_vk/student_vk_cross_scene/best.pth,0,0.000,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs_mmwave_vk/eval/student_vk_cross_scene_all_combinations.csv
+6,mmwave_vk_har_teacher_cross_scene_train,done,,0,12848.091,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HAR/outputs_mmwave_vk/teacher_vk_cross_scene/best.pth
+7,mmwave_vk_har_student_cross_scene_train,done,,0,23358.788,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HAR/outputs_mmwave_vk/student_vk_cross_scene/best.pth
+8,mmwave_vk_har_student_cross_scene_eval15,done,,0,4079.505,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HAR/outputs_mmwave_vk/eval/student_vk_cross_scene_all_combinations.csv
+9,mmwave_vk_hpe_teacher_cross_subject_train,failed,,1,16806.809,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs_mmwave_vk/teacher_vk_cross_subject/best.pth
+10,mmwave_vk_hpe_student_cross_subject_train,failed,,1,9853.895,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs_mmwave_vk/student_vk_cross_subject/best.pth
+11,mmwave_vk_hpe_student_cross_subject_eval31,skipped,missing_required=/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs_mmwave_vk/student_vk_cross_subject/best.pth,0,0.000,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE/outputs_mmwave_vk/eval/student_vk_cross_subject_all_combinations.csv
+12,mmwave_vk_har_teacher_cross_subject_train,failed,,1,279.718,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HAR/outputs_mmwave_vk/teacher_vk_cross_subject/best.pth
+13,mmwave_vk_har_student_cross_subject_train,skipped,missing_required=/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HAR/outputs_mmwave_vk/teacher_vk_cross_subject/best.pth,0,0.000,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HAR/outputs_mmwave_vk/student_vk_cross_subject/best.pth
+14,mmwave_vk_har_student_cross_subject_eval15,skipped,missing_required=/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HAR/outputs_mmwave_vk/student_vk_cross_subject/best.pth,0,0.000,/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HAR/outputs_mmwave_vk/eval/student_vk_cross_subject_all_combinations.csv
+15,mmwave_vk_feasibility_summary,done,,0,4.714,

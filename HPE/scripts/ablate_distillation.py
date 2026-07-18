@@ -20,6 +20,7 @@ def main() -> None:
     parser = base_parser("Run structural distillation ablations.")
     parser.add_argument("--teacher", type=str, required=True)
     parser.add_argument("--nonvisual", action="store_true")
+    parser.add_argument("--variants", type=str, default="all", help="Comma-separated variant names or all.")
     args = parser.parse_args()
     base_config = prepare_config(args)
     device = get_device(args.device)
@@ -28,11 +29,26 @@ def main() -> None:
     load_model_checkpoint(teacher, args.teacher, device, strict=False)
     root_output = Path(base_config.get("output_dir", "outputs/ablation_distillation"))
 
-    for name, weights in VARIANTS.items():
+    selected = list(VARIANTS.keys()) if args.variants == "all" else [item.strip() for item in args.variants.split(",") if item.strip()]
+    unknown = [name for name in selected if name not in VARIANTS]
+    if unknown:
+        raise ValueError(f"Unknown distillation ablation variants: {unknown}")
+
+    for name in selected:
+        weights = VARIANTS[name]
+        variant_output = root_output / name
+        best_path = variant_output / "best.pth"
+        last_path = variant_output / "last.pth"
+        if best_path.exists():
+            print(f"[Ablation] Skip {name}: existing best checkpoint at {best_path}")
+            continue
         config = dict(base_config)
         config["loss"] = dict(base_config.get("loss", {}))
         config["loss"].update(weights)
-        config["output_dir"] = str(root_output / name)
+        config["output_dir"] = str(variant_output)
+        if last_path.exists():
+            config["resume"] = str(last_path)
+            print(f"[Ablation] Resume {name} from {last_path}")
         if args.nonvisual:
             config["student_modalities"] = ["depth", "lidar", "mmwave", "wifi-csi"]
             student_config = dict(config)

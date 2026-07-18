@@ -1,0 +1,17 @@
+\begin{table}[H]
+\centering
+\caption{SuperTeacher 探索性结果。该实验检验单一跨任务 teacher 是否可同时服务 HPE 和 HAR。结果进入正文作为探索边界：SuperTeacher 自身 full-modality 端点可用，但缺失组合不稳定，因此不替代本文主线的 Student-VK/Student-NV。}
+\label{tab:superteacher_cn}
+\scriptsize
+\begin{adjustbox}{width=\linewidth}
+\begin{tabular}{lcc}
+\toprule
+Model & HPE MPJPE$\downarrow$ & HAR Acc.$\uparrow$ \\
+\midrule
+SuperTeacher final & 59.78 mm & 90.56\% \\
+Super-HPE Student-VK final & 59.71 mm & -- \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+

@@ -1,0 +1,5 @@
+task,method,visual_input,protocol,combination_count,avg_mpjpe_mm,full_mpjpe_mm,best_subset,best_mpjpe_mm,worst_subset,worst_mpjpe_mm,source
+HPE,RGB-XFi,RGB,cross_scene,31,319.29,317.40,RGB+Depth,309.90,Lidar+WiFi-CSI,335.92,E:\Deskbook\Tea\RGB-Subset-Fairness\outputs_rgb_subset\cross_scene\eval\main_eval_latest.csv
+HPE,VK-RMD,VK,cross_scene,31,162.01,104.92,vk+depth,88.00,lidar,551.19,E:\Deskbook\Tea\RGB-Subset-Fairness\outputs_rgb_subset\eval\student_vk_cross_scene_all_combinations.csv
+HPE,RGB-XFi,RGB,cross_subject,31,308.78,306.17,RGB+Depth+mmWave+WiFi-CSI,305.02,Depth,316.99,E:\Deskbook\Tea\RGB-Subset-Fairness\outputs_rgb_subset\eval\xfi_rgb_20260706_150753\main_eval_latest.csv
+HPE,VK-RMD,VK,cross_subject,31,115.56,82.38,depth+mmwave+wifi-csi,78.48,wifi-csi,231.96,E:\Deskbook\Tea\RGB-Subset-Fairness\outputs_rgb_subset\eval\student_vk_cross_subject_all_combinations.csv

@@ -1,0 +1,5 @@
+# VK-RCD-HAR-Teacher final evaluation
+
+|method|split|protocol|modality_set|loss|acc|macro_f1|params|fps|peak_memory|
+|---|---|---|---|---|---|---|---|---|---|
+|VK-RCD-HAR-Teacher|random_split|protocol3|vk+depth+lidar+mmwave|0.20333090068832432|0.955745728893877|0.9556395587676002|8606392|NA|NA|

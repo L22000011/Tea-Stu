@@ -1,0 +1,20 @@
+\begin{table}[H]
+\centering
+\caption{核心消融结果。HPE 数值为 MPJPE，HAR 数值为 Accuracy。}
+\label{tab:ablation_cn}
+\scriptsize
+\begin{adjustbox}{width=\linewidth}
+\begin{tabular}{llcc}
+\toprule
+Task & Setting & Avg. & Full \\
+\midrule
+HPE & VK-RMD & 75.18 mm MPJPE & 50.17 mm MPJPE \\
+HPE & w/o distillation & 72.68 mm MPJPE & 48.83 mm MPJPE \\
+HPE & uniform fusion & 82.77 mm MPJPE & 52.28 mm MPJPE \\
+HAR & VK-RMD & 85.15\% accuracy & 96.56\% accuracy \\
+HAR & w/o distillation & 82.86\% accuracy & 95.99\% accuracy \\
+HAR & uniform fusion & 67.46\% accuracy & 95.39\% accuracy \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}

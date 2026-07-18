@@ -102,12 +102,12 @@ def _trend_tex(delta: float) -> str:
     if abs(delta) < 1e-6:
         return r"\textcolor{gray}{=}"
     if delta > 0:
-        return r"\textcolor{ForestGreen}{$\uparrow$}"
+        return r"\textcolor{blue}{$\uparrow$}"
     return r"\textcolor{red}{$\downarrow$}"
 
 
 def _delta_tex(delta: float) -> str:
-    color = "ForestGreen" if delta > 0 else "red" if delta < 0 else "gray"
+    color = "blue" if delta > 0 else "red" if delta < 0 else "gray"
     sign = "+" if delta > 0 else ""
     return rf"\textcolor{{{color}}}{{{sign}{delta:.2f}}}"
 
@@ -134,7 +134,7 @@ def write_latex_report(
         rf"Result CSV: \texttt{{{_tex_escape(str(result_csv))}}}\\",
         rf"X-Fi baseline CSV: \texttt{{{_tex_escape(str(xfi_csv))}}}\\",
         r"Metrics are reported as percentages. Higher accuracy is better. "
-        r"Green up arrows indicate improvement over X-Fi; red down arrows indicate degradation.",
+        r"Blue up arrows indicate improvement over X-Fi; red down arrows indicate degradation.",
         "",
         r"\subsection*{Summary}",
         r"\begin{tabular}{lrrrr}",

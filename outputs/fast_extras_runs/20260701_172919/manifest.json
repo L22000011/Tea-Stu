@@ -1,0 +1,9 @@
+{
+  "created_at": "20260701_172919",
+  "dataset": "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+  "device": "cuda:0",
+  "max_eval_batches": 100,
+  "hpe_root": "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HPE",
+  "har_root": "/apps/users/icps_intelligence/data/lyg/X-Fi/MMFi_HAR",
+  "description": "Fast non-training extras for VK-RMD paper submission."
+}

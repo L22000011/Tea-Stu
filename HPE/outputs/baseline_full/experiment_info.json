@@ -1,0 +1,13 @@
+{
+  "method": "VK-XFi-Baseline-Full",
+  "stage": "teacher",
+  "device": "cuda:0",
+  "python": "3.10.20",
+  "torch": "2.1.1+cu118",
+  "cuda_available": true,
+  "parameter_count": 5740264,
+  "output_dir": "outputs/baseline_full",
+  "dataset_root": "/apps/users/icps_intelligence/data/lyg/code/MMFi_DATA",
+  "split": "random_split",
+  "protocol": "protocol3"
+}

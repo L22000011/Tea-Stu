@@ -1,0 +1,24 @@
+path,category,task,method_role,metric_summary,recommended_section,main_text_use
+HPE/outputs/eval/student_vk_random_all_combinations.csv,ours-HPE,HPE,main method,"31-combination avg MPJPE 75.18 mm; full modality 50.17 mm","Main HPE Results; Missing-Modality Robustness",yes
+HPE/outputs/eval/student_nv_random_nonvisual_combinations.csv,ours-HPE,HPE,main non-RGB setting,"15 non-visual avg MPJPE 84.68 mm; full non-visual 51.03 mm","Main HPE Results; Non-RGB Deployment",yes
+HPE/outputs/eval/student_vk_cross_scene_all_combinations.csv,ours-HPE,HPE,generalization,"cross-scene avg MPJPE 142.02 mm; full 71.71 mm","Generalization",yes
+HPE/outputs/eval/student_nv_cross_scene_nonvisual_combinations.csv,ours-HPE,HPE,generalization non-RGB,"cross-scene non-visual avg MPJPE 153.89 mm; full 78.96 mm","Generalization",yes
+HPE/outputs/eval/student_vk_cross_subject_all_combinations.csv,ours-HPE,HPE,generalization,"cross-subject avg MPJPE 78.57 mm; full 49.88 mm","Generalization",yes
+HPE/outputs/eval/student_nv_cross_subject_nonvisual_combinations.csv,ours-HPE,HPE,generalization non-RGB,"cross-subject non-visual avg MPJPE 90.74 mm; full 52.45 mm","Generalization",yes
+HAR/outputs/eval/student_vk_random_all_combinations.csv,ours-HAR,HAR,main method,"15-combination avg accuracy 85.15%; full modality 96.56%","Main HAR Results; Missing-Modality Robustness",yes
+HAR/outputs/eval/student_nv_random_nonvisual_combinations.csv,ours-HAR,HAR,main non-RGB setting,"7 non-visual avg accuracy 80.62%; full non-visual 96.12%","Main HAR Results; Non-RGB Deployment",yes
+HAR/outputs/eval/student_vk_cross_scene_all_combinations.csv,ours-HAR,HAR,generalization,"cross-scene avg accuracy 80.61%; full 95.25%","Generalization",yes
+HAR/outputs/eval/student_nv_cross_scene_nonvisual_combinations.csv,ours-HAR,HAR,generalization non-RGB,"cross-scene non-visual avg accuracy 76.70%; full 95.41%","Generalization",yes
+HAR/outputs/eval/student_vk_cross_subject_all_combinations.csv,ours-HAR,HAR,generalization,"cross-subject avg accuracy 85.30%; full 96.12%","Generalization",yes
+HAR/outputs/eval/student_nv_cross_subject_nonvisual_combinations.csv,ours-HAR,HAR,generalization non-RGB,"cross-subject non-visual avg accuracy 81.26%; full 95.70%","Generalization",yes
+origin-XFI/Ori-HPE/outputs/main_eval_latest.csv,ori-XFI-baseline,HPE,reproduced baseline,"31-combination avg MPJPE 244.91 mm; full 244.70 mm","Baseline Comparison",yes
+origin-XFI/Ori-HAR/outputs/main_eval_latest.csv,ori-XFI-baseline,HAR,reproduced baseline,"15-combination avg accuracy 69.63%; full 77.70%","Baseline Comparison",yes
+HPE/outputs/eval/ablation_no_distill_all_combinations.csv,ablation,HPE,no distillation,"avg MPJPE 72.68 mm; full 48.83 mm; weakens broad KD claim","Ablation; Discussion",yes-cautious
+HPE/outputs/eval/ablation_uniform_fusion_all_combinations.csv,ablation,HPE,uniform fusion,"avg MPJPE 82.77 mm; full 52.28 mm","Ablation",yes
+HAR/outputs/eval/ablation_no_distill_all_combinations.csv,ablation,HAR,no distillation,"avg accuracy 82.86%; full 95.99%","Ablation",yes
+HAR/outputs/eval/ablation_uniform_fusion_all_combinations.csv,ablation,HAR,uniform fusion,"avg accuracy 67.46%; full 95.39%","Ablation",yes
+HPE/outputs/eval/ablation_encoder_mlp_vk_all_combinations.csv,ablation,HPE,VK encoder ablation,"avg MPJPE 503.74 mm; full 77.69 mm; extreme missing-combination degradation","Appendix or summarized ablation",appendix-only
+HPE/outputs/eval/ablation_encoder_skeleton_prompt_all_combinations.csv,ablation,HPE,VK encoder ablation,"avg MPJPE 1000.80 mm; full 55.07 mm; extreme missing-combination degradation","Appendix or summarized ablation",appendix-only
+Super-Teacher/outputs/eval/super_teacher_random_hpe_all_combinations.csv,superteacher-exploration,HPE,exploratory teacher,"avg MPJPE 1538.81 mm; full 59.78 mm","Discussion or Appendix",no-main-table
+Super-Teacher/outputs/eval/super_teacher_random_har_all_combinations.csv,superteacher-exploration,HAR,exploratory teacher,"avg accuracy 53.59%; full 90.55%","Discussion or Appendix",no-main-table
+Super-Teacher/outputs/eval/super_hpe_student_random_vk_all_combinations.csv,superteacher-exploration,HPE,exploratory student,"avg MPJPE 82.06 mm; full 56.82 mm","Discussion or Appendix",no-main-table

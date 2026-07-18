@@ -1,0 +1,32 @@
+\begin{table*}[t]
+\centering
+\caption{Direct HAR comparison with the original X-Fi table entries. Accuracy is reported in percent; higher is better. Green upward deltas indicate improvement over X-Fi, and red downward deltas indicate degradation.}
+\label{tab:xfi_har_direct}
+\scriptsize
+\begin{adjustbox}{width=0.82\textwidth}
+\begin{tabular}{lccc}
+\toprule
+Modality & X-Fi Acc.$\uparrow$ & VK-RMD Acc.$\uparrow$ & $\Delta$ Acc. \\
+\midrule
+V & 26.5 & \cellcolor{gray!12}65.3 & \gain{$\uparrow$ 38.8} \\
+D & 48.1 & \cellcolor{gray!12}88.0 & \gain{$\uparrow$ 39.9} \\
+L & 52.7 & \cellcolor{gray!12}40.8 & \loss{$\downarrow$ 11.9} \\
+R & 85.7 & \cellcolor{gray!12}85.9 & \gain{$\uparrow$ 0.2} \\
+\midrule
+V+D & 45.3 & \cellcolor{gray!12}89.5 & \gain{$\uparrow$ 44.2} \\
+V+L & 35.2 & \cellcolor{gray!12}68.5 & \gain{$\uparrow$ 33.3} \\
+V+R & 73.4 & \cellcolor{gray!12}92.7 & \gain{$\uparrow$ 19.3} \\
+D+L & 51.6 & \cellcolor{gray!12}88.5 & \gain{$\uparrow$ 36.9} \\
+D+R & 79.8 & \cellcolor{gray!12}96.4 & \gain{$\uparrow$ 16.6} \\
+L+R & 88.7 & \cellcolor{gray!12}89.5 & \gain{$\uparrow$ 0.8} \\
+\midrule
+V+D+L & 48.7 & \cellcolor{gray!12}89.6 & \gain{$\uparrow$ 40.9} \\
+V+D+R & 70.7 & \cellcolor{gray!12}96.6 & \gain{$\uparrow$ 25.9} \\
+V+L+R & 77.8 & \cellcolor{gray!12}92.7 & \gain{$\uparrow$ 14.9} \\
+D+L+R & 80.5 & \cellcolor{gray!12}96.4 & \gain{$\uparrow$ 15.9} \\
+\midrule
+V+D+L+R & 72.2 & \cellcolor{gray!12}96.6 & \gain{$\uparrow$ 24.4} \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table*}

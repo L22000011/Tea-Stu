@@ -1,0 +1,22 @@
+\begin{table*}[t]
+\centering
+\caption{跨协议泛化核心结果。HPE 为平均/全模态 MPJPE，HAR 为平均/全模态 Accuracy。}
+\label{tab:protocol_cn}
+\scriptsize
+\begin{adjustbox}{width=\textwidth}
+\begin{tabular}{llcccc}
+\toprule
+Protocol & Model & HPE Avg.$\downarrow$ & HPE Full$\downarrow$ & HAR Avg.$\uparrow$ & HAR Full$\uparrow$ \\
+\midrule
+random split & VK-RMD VK & 75.18 & 50.17 & 85.15 & 96.56 \\
+random split & VK-RMD NV & 84.68 & 51.03 & 80.62 & 96.12 \\
+\midrule
+cross-subject & VK-RMD VK & 78.57 & 49.88 & 85.30 & 96.12 \\
+cross-subject & VK-RMD NV & 90.74 & 52.45 & 81.26 & 95.70 \\
+\midrule
+cross-scene & VK-RMD VK & 142.02 & 71.71 & 80.61 & 95.25 \\
+cross-scene & VK-RMD NV & 153.89 & 78.96 & 76.70 & 95.41 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table*}

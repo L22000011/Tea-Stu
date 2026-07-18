@@ -1,0 +1,7 @@
+﻿task,mode,combination_count,metric,all_subset_metric,secondary_metric,secondary_name
+HPE,chunk_only,31,MPJPE_mm,95.27086719510055,62.45970022790638,PA_MPJPE_mm
+HPE,global_only,31,MPJPE_mm,109.80962883560888,78.4854741688606,PA_MPJPE_mm
+HPE,dual,31,MPJPE_mm,99.43827423477366,67.99794291337189,PA_MPJPE_mm
+HAR,chunk_only,15,Accuracy_pct,80.56666666666666,36.67416307552553,Macro_F1_pct
+HAR,global_only,15,Accuracy_pct,81.4125,38.17083322741885,Macro_F1_pct
+HAR,dual,15,Accuracy_pct,82.43333333333334,43.400710475992064,Macro_F1_pct

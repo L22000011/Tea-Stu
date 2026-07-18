@@ -1,0 +1,5 @@
+# VK-RMD-HPE-Readout-global_only final evaluation
+
+|method|split|protocol|modality_set|mse|mpjpe|pa_mpjpe|params|fps|peak_memory|
+|---|---|---|---|---|---|---|---|---|---|
+|VK-RMD-HPE-Readout-global_only|random_split|protocol3|vk+depth+lidar+mmwave+wifi-csi|0.0039041729806922375|0.08585574027150869|0.06970236637440398|8895208|NA|NA|

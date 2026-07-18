@@ -1,0 +1,5 @@
+# VK-RCD-Teacher final evaluation
+
+|method|split|protocol|modality_set|mse|mpjpe|pa_mpjpe|params|fps|peak_memory|
+|---|---|---|---|---|---|---|---|---|---|
+|VK-RCD-Teacher|random_split|protocol3|vk+depth+lidar+mmwave+wifi-csi|0.0013922010646224027|0.04844978014533323|0.03306253171049202|8895208|NA|NA|

@@ -1,0 +1,2 @@
+method,split,protocol,modality_set,mse,mpjpe,pa_mpjpe,params,fps,peak_memory
+VK-XFi-Baseline-Full,random_split,protocol3,vk+depth+lidar+mmwave+wifi-csi,0.0014151258380642683,0.04913539463921978,0.03348195314565575,5740264,NA,NA

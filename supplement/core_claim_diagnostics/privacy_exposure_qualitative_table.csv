@@ -1,0 +1,6 @@
+representation,visual_exposure_score_1_low_5_high,residual_identity_behavior_risk_1_low_5_high,formal_privacy_guarantee,safe_claim,paper_policy
+RGB,5.0,5.0,No,Training privileged source only; not used by deployable student.,Qualitative writing aid only. Do not use these heuristic scores as quantitative privacy metrics; use privacy leakage probe for systematic evaluation.
+VK,1.0,4.0,No,"Reduced visual exposure structural bridge, not anonymity.",Qualitative writing aid only. Do not use these heuristic scores as quantitative privacy metrics; use privacy leakage probe for systematic evaluation.
+Depth,2.5,4.0,No,Non-RGB sensing modality.,Qualitative writing aid only. Do not use these heuristic scores as quantitative privacy metrics; use privacy leakage probe for systematic evaluation.
+LiDAR/mmWave,1.5,3.0,No,Non-RGB sensing modality.,Qualitative writing aid only. Do not use these heuristic scores as quantitative privacy metrics; use privacy leakage probe for systematic evaluation.
+WiFi-CSI,1.0,2.5,No,Non-visual sensing modality.,Qualitative writing aid only. Do not use these heuristic scores as quantitative privacy metrics; use privacy leakage probe for systematic evaluation.

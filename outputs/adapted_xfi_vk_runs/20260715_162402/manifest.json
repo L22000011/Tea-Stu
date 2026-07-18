@@ -1,0 +1,19 @@
+{
+  "repo_root": "E:\\Deskbook\\Tea",
+  "dataset": "C:\\dummy",
+  "device": "cuda:0",
+  "tasks": [
+    "HPE",
+    "HAR"
+  ],
+  "protocols": [
+    "random"
+  ],
+  "stage": "all",
+  "epochs": 10,
+  "max_train_batches": 2,
+  "max_eval_batches": 2,
+  "output_root": "E:\\Deskbook\\Tea\\outputs\\adapted_xfi_vk_baseline",
+  "force": false,
+  "dry_run": true
+}

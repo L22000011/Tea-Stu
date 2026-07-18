@@ -1,0 +1,7 @@
+task,method,visual_input,protocol,train_samples,test_samples,combination_count,avg_metric,full_metric,best_subset,worst_subset,vk_generation_nme,vk_generation_pck10,note
+HAR,X-Fi,RGB/defaced-RGB,cross_scene,48114,5896,0,NA,NA,NA,NA,NA,NA,Original RGB-XFi subset baseline when available; higher accuracy is better.
+HAR,VK-RMD,Original VK,cross_scene,48114,5896,0,NA,NA,NA,NA,NA,NA,Original VK-RMD on the same RGB-available manifest.
+HAR,VK-RMD-mmWaveVK,mmWave-generated VK,cross_scene,48114,5896,15,0.691042,0.967500,depth+lidar+mmwave,lidar,0.11994132533002255,0.5352981134622359,Quick feasibility: downstream VK is generated from filtered mmWave.
+HAR,X-Fi,RGB/defaced-RGB,cross_subject,44392,9618,0,NA,NA,NA,NA,NA,NA,Original RGB-XFi subset baseline when available; higher accuracy is better.
+HAR,VK-RMD,Original VK,cross_subject,44392,9618,0,NA,NA,NA,NA,NA,NA,Original VK-RMD on the same RGB-available manifest.
+HAR,VK-RMD-mmWaveVK,mmWave-generated VK,cross_subject,44392,9618,0,NA,NA,NA,NA,0.09306341305375099,0.7073529466986657,Quick feasibility: downstream VK is generated from filtered mmWave.
